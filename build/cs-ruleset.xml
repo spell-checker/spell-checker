@@ -23,10 +23,13 @@
         <exclude name="SlevomatCodingStandard.Classes.UnusedPrivateElements.UnusedMethod"/><!-- false positive on private method used by static constructor -->
         <exclude name="SlevomatCodingStandard.TypeHints.DeclareStrictTypes.DeclareStrictTypesMissing"/><!-- fuck strict types -->
         <exclude name="SlevomatCodingStandard.Types.EmptyLinesAroundTypeBraces.NoEmptyLineAfterOpeningBrace"/><!-- "use" on first line of class -->
+        <exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedGlobalConstants.NonFullyQualified"/>
+        <exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedGlobalFunctions.NonFullyQualified"/>
+        <exclude name="SlevomatCodingStandard.ControlStructures.RequireYodaComparison.RequiredYodaComparison"/>
     </rule>
     <rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName">
         <properties>
-            <property name="rootNamespaces" type="array" value="src=>SqlFtw"/>
+            <property name="rootNamespaces" type="array" value="src/SpellChecker=>SpellChecker,src=>Dogma\Tools"/>
             <property name="skipDirs" type="array" value="tests"/>
         </properties>
     </rule>

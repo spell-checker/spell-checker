@@ -85,10 +85,14 @@ try {
     $dictionaries = new DictionaryCollection($config->dictionaries);
     $spellChecker = new SpellChecker(new WordsParser(), $resolver, $dictionaries);
 
+    $fileCallback = function () use ($console) {
+        $console->write('.');
+        return true;
+    };
     if ($config->dictionaries) {
-        $errors = $spellChecker->checkDirectories($config->directories);
+        $errors = $spellChecker->checkDirectories($config->directories, $fileCallback);
     } elseif ($config->files) {
-        $errors = $spellChecker->checkFiles($config->files);
+        $errors = $spellChecker->checkFiles($config->files, $fileCallback);
     } else {
         $console->writeLn(C::red('Nothing to check. Configure directories or files.'));
         exit(1);

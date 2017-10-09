@@ -27,13 +27,14 @@ class SpellChecker
 
     /**
      * @param string[] $paths
+     * @param callable|null (string $fileName: bool) $fileCallback
      * @return \SpellChecker\Word[][]
      */
-    public function checkDirectories(array $paths): array
+    public function checkDirectories(array $paths, ?callable $fileCallback = null): array
     {
         $errors = [];
         foreach ($paths as $path) {
-            $errors = array_merge($errors, $this->checkDirectory($path));
+            $errors = array_merge($errors, $this->checkDirectory($path, $fileCallback));
         }
 
         return $errors;
@@ -41,14 +42,15 @@ class SpellChecker
 
     /**
      * @param string $path
+     * @param callable|null (string $fileName: bool) $fileCallback
      * @return \SpellChecker\Word[][]
      */
-    private function checkDirectory(string $path): array
+    private function checkDirectory(string $path, ?callable $fileCallback = null): array
     {
         $errors = [];
         foreach (glob($path . '/*') as $file) {
             if (is_dir($file)) {
-                $dirErrors = $this->checkDirectory($file);
+                $dirErrors = $this->checkDirectory($file, $fileCallback);
                 if ($dirErrors !== []) {
                     foreach ($dirErrors as $error) {
                         $dirErrors[] = $error;
@@ -61,7 +63,7 @@ class SpellChecker
             if ($dictionaries === []) {
                 continue;
             }
-            $fileErrors = $this->checkFile($file, $dictionaries);
+            $fileErrors = $this->checkFile($file, $dictionaries, $fileCallback);
             if ($fileErrors !== []) {
                 $errors[$file . ' (' . implode(', ', $dictionaries) . ')'] = $fileErrors;
             }
@@ -72,9 +74,10 @@ class SpellChecker
 
     /**
      * @param string[] $files
+     * @param callable|null (string $fileName: bool) $fileCallback
      * @return \SpellChecker\Word[][]
      */
-    public function checkFiles(array $files): array
+    public function checkFiles(array $files, callable $fileCallback = null): array
     {
         $errors = [];
         foreach ($files as $file) {
@@ -85,7 +88,7 @@ class SpellChecker
             if ($dictionaries === []) {
                 continue;
             }
-            $fileErrors = $this->checkFile($file, $dictionaries);
+            $fileErrors = $this->checkFile($file, $dictionaries, $fileCallback);
             if ($fileErrors !== []) {
                 $errors[$file . ' (' . implode(', ', $dictionaries) . ')'] = $fileErrors;
             }
@@ -97,10 +100,16 @@ class SpellChecker
     /**
      * @param string $fileName
      * @param string[] $dictionaries
+     * @param callable|null (string $fileName: bool) $fileCallback
      * @return \SpellChecker\Word[]
      */
-    private function checkFile(string $fileName, array $dictionaries): array
+    private function checkFile(string $fileName, array $dictionaries, ?callable $fileCallback = null): array
     {
+        if ($fileCallback !== null) {
+            if (!$fileCallback($fileName)) {
+                return [];
+            }
+        }
         ///
         $string = file_get_contents($fileName);
         $string = \Nette\Utils\Strings::normalize($string);

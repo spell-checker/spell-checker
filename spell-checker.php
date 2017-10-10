@@ -26,11 +26,13 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 } elseif (file_exists(dirname(dirname(__DIR__)) . '/autoload.php')) {
     // run from other app
     require_once dirname(dirname(__DIR__)) . '/autoload.php';
-    $logDir = __DIR__ . '/log';
-    if (!is_dir($logDir)) {
-        mkdir($logDir);
+    if (Debugger::$logDirectory === null) {
+        $logDir = getcwd() . '/log';
+        if (!is_dir($logDir)) {
+            mkdir($logDir);
+        }
+        Debugger::$logDirectory = $logDir;
     }
-    Debugger::$logDirectory = $logDir;
 } else {
     $console->write(C::lcyan('Spell Checker'))->ln(2);
     $console->write(C::white('Run `composer install` to install dependencies.', C::RED));

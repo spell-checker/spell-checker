@@ -16,7 +16,9 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 
     $logDir = __DIR__ . '/log';
-    mkdir($logDir);
+    if (!is_dir($logDir)) {
+        mkdir($logDir);
+    }
     Debugger::enable(Debugger::DEVELOPMENT, $logDir);
     Debugger::$maxDepth = 8;
     Debugger::$maxLength = 1000;

@@ -5,6 +5,9 @@ namespace SpellChecker;
 class DictionaryCollection
 {
 
+    /** @var string|null */
+    private $baseDir;
+
     /** @var string[] */
     private $files;
 
@@ -13,10 +16,12 @@ class DictionaryCollection
 
     /**
      * @param string[] $files
+     * @param string|null $baseDir
      */
-    public function __construct(array $files)
+    public function __construct(array $files, ?string $baseDir = null)
     {
         $this->files = $files;
+        $this->baseDir = $baseDir !== null ? trim($baseDir, '/') : null;
         $this->dictionaries = [];
     }
 
@@ -32,7 +37,10 @@ class DictionaryCollection
                 if (!isset($this->files[$dictionary])) {
                     throw new \SpellChecker\DictionaryNotDefinedException($dictionary);
                 }
-                $this->dictionaries[$dictionary] = new Dictionary($this->files[$dictionary]);
+                $dictionaryPath = $this->baseDir !== null
+                    ? $this->baseDir . '/' . $this->files[$dictionary]
+                    : getcwd() . '/' . $this->files[$dictionary];
+                $this->dictionaries[$dictionary] = new Dictionary($dictionaryPath);
             }
 
             if ($this->dictionaries[$dictionary]->contains($word)) {

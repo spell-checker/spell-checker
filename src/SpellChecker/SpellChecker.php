@@ -14,15 +14,20 @@ class SpellChecker
     /** @var \SpellChecker\DictionaryCollection */
     private $dictionaries;
 
+    /** @var string|null */
+    private $baseDir;
+
     public function __construct(
         WordsParser $wordsParser,
         DictionaryResolver $resolver,
-        DictionaryCollection $dictionaries
+        DictionaryCollection $dictionaries,
+        ?string $baseDir = null
     )
     {
         $this->wordsParser = $wordsParser;
         $this->resolver = $resolver;
         $this->dictionaries = $dictionaries;
+        $this->baseDir = $baseDir !== null ? trim($baseDir, '/') : null;
     }
 
     /**
@@ -34,7 +39,10 @@ class SpellChecker
     {
         $errors = [];
         foreach ($paths as $path) {
-            $errors = array_merge($errors, $this->checkDirectory($path, $fileCallback));
+            $fullPath = $this->baseDir !== null
+                ? $this->baseDir . '/' . $path
+                : getcwd() . '/' . $path;
+            $errors = array_merge($errors, $this->checkDirectory($fullPath, $fileCallback));
         }
 
         return $errors;
@@ -80,17 +88,21 @@ class SpellChecker
     public function checkFiles(array $files, callable $fileCallback = null): array
     {
         $errors = [];
-        foreach ($files as $file) {
-            if (!is_readable($file)) {
+        foreach ($files as $path) {
+            $fullPath = $this->baseDir !== null
+                ? $this->baseDir . '/' . $path
+                : getcwd() . '/' . $path;
+
+            if (!is_readable($fullPath)) {
                 continue;
             }
-            $dictionaries = $this->resolver->getDictionariesForFileName($file);
+            $dictionaries = $this->resolver->getDictionariesForFileName($fullPath);
             if ($dictionaries === []) {
                 continue;
             }
-            $fileErrors = $this->checkFile($file, $dictionaries, $fileCallback);
+            $fileErrors = $this->checkFile($fullPath, $dictionaries, $fileCallback);
             if ($fileErrors !== []) {
-                $errors[$file . ' (' . implode(', ', $dictionaries) . ')'] = $fileErrors;
+                $errors[$path . ' (' . implode(', ', $dictionaries) . ')'] = $fileErrors;
             }
         }
 

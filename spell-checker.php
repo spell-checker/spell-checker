@@ -41,6 +41,7 @@ $arguments = [
         'Configuration:',
     'config' =>         ['c', Configurator::VALUES, 'configuration files', 'paths'],
     'use' =>            ['', Configurator::VALUES, 'configuration profiles to use', 'profiles'],
+    'baseDir' =>        ['b', Configurator::VALUE, 'base directory for relative paths', 'path'],
     'files' =>          ['f', Configurator::VALUES, 'files to check', 'paths'],
     'directories' =>    ['d', Configurator::VALUES, 'directories to check', 'paths'],
     'filePatterns' =>   ['', Configurator::VALUES],
@@ -84,8 +85,8 @@ foreach ($config->config as $path) {
 
 try {
     $resolver = new DictionaryResolver($config->filePatterns, $config->contexts);
-    $dictionaries = new DictionaryCollection($config->dictionaries);
-    $spellChecker = new SpellChecker(new WordsParser(), $resolver, $dictionaries);
+    $dictionaries = new DictionaryCollection($config->dictionaries, $config->baseDir);
+    $spellChecker = new SpellChecker(new WordsParser(), $resolver, $dictionaries, $config->baseDir);
 
     $fileCallback = function () use ($console) {
         $console->write('.');

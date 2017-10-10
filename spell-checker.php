@@ -111,7 +111,7 @@ try {
         exit(1);
     }
 } catch (\Throwable $e) {
-    $console->ln()->writeLn(C::white('Error occurred while spell-checking.', C::RED));
+    $console->ln()->writeLn(C::white(sprintf('Error occurred while spell-checking: %s', $e->getMessage()), C::RED));
     if (class_exists(Debugger::class)) {
         Debugger::log($e);
         exit(1);

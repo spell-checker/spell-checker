@@ -88,7 +88,7 @@ foreach ($config->config as $path) {
 try {
     $resolver = new DictionaryResolver($config->filePatterns, $config->contexts);
     $dictionaries = new DictionaryCollection($config->dictionaries, $config->baseDir);
-    $spellChecker = new SpellChecker(new WordsParser(), $resolver, $dictionaries, $config->baseDir);
+    $spellChecker = new SpellChecker(new WordsParser(), new GarbageDetector(), $resolver, $dictionaries, $config->baseDir);
 
     $fileCallback = function () use ($console) {
         $console->write('.');

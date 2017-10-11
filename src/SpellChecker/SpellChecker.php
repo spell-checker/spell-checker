@@ -8,6 +8,9 @@ class SpellChecker
     /** @var \SpellChecker\WordsParser */
     private $wordsParser;
 
+    /** @var \SpellChecker\GarbageDetector */
+    private $garbageDetector;
+
     /** @var \SpellChecker\DictionaryResolver */
     private $resolver;
 
@@ -19,12 +22,14 @@ class SpellChecker
 
     public function __construct(
         WordsParser $wordsParser,
+        GarbageDetector $garbageDetector,
         DictionaryResolver $resolver,
         DictionaryCollection $dictionaries,
         ?string $baseDir = null
     )
     {
         $this->wordsParser = $wordsParser;
+        $this->garbageDetector = $garbageDetector;
         $this->resolver = $resolver;
         $this->dictionaries = $dictionaries;
         $this->baseDir = $baseDir !== null ? trim($baseDir, '/') : null;
@@ -159,7 +164,10 @@ class SpellChecker
                     continue;
                 }
             }
-            if ($word->looksLikeToken()) {
+            if ($word->block !== null && $this->garbageDetector->looksLikeGarbage($word->block)) {
+                continue;
+            }
+            if ($this->garbageDetector->looksLikeGarbage($word->word)) {
                 continue;
             }
 

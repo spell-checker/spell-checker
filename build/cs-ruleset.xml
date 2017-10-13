@@ -4,9 +4,9 @@
         <exclude name="Generic.CodeAnalysis.EmptyStatement.DetectedIF"/><!-- allow empty if statements - usually with a comment -->
         <exclude name="Generic.CodeAnalysis.EmptyStatement.DetectedELSE"/><!-- allow empty else statements - usually with a comment -->
         <exclude name="Generic.CodeAnalysis.EmptyStatement.DetectedELSEIF"/><!-- allow empty elseif statements - usually with a comment -->
-        <exclude name="PEAR.WhiteSpace.ObjectOperatorIndent.Incorrect"/><!-- je potřeba odsazení u formů a dibi fluent -->
-        <exclude name="PSR2.Methods.FunctionCallSignature.CloseBracketLine"/><!-- string rozdělený na více řádků, typicky SQL -->
-        <exclude name="PSR2.Methods.FunctionCallSignature.MultipleArguments"/><!-- dibi syntaxe využívá argumentů "v textu" -->
+        <exclude name="PEAR.WhiteSpace.ObjectOperatorIndent.Incorrect"/><!-- fluent interfaces -->
+        <exclude name="PSR2.Methods.FunctionCallSignature.CloseBracketLine"/><!-- string divided to more rows, usually SQL -->
+        <exclude name="PSR2.Methods.FunctionCallSignature.MultipleArguments"/><!-- query builder syntax with arguments "in text" -->
         <exclude name="PSR2.Methods.FunctionCallSignature.SpaceBeforeCloseBracket"/><!-- conflicts with our way of writing multiline SQL queries -->
         <exclude name="Squiz.Commenting.FunctionComment.IncorrectParamVarName"/><!-- throws error with short type hint for integer and boolean -->
         <exclude name="Squiz.PHP.InnerFunctions.NotAllowed"/><!-- prevents implementing anonymous classes -->

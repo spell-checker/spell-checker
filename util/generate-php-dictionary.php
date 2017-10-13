@@ -107,6 +107,38 @@ stderr
 stdin
 stdout
 
+# extensions
+bcmath
+calendar
+cgi-fcgi
+Core
+ctype
+date
+dom
+filter
+hash
+iconv
+json
+libxml
+mcrypt
+mysqlnd
+pcre
+PDO
+Phar
+readline
+Reflection
+session
+SimpleXML
+SPL
+standard
+tokenizer
+wddx
+xml
+xmlreader
+xmlwriter
+zip
+zlib
+
 ";
 
 $coreExtensions = [

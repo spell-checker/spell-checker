@@ -23,12 +23,13 @@
     <property name="path.temp.cache" value="${path.temp}/cache"/>
     <property name="path.tester.executable" value="${path.bin}/tester"/>
     <property name="path.tests" value="${path.root}/tests"/>
+    <property name="path.spell-checker.config" value="${path.build}/spell-checker.neon"/>
 
     <target name="build" depends="composer,create-dirs,clear-cache"/>
 
     <target name="check" depends="check-php"/>
 
-    <target name="check-php" depends="phplint,phpcs,phpstan,tests"/>
+    <target name="check-php" depends="phplint,phpcs,phpstan,spell-check,tests"/>
 
     <target name="composer">
         <exec executable="${path.composer.executable}" logoutput="true" passthru="true" checkreturn="true">
@@ -86,6 +87,13 @@
             <arg value="5"/>
             <arg path="${path.src}"/>
             <arg path="${path.tests}"/>
+        </exec>
+    </target>
+
+    <target name="spell-check">
+        <exec executable="php" logoutput="true" passthru="true" checkreturn="true">
+            <arg line="${path.root}/spell-checker.php"/>
+            <arg line="--config ${path.spell-checker.config}"/>
         </exec>
     </target>
 

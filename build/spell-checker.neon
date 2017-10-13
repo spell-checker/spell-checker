@@ -1,0 +1,27 @@
+
+directories:
+    - build
+    - src
+    - tests
+    - util
+
+filePatterns:
+    *.php: php
+    *.phpt: php
+    *.neon: neon
+    *.xml: xml
+    *.properties: txt
+    *.json: txt
+    *.md: txt
+
+contexts:
+    php: [en, php, php-ext, custom]
+    neon: [en, custom]
+    xml: [en, custom]
+    txt: [en]
+
+dictionaries:
+    en: vendor/spell-checker/dictionary-en/en.dic
+    php: dictionaries/php.dic
+    php-ext: dictionaries/php-ext.dic
+    custom: build/spell-checker/custom.dic

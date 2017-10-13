@@ -16,7 +16,7 @@ Multi-language code and text spell checker for PHP
 - *mysql57.dic* - MySQL 5.7 keywords, routines, schema objects, variables...
 
 ### External dictionaries (generated from Aspell):
-- https://github.com/spell-checker/dictionary-en - English dictionary (always required)
+- https://github.com/spell-checker/dictionary-en - English dictionary
 - https://github.com/spell-checker/dictionary-es - Spanish dictionary
 - https://github.com/spell-checker/dictionary-cs - Czech dictionary
 - https://github.com/spell-checker/dictionary-sk - Slovak dictionary

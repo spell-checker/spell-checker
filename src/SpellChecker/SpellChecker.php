@@ -37,7 +37,7 @@ class SpellChecker
 
     /**
      * @param string[] $paths
-     * @param callable|null (string $fileName: bool) $fileCallback
+     * @param callable|null (string fileName: bool) $fileCallback
      * @return \SpellChecker\Word[][]
      */
     public function checkDirectories(array $paths, ?callable $fileCallback = null): array
@@ -55,7 +55,7 @@ class SpellChecker
 
     /**
      * @param string $path
-     * @param callable|null (string $fileName: bool) $fileCallback
+     * @param callable|null (string fileName: bool) $fileCallback
      * @return \SpellChecker\Word[][]
      */
     private function checkDirectory(string $path, ?callable $fileCallback = null): array
@@ -87,10 +87,10 @@ class SpellChecker
 
     /**
      * @param string[] $files
-     * @param callable|null (string $fileName: bool) $fileCallback
+     * @param callable|null (string fileName: bool) $fileCallback
      * @return \SpellChecker\Word[][]
      */
-    public function checkFiles(array $files, callable $fileCallback = null): array
+    public function checkFiles(array $files, ?callable $fileCallback = null): array
     {
         $errors = [];
         foreach ($files as $path) {
@@ -117,7 +117,7 @@ class SpellChecker
     /**
      * @param string $fileName
      * @param string[] $dictionaries
-     * @param callable|null (string $fileName: bool) $fileCallback
+     * @param callable|null (string fileName: bool) $fileCallback
      * @return \SpellChecker\Word[]
      */
     private function checkFile(string $fileName, array $dictionaries, ?callable $fileCallback = null): array

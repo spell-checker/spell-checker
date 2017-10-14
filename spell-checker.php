@@ -65,12 +65,11 @@ if ($config->noColors) {
     C::$off = true;
 }
 
-$created = C::lcyan('Created by @paranoiq 2017');
 $console->writeLn(C::lgreen("             _ _        _           _           "));
 $console->writeLn(C::lgreen(" ___ ___ ___| | |   ___| |_ ___ ___| |_ ___ ___ "));
 $console->writeLn(C::lgreen("|_ -| . | -_| | |  |  _|   | -_|  _| '_| -_|  _|"));
-$console->writeLn(C::lgreen("|___|  _|___|_|_|  |___|_|_|___|___|_,_|___|_|  "));
-$console->writeLn(C::lgreen("    |_|             ") . $created)->ln();
+$console->writeLn(C::lgreen("|___|  _|___|_|_|  |___|_|_|___|___|_,_|___|_|  " . C::lcyan(' by @paranoiq')));
+$console->writeLn(C::lgreen("    |_|                                         "));
 
 if ($config->help === true || (!$config->hasValues() && (!$config->config))) {
     $console->write('Usage: php spell-checker.php [options]')->ln(2);

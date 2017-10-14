@@ -146,10 +146,12 @@ final class Configurator extends \stdClass
             } elseif (substr($filePath, -4) === '.ini') {
                 $config = parse_ini_file($filePath);
             } else {
-                die("Error: Only .neon and .ini files are supported!\n\n");
+                echo C::white("Error: Only .neon and .ini files are supported!\n\n", C::RED);
+                exit(1);
             }
         } elseif ($filePath) {
-            die(sprintf("Configuration file %s not found.\n\n", $filePath));
+            echo C::white(sprintf("Configuration file %s not found.\n\n", $filePath), C::RED);
+            exit(1);
         } else {
             $config = [];
         }

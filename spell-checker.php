@@ -51,7 +51,7 @@ $arguments = [
     'dictionaries' =>   ['', Configurator::VALUES],
     'wordsParserExceptions' => ['', Configurator::VALUES, 'irregular words', 'words'],
         'Help:',
-    'help' =>           ['', Configurator::FLAG_VALUE, 'show help', 'command'],
+    'help' =>           ['h', Configurator::FLAG_VALUE, 'show help', 'command'],
     'license' =>        ['', Configurator::FLAG, 'show license'],
         'CLI output:',
     'noColors' =>       ['C', Configurator::FLAG, 'without colors'],

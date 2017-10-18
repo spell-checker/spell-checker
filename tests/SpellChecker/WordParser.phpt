@@ -6,7 +6,7 @@ use Tester\Assert;
 
 require '../bootstrap.php';
 
-$parser = new WordsParser();
+$parser = new WordsParser(['PHPUnit']);
 
 Assert::equal([], $parser->parse(''));
 

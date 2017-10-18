@@ -49,6 +49,7 @@ $arguments = [
     'filePatterns' =>   ['', Configurator::VALUES],
     'contexts' =>       ['', Configurator::VALUES],
     'dictionaries' =>   ['', Configurator::VALUES],
+    'wordsParserExceptions' => ['', Configurator::VALUES, 'irregular words', 'words'],
         'Help:',
     'help' =>           ['', Configurator::FLAG_VALUE, 'show help', 'command'],
     'license' =>        ['', Configurator::FLAG, 'show license'],
@@ -57,6 +58,7 @@ $arguments = [
 ];
 $defaults = [
     'config' => [strtr(__DIR__, '\\', '/') . '/config.neon'],
+    'wordsParserExceptions' => ['PHPUnit'],
 ];
 $config = new Configurator($arguments, $defaults);
 $config->loadCliArguments();
@@ -87,7 +89,8 @@ foreach ($config->config as $path) {
 try {
     $resolver = new DictionaryResolver($config->filePatterns, $config->contexts);
     $dictionaries = new DictionaryCollection($config->dictionaries, $config->baseDir);
-    $spellChecker = new SpellChecker(new WordsParser(), new GarbageDetector(), $resolver, $dictionaries, $config->baseDir);
+    $wordsParser = new WordsParser($config->wordsParserExceptions);
+    $spellChecker = new SpellChecker($wordsParser, new GarbageDetector(), $resolver, $dictionaries, $config->baseDir);
 
     $fileCallback = function () use ($console) {
         $console->write('.');

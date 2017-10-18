@@ -5,10 +5,16 @@ namespace SpellChecker;
 class WordsParser
 {
 
-    /** @var bool[] */
-    private static $exceptions = [
-        'PHPUnit' => true,
-    ];
+    /** @var string[] */
+    private $exceptions;
+
+    /**
+     * @param string[] $exceptions
+     */
+    public function __construct(array $exceptions = [])
+    {
+        $this->exceptions = $exceptions;
+    }
 
     /**
      * Parse code with camelCase and under_scores
@@ -42,7 +48,7 @@ class WordsParser
 
             $offset = 0;
             foreach ($parts as $part) {
-                if (isset(self::$exceptions[$part])) {
+                if (in_array($part, $this->exceptions)) {
                     // FOOBar
                     $result[] = new Word($part, $underscore ? $block : null, $position + $offset);
                 } elseif (preg_match('/^[\\p{Lu}]+$/u', $part)) {

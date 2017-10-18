@@ -25,3 +25,6 @@ dictionaries:
     php: dictionaries/php.dic
     php-ext: dictionaries/php-ext.dic
     custom: build/spell-checker/custom.dic
+
+wordsParserExceptions:
+    - PHPUnit

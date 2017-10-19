@@ -6,7 +6,7 @@ Multi-language code and text spell checker for PHP
 ### Included dictionaries:
 - *php.dic* - PHP keywords and core PHP extensions
 - *php-ext.dic* - Non-core PHP extensions
-- *php-conf.dic* - PHP configuration directives
+- *php-config.dic* - PHP configuration directives
 - *js.dic* - JS keywords, functions, properties...
 - *html.dic* - HTML tags, attributes, values
 - *css.dic* - CSS attributes and values

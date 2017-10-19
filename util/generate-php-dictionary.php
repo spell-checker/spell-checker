@@ -138,13 +138,13 @@ xmlreader
 xmlwriter
 zip
 zlib
-
 ";
 
 $coreExtensions = [
     'bcmath',
     'calendar',
-    'cgi-fcgi',
+    'cgi',
+    'fcgi',
     'Core',
     'ctype',
     'date',
@@ -177,6 +177,7 @@ $coreExtensions = [
 $core = fopen(dirname(__DIR__) . '/dictionaries/php.dic', 'wb');
 $ext = fopen(dirname(__DIR__) . '/dictionaries/php-ext.dic', 'wb');
 fputs($core, $syntax);
+fputs($core, file_get_contents(dirname(__DIR__) . '/dictionaries/php-config.dic'));
 
 foreach (get_loaded_extensions() as $extName) {
     $file = in_array($extName, $coreExtensions) ? $core : $ext;

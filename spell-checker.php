@@ -59,7 +59,7 @@ $arguments = [
     'noColors' =>       ['C', Configurator::FLAG, 'without colors'],
 ];
 $defaults = [
-    'config' => [strtr(__DIR__, '\\', '/') . '/config.neon'],
+    'config' => [strtr(__DIR__, '\\', '/') . '/build/spell-checker.neon'],
     'wordsParserExceptions' => ['PHPUnit'],
 ];
 $config = new Configurator($arguments, $defaults);

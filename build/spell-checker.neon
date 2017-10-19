@@ -4,8 +4,18 @@ directories:
     - src
     - tests
     - util
+    - //
 
-filePatterns:
+extensions:
+    - *.php
+    - *.phpt
+    - *.neon
+    - *.xml
+    - *.properties
+    - *.json
+    - *.md
+
+fileContexts:
     *.php: php
     *.phpt: php
     *.neon: neon
@@ -18,7 +28,7 @@ contexts:
     php: [en, php, php-ext, custom]
     neon: [en, custom]
     xml: [en, custom]
-    txt: [en]
+    txt: [en, custom]
 
 dictionaries:
     en: vendor/spell-checker/dictionary-en/en.dic

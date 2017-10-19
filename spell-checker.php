@@ -46,7 +46,9 @@ $arguments = [
     'baseDir' =>        ['b', Configurator::VALUE, 'base directory for relative paths', 'path'],
     'files' =>          ['f', Configurator::VALUES, 'files to check', 'paths'],
     'directories' =>    ['d', Configurator::VALUES, 'directories to check', 'paths'],
-    'filePatterns' =>   ['', Configurator::VALUES],
+    'extensions' =>     ['e', Configurator::VALUES, 'file extensions to check', 'extensions'],
+    'excludes' =>       ['E', Configurator::VALUES, 'file name patterns to exclude', 'patterns'],
+    'fileContexts' =>   ['', Configurator::VALUES],
     'contexts' =>       ['', Configurator::VALUES],
     'dictionaries' =>   ['', Configurator::VALUES],
     'wordsParserExceptions' => ['', Configurator::VALUES, 'irregular words', 'words'],
@@ -88,23 +90,18 @@ foreach ($config->config as $path) {
 }
 
 try {
-    $resolver = new DictionaryResolver($config->filePatterns, $config->contexts);
+    $fileFinder = new FileFinder();
+    $files = $fileFinder->findFilesByConfig($config);
+
+    $resolver = new DictionaryResolver($config->fileContexts, $config->contexts);
     $dictionaries = new DictionaryCollection($config->dictionaries, $config->baseDir);
     $wordsParser = new WordsParser($config->wordsParserExceptions);
     $spellChecker = new SpellChecker($wordsParser, new GarbageDetector(), $resolver, $dictionaries, $config->baseDir);
 
-    $fileCallback = function () use ($console) {
+    $errors = $spellChecker->checkFiles($files, function () use ($console) {
         $console->write('.');
         return true;
-    };
-    if ($config->dictionaries) {
-        $errors = $spellChecker->checkDirectories($config->directories, $fileCallback);
-    } elseif ($config->files) {
-        $errors = $spellChecker->checkFiles($config->files, $fileCallback);
-    } else {
-        $console->writeLn(C::red('Nothing to check. Configure directories or files.'));
-        exit(1);
-    }
+    });
 
     $console->ln(2);
     Console::switchTerminalToUtf8();
@@ -115,6 +112,9 @@ try {
         dump($errors);
         exit(1);
     }
+} catch (\SpellChecker\FileSearchNotConfiguredException $e) {
+    $console->writeLn(C::red('Nothing to check. Configure directories or files.'));
+    exit(1);
 } catch (\Throwable $e) {
     $console->ln()->writeLn(C::white(sprintf('Error occurred while spell-checking: %s', $e->getMessage()), C::RED));
     if (class_exists(Debugger::class)) {

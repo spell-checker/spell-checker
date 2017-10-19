@@ -12,7 +12,8 @@
     ],
     "require": {
         "php": ">=7.1.0",
-        "nette/neon": "~2.4"
+        "nette/neon": "~2.4",
+        "symfony/finder": "~2.7"
     },
     "require-dev": {
         "consistence/coding-standard": "2.2.1",

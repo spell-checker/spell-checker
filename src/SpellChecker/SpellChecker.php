@@ -17,72 +17,17 @@ class SpellChecker
     /** @var \SpellChecker\DictionaryCollection */
     private $dictionaries;
 
-    /** @var string|null */
-    private $baseDir;
-
     public function __construct(
         WordsParser $wordsParser,
         GarbageDetector $garbageDetector,
         DictionaryResolver $resolver,
-        DictionaryCollection $dictionaries,
-        ?string $baseDir = null
+        DictionaryCollection $dictionaries
     )
     {
         $this->wordsParser = $wordsParser;
         $this->garbageDetector = $garbageDetector;
         $this->resolver = $resolver;
         $this->dictionaries = $dictionaries;
-        $this->baseDir = $baseDir !== null ? trim($baseDir, '/') : null;
-    }
-
-    /**
-     * @param string[] $paths
-     * @param callable|null (string fileName: bool) $fileCallback
-     * @return \SpellChecker\Word[][]
-     */
-    public function checkDirectories(array $paths, ?callable $fileCallback = null): array
-    {
-        $errors = [];
-        foreach ($paths as $path) {
-            $fullPath = $this->baseDir !== null
-                ? $this->baseDir . '/' . $path
-                : getcwd() . '/' . $path;
-            $errors = array_merge($errors, $this->checkDirectory($fullPath, $fileCallback));
-        }
-
-        return $errors;
-    }
-
-    /**
-     * @param string $path
-     * @param callable|null (string fileName: bool) $fileCallback
-     * @return \SpellChecker\Word[][]
-     */
-    private function checkDirectory(string $path, ?callable $fileCallback = null): array
-    {
-        $errors = [];
-        foreach (glob($path . '/*') as $file) {
-            if (is_dir($file)) {
-                $dirErrors = $this->checkDirectory($file, $fileCallback);
-                if ($dirErrors !== []) {
-                    foreach ($dirErrors as $error) {
-                        $dirErrors[] = $error;
-                    }
-                }
-            } elseif (!is_readable($file)) {
-                continue;
-            }
-            $dictionaries = $this->resolver->getDictionariesForFileName($file);
-            if ($dictionaries === []) {
-                continue;
-            }
-            $fileErrors = $this->checkFile($file, $dictionaries, $fileCallback);
-            if ($fileErrors !== []) {
-                $errors[$file . ' (' . implode(', ', $dictionaries) . ')'] = $fileErrors;
-            }
-        }
-
-        return $errors;
     }
 
     /**
@@ -94,18 +39,14 @@ class SpellChecker
     {
         $errors = [];
         foreach ($files as $path) {
-            $fullPath = $this->baseDir !== null
-                ? $this->baseDir . '/' . $path
-                : getcwd() . '/' . $path;
-
-            if (!is_readable($fullPath)) {
+            if (!is_readable($path)) {
                 continue;
             }
-            $dictionaries = $this->resolver->getDictionariesForFileName($fullPath);
+            $dictionaries = $this->resolver->getDictionariesForFileName($path);
             if ($dictionaries === []) {
                 continue;
             }
-            $fileErrors = $this->checkFile($fullPath, $dictionaries, $fileCallback);
+            $fileErrors = $this->checkFile($path, $dictionaries, $fileCallback);
             if ($fileErrors !== []) {
                 $errors[$path . ' (' . implode(', ', $dictionaries) . ')'] = $fileErrors;
             }

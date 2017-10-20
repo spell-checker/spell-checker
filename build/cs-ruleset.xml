@@ -46,7 +46,7 @@
     </rule>
     <rule ref="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly">
         <properties>
-            <property name="namespacesRequiredToUse" type="array" value="Slevomat,SlevomatCsobGateway,Doctrine\ORM\Mapping"/>
+            <property name="namespacesRequiredToUse" type="array" value="SpellChecker,Dogma"/>
             <property name="fullyQualifiedKeywords" type="array" value="T_EXTENDS,T_IMPLEMENTS"/>
             <property name="allowFullyQualifiedExceptions" value="true"/>
             <property name="allowPartialUses" value="false"/>

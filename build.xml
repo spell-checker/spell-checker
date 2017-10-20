@@ -93,7 +93,7 @@
     <target name="spell-check">
         <exec executable="php" logoutput="true" passthru="true" checkreturn="true">
             <arg line="${path.root}/spell-checker.php"/>
-            <arg line="--config ${path.spell-checker.config}"/>
+            <arg line="-L --config ${path.spell-checker.config}"/>
         </exec>
     </target>
 

@@ -33,11 +33,12 @@ class SpellChecker
     /**
      * @param string[] $files
      * @param callable|null (string fileName: bool) $fileCallback
-     * @return \SpellChecker\Word[][]
+     * @return \SpellChecker\Result
      */
-    public function checkFiles(array $files, ?callable $fileCallback = null): array
+    public function checkFiles(array $files, ?callable $fileCallback = null): Result
     {
         $errors = [];
+        $count = 0;
         foreach ($files as $path) {
             if (!is_readable($path)) {
                 continue;
@@ -48,11 +49,12 @@ class SpellChecker
             }
             $fileErrors = $this->checkFile($path, $dictionaries, $fileCallback);
             if ($fileErrors !== []) {
-                $errors[$path . ' (' . implode(', ', $dictionaries) . ')'] = $fileErrors;
+                $errors[$path] = $fileErrors;
+                $count += count($fileErrors);
             }
         }
 
-        return $errors;
+        return new Result($errors, $count);
     }
 
     /**
@@ -73,16 +75,15 @@ class SpellChecker
         $string = \Nette\Utils\Strings::normalize($string);
         ///
 
-        return $this->checkString($string, $dictionaries, $fileName);
+        return $this->checkString($string, $dictionaries);
     }
 
     /**
      * @param string $string
      * @param string[] $dictionaries
-     * @param string $fileName
      * @return \SpellChecker\Word[]
      */
-    public function checkString(string $string, array $dictionaries, string $fileName): array
+    public function checkString(string $string, array $dictionaries): array
     {
         $errors = [];
         foreach ($this->wordsParser->parse($string) as $word) {
@@ -112,11 +113,15 @@ class SpellChecker
                 continue;
             }
 
-            $context = substr($string, $word->position - 30, strlen($word->word) + 60);
-            while (ord($context[0]) & 0b11000000 === 0b1000000) {
-                $context = substr($context, 1);
+            $rowStart = (int) strrpos($string, "\n", $word->position - strlen($string));
+            $rowEnd = strpos($string, "\n", $rowStart + 1) ?: strlen($string);
+            $row = trim(substr($string, $rowStart, $rowEnd - $rowStart));
+            if (strlen($row) > 300) {
+                $row = substr($row, 0, 300) . '…';
             }
-            $word->context = '…' . preg_replace('/([ ]{2,}|\\t+)/', '→', str_replace("\n", '↓', $context)) . '…';
+            $word->row = $row;
+            $word->rowNumber = $word->position - strlen(str_replace("\n", '', substr($string, 0, $word->position))) + 1;
+
             $errors[] = $word;
         }
 

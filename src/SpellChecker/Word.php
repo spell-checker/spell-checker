@@ -14,8 +14,11 @@ class Word
     /** @var int (in bytes, not characters!) */
     public $position;
 
+    /** @var int */
+    public $rowNumber;
+
     /** @var string */
-    public $context;
+    public $row;
 
     public function __construct(string $word, ?string $block, int $position)
     {

@@ -40,6 +40,7 @@ elseif
 enum
 env
 filename
+formatter
 globals
 html
 http

@@ -90,15 +90,13 @@ foreach ($config->config as $path) {
 }
 
 try {
-    $fileFinder = new FileFinder();
-    $files = $fileFinder->findFilesByConfig($config);
-
+    $files = (new FileFinder())->findFilesByConfig($config);
     $resolver = new DictionaryResolver($config->fileContexts, $config->contexts);
     $dictionaries = new DictionaryCollection($config->dictionaries, $config->baseDir);
     $wordsParser = new WordsParser($config->wordsParserExceptions);
     $spellChecker = new SpellChecker($wordsParser, new GarbageDetector(), $resolver, $dictionaries, $config->baseDir);
 
-    $errors = $spellChecker->checkFiles($files, function () use ($console) {
+    $result = $spellChecker->checkFiles($files, function () use ($console) {
         $console->write('.');
         return true;
     });
@@ -107,9 +105,10 @@ try {
     Console::switchTerminalToUtf8();
 
     //echo $dictionaries->info();
-    if (count($errors) > 0) {
-        $console->ln()->writeLn(C::white('Some spelling errors found.', C::RED));
-        dump($errors);
+    $formatter = new ResultFormatter();
+    $console->writeLn($formatter->summarize($result));
+    if ($result->errorsFound()) {
+        $console->ln()->write($formatter->formatErrors($result));
         exit(1);
     }
 } catch (\SpellChecker\FileSearchNotConfiguredException $e) {

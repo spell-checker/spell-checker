@@ -5,6 +5,9 @@ namespace SpellChecker;
 use Dogma\Tools\Colors as C;
 use Dogma\Tools\Configurator;
 use Dogma\Tools\Console;
+use SpellChecker\Heuristic\CssUnitsDetector;
+use SpellChecker\Heuristic\GarbageDetector;
+use SpellChecker\Heuristic\PrintfDetector;
 use Tracy\Debugger;
 
 require_once __DIR__ . '/src/Colors.php';
@@ -95,9 +98,14 @@ foreach ($config->config as $path) {
 try {
     $files = (new FileFinder())->findFilesByConfig($config);
     $resolver = new DictionaryResolver($config->fileContexts, $config->contexts);
-    $dictionaries = new DictionaryCollection($config->dictionaries, $config->baseDir);
+    $dictionaries = new DictionaryCollection($config->dictionaries, $config->checkDictionaries ?? [], $config->baseDir);
     $wordsParser = new WordsParser($config->wordsParserExceptions);
-    $spellChecker = new SpellChecker($wordsParser, new GarbageDetector(), $resolver, $dictionaries, $config->baseDir);
+    $heuristics = [
+        new GarbageDetector(),
+        new CssUnitsDetector(),
+        new PrintfDetector(),
+    ];
+    $spellChecker = new SpellChecker($wordsParser, $heuristics, $resolver, $dictionaries, $config->baseDir);
 
     $result = $spellChecker->checkFiles($files, function () use ($console) {
         $console->write('.');
@@ -107,7 +115,6 @@ try {
     $console->ln(2);
     Console::switchTerminalToUtf8();
 
-    //echo $dictionaries->info();
     $formatter = new ResultFormatter();
     $console->writeLn($formatter->summarize($result));
     if ($result->errorsFound()) {

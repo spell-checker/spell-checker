@@ -8,8 +8,8 @@ class SpellChecker
     /** @var \SpellChecker\WordsParser */
     private $wordsParser;
 
-    /** @var \SpellChecker\GarbageDetector */
-    private $garbageDetector;
+    /** @var \SpellChecker\Heuristic\Heuristic[] */
+    private $heuristics;
 
     /** @var \SpellChecker\DictionaryResolver */
     private $resolver;
@@ -17,15 +17,21 @@ class SpellChecker
     /** @var \SpellChecker\DictionaryCollection */
     private $dictionaries;
 
+    /**
+     * @param \SpellChecker\WordsParser $wordsParser
+     * @param \SpellChecker\Heuristic\Heuristic[] $heuristics
+     * @param \SpellChecker\DictionaryResolver $resolver
+     * @param \SpellChecker\DictionaryCollection $dictionaries
+     */
     public function __construct(
         WordsParser $wordsParser,
-        GarbageDetector $garbageDetector,
+        array $heuristics,
         DictionaryResolver $resolver,
         DictionaryCollection $dictionaries
     )
     {
         $this->wordsParser = $wordsParser;
-        $this->garbageDetector = $garbageDetector;
+        $this->heuristics = $heuristics;
         $this->resolver = $resolver;
         $this->dictionaries = $dictionaries;
     }
@@ -106,26 +112,29 @@ class SpellChecker
                     continue;
                 }
             }
-            if ($word->block !== null && $this->garbageDetector->looksLikeGarbage($word->block)) {
-                continue;
-            }
-            if ($this->garbageDetector->looksLikeGarbage($word->word)) {
-                continue;
+            foreach ($this->heuristics as $heuristic) {
+                if ($heuristic->check($word, $string)) {
+                    continue 2;
+                }
             }
 
-            $rowStart = (int) strrpos($string, "\n", $word->position - strlen($string));
-            $rowEnd = strpos($string, "\n", $rowStart + 1) ?: strlen($string);
-            $row = trim(substr($string, $rowStart, $rowEnd - $rowStart));
-            if (strlen($row) > 300) {
-                $row = substr($row, 0, 300) . '…';
-            }
-            $word->row = $row;
-            $word->rowNumber = $word->position - strlen(str_replace("\n", '', substr($string, 0, $word->position))) + 1;
-
+            $this->completeWordInfo($word, $string);
             $errors[] = $word;
         }
 
         return $errors;
+    }
+
+    private function completeWordInfo(Word $word, &$string): void
+    {
+        $rowStart = (int) strrpos($string, "\n", $word->position - strlen($string));
+        $rowEnd = strpos($string, "\n", $rowStart + 1) ?: strlen($string);
+        $row = trim(substr($string, $rowStart, $rowEnd - $rowStart));
+        if (strlen($row) > 300) {
+            $row = substr($row, 0, 300) . '…';
+        }
+        $word->row = $row;
+        $word->rowNumber = $word->position - strlen(str_replace("\n", '', substr($string, 0, $word->position))) + 1;
     }
 
     private function trimNumbersFromRight(string $word): ?string

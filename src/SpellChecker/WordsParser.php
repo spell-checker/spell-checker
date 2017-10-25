@@ -25,7 +25,7 @@ class WordsParser
     {
         $result = [];
 
-        if (!preg_match_all('/[\\p{L}0-9_]+/u', $string, $matches, PREG_OFFSET_CAPTURE)) {
+        if (!preg_match_all('/[\\p{L}0-9_-]+/u', $string, $matches, PREG_OFFSET_CAPTURE)) {
             return $result;
         }
         foreach ($matches[0] as $match) {
@@ -37,9 +37,9 @@ class WordsParser
                 continue;
             }
 
-            if (strpos($block, '_') !== false) {
-                // FOO_BAR or fooBar_barBaz
-                $parts = explode('_', $block);
+            if (strpos($block, '_') !== false || strpos($block, '-') !== false) {
+                // FOO_BAR or fooBar_barBaz or e-mail
+                $parts = preg_split('/[_-]/', $block);
                 $underscore = true;
             } else {
                 $parts = [$block];

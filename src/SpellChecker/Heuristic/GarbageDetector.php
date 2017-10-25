@@ -1,16 +1,30 @@
 <?php declare(strict_types = 1);
 
-namespace SpellChecker;
+namespace SpellChecker\Heuristic;
 
-class GarbageDetector
+use SpellChecker\Word;
+
+class GarbageDetector implements \SpellChecker\Heuristic\Heuristic
 {
 
     /**
      * Guesses if a word may be a token or part of base64 encoded string to filter them from results
-     * @param string $string
+     * @param \SpellChecker\Word $word
+     * @param string &$string
      * @return bool
      */
-    public function looksLikeGarbage(string $string): bool
+    public function check(Word $word, string &$string): bool
+    {
+        if ($word->block !== null && $this->checkWord($word->block)) {
+            return true;
+        }
+        if ($this->checkWord($word->word)) {
+            return true;
+        }
+        return false;
+    }
+
+    private function checkWord(string $string): bool
     {
         $length = strlen($string);
         $upper = $length - strlen(preg_replace('/[A-Z]/', '', $string));

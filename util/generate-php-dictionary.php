@@ -157,6 +157,7 @@ $coreExtensions = [
     'mcrypt',
     'mysqlnd',
     'pcre',
+    'pcntl',
     'PDO',
     'Phar',
     'readline',

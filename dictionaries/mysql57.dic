@@ -628,6 +628,7 @@ year
 # functions
 abs
 acos
+adddate
 addtime
 aes_decrypt
 aes_encrypt

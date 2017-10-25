@@ -54,11 +54,13 @@ $arguments = [
     'fileContexts' =>   ['', Configurator::VALUES],
     'contexts' =>       ['', Configurator::VALUES],
     'dictionaries' =>   ['', Configurator::VALUES],
+    'checkDictionaries' => ['', Configurator::VALUES, 'list of user dictionaries to check for unused words', 'dictionaries'],
     'wordsParserExceptions' => ['', Configurator::VALUES, 'irregular words', 'words'],
         'Help:',
     'help' =>           ['h', Configurator::FLAG_VALUE, 'show help', 'command'],
     'license' =>        ['', Configurator::FLAG, 'show license'],
         'CLI output:',
+    'topWords' =>       ['t', Configurator::FLAG, 'output list of top misspelled words'],
     'noColors' =>       ['C', Configurator::FLAG, 'without colors'],
     'noLogo' =>         ['L', Configurator::FLAG, 'without logo'],
 ];
@@ -118,7 +120,28 @@ try {
     $formatter = new ResultFormatter();
     $console->writeLn($formatter->summarize($result));
     if ($result->errorsFound()) {
-        $console->ln()->write($formatter->formatErrors($result));
+        if ($config->topWords) {
+            //$console->ln()->write($formatter->formatFilesList($result->getFiles()));
+            //$console->ln()->write($formatter->formatTopBlocksByContext($result, $resolver));
+            $console->ln()->write($formatter->formatErrors($result));
+        } else {
+            $console->ln()->write($formatter->formatErrors($result));
+        }
+    }
+    if ($config->checkDictionaries) {
+        foreach ($dictionaries->getDictionaries() as $name => $dictionary) {
+            if (!$dictionary->isChecked()) {
+                continue;
+            }
+            $unusedWords = $dictionary->getUnusedWords();
+            if ($unusedWords !== []) {
+                $console->writeLn(C::red('Unused words in dictionary "' . $name . '"'));
+                $console->writeLn(implode(', ', $unusedWords));
+            }
+        }
+    }
+
+    if ($result->errorsFound()) {
         exit(1);
     }
 } catch (\SpellChecker\FileSearchNotConfiguredException $e) {

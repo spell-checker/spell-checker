@@ -11,16 +11,21 @@ class DictionaryCollection
     /** @var string[] */
     private $files;
 
+    /** @var string[] */
+    private $checked;
+
     /** @var \SpellChecker\Dictionary[] */
     private $dictionaries;
 
     /**
      * @param string[] $files
+     * @param string[] $checked
      * @param string|null $baseDir
      */
-    public function __construct(array $files, ?string $baseDir = null)
+    public function __construct(array $files, array $checked, ?string $baseDir = null)
     {
         $this->files = $files;
+        $this->checked = $checked;
         $this->baseDir = $baseDir !== null ? trim($baseDir, '/') : null;
         $this->dictionaries = [];
     }
@@ -34,13 +39,7 @@ class DictionaryCollection
     {
         foreach ($dictionaries as $dictionary) {
             if (!isset($this->dictionaries[$dictionary])) {
-                if (!isset($this->files[$dictionary])) {
-                    throw new \SpellChecker\DictionaryNotDefinedException($dictionary);
-                }
-                $dictionaryPath = $this->baseDir !== null
-                    ? $this->baseDir . '/' . $this->files[$dictionary]
-                    : getcwd() . '/' . $this->files[$dictionary];
-                $this->dictionaries[$dictionary] = new Dictionary($dictionaryPath);
+                $this->createDictionary($dictionary);
             }
 
             if ($this->dictionaries[$dictionary]->contains($word)) {
@@ -51,14 +50,24 @@ class DictionaryCollection
         return false;
     }
 
-    public function info(): string
+    private function createDictionary(string $dictionary): void
     {
-        $info = '';
-        foreach ($this->dictionaries as $name => $dictionary) {
-            $info .= $name . ' (' . $dictionary->info() . '), ';
+        if (!isset($this->files[$dictionary])) {
+            throw new \SpellChecker\DictionaryNotDefinedException($dictionary);
         }
+        $dictionaryPath = $this->baseDir !== null
+            ? $this->baseDir . '/' . $this->files[$dictionary]
+            : getcwd() . '/' . $this->files[$dictionary];
 
-        return $info;
+        $this->dictionaries[$dictionary] = new Dictionary($dictionaryPath, in_array($dictionary, $this->checked));
+    }
+
+    /**
+     * @return \SpellChecker\Dictionary[]
+     */
+    public function getDictionaries(): array
+    {
+        return $this->dictionaries;
     }
 
 }

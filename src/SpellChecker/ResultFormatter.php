@@ -33,6 +33,96 @@ class ResultFormatter
         return $output;
     }
 
+    public function formatTopWords(Result $result): string
+    {
+        $words = [];
+        foreach ($result->getErrors() as $fileErrors) {
+            foreach ($fileErrors as $error) {
+                $word = $error->word;
+                if (isset($words[$word])) {
+                    $words[$word]++;
+                } else {
+                    $words[$word] = 1;
+                }
+            }
+        }
+        asort($words);
+        $output = '';
+        foreach ($words as $word => $count) {
+            if ($count === 1) {
+                continue;
+            }
+            $output .= C::gray('- found "') . $word . C::gray('" ') . $count . C::gray(' times') . "\n";
+        }
+        return $output;
+    }
+
+    public function formatTopWordsByContext(Result $result, DictionaryResolver $resolver): string
+    {
+        $contexts = [];
+        foreach ($result->getErrors() as $fileName => $fileErrors) {
+            $context = $resolver->getContextForFileName($fileName);
+            foreach ($fileErrors as $error) {
+                $word = $error->word;
+                if (isset($contexts[$context][$word])) {
+                    $contexts[$context][$word]++;
+                } else {
+                    $contexts[$context][$word] = 1;
+                }
+            }
+        }
+        uasort($contexts, function (array $words1, array $words2) {
+            return count($words1) <=> count($words2);
+        });
+        foreach ($contexts as &$words) {
+            arsort($words);
+        }
+        $output = '';
+        foreach ($contexts as $context => $words) {
+            $output .= C::lcyan($context) . "\n";
+            foreach ($words as $word => $count) {
+                if ($count < 10) {
+                    continue;
+                }
+                $output .= C::gray('- found "') . $word . C::gray('" ') . $count . C::gray(' times') . "\n";
+            }
+        }
+        return $output;
+    }
+
+    public function formatTopBlocksByContext(Result $result, DictionaryResolver $resolver): string
+    {
+        $contexts = [];
+        foreach ($result->getErrors() as $fileName => $fileErrors) {
+            $context = $resolver->getContextForFileName($fileName);
+            foreach ($fileErrors as $error) {
+                $word = $error->block ?? $error->word;
+                if (isset($contexts[$context][$word])) {
+                    $contexts[$context][$word]++;
+                } else {
+                    $contexts[$context][$word] = 1;
+                }
+            }
+        }
+        uasort($contexts, function (array $words1, array $words2) {
+            return count($words1) <=> count($words2);
+        });
+        foreach ($contexts as &$words) {
+            arsort($words);
+        }
+        $output = '';
+        foreach ($contexts as $context => $words) {
+            $output .= C::lcyan($context) . "\n";
+            foreach ($words as $word => $count) {
+                if ($count < 10) {
+                    //continue;
+                }
+                $output .= C::gray('- found "') . $word . C::gray('" ') . $count . C::gray(' times') . "\n";
+            }
+        }
+        return $output;
+    }
+
     public function formatErrors(Result $result): string
     {
         $maxWidth = Console::getTerminalWidth();

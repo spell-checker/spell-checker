@@ -130,6 +130,7 @@ Reflection
 session
 SimpleXML
 SPL
+spl
 standard
 tokenizer
 wddx

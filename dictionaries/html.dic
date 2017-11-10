@@ -188,6 +188,7 @@ onreset
 onselect
 onsubmit
 onunload
+playsinline
 profile
 prompt
 readonly

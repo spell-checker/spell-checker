@@ -7,7 +7,7 @@ use SpellChecker\Word;
 class PrintfDetector implements \SpellChecker\Heuristic\Heuristic
 {
 
-    public function check(Word $word, string &$string): bool
+    public function check(Word $word, string &$string, array $dictionaries): bool
     {
         // "%d"
         if (preg_match('/^[bcdeEfFgGosuxX]/', $word->word)) {

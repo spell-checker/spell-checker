@@ -7,6 +7,12 @@ use SpellChecker\Word;
 interface Heuristic
 {
 
-    public function check(Word $word, string &$string): bool;
+    /**
+     * @param \SpellChecker\Word $word
+     * @param string $string
+     * @param string[] $dictionaries
+     * @return bool
+     */
+    public function check(Word $word, string &$string, array $dictionaries): bool;
 
 }

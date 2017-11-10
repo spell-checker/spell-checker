@@ -8,10 +8,13 @@ class Dictionary
     /** @var int[] */
     private $wordIndex;
 
+    /** @var int[] */
+    private $strippedIndex;
+
     /** @var bool */
     private $checked;
 
-    public function __construct(string $fileName, bool $checked = false)
+    public function __construct(string $fileName, bool $diacritics = false, bool $checked = false)
     {
         if (!is_file($fileName) || !is_readable($fileName)) {
             throw new \SpellChecker\DictionaryFileNotReadableException($fileName);
@@ -22,6 +25,12 @@ class Dictionary
                 continue;
             }
             $this->wordIndex[$word] = 0;
+            if ($diacritics) {
+                $stripped = DiacriticsHelper::removeDiacritics($word);
+                if ($stripped !== $word) {
+                    $this->strippedIndex[$stripped] = 0;
+                }
+            }
         }
 
         $this->checked = $checked;
@@ -32,6 +41,16 @@ class Dictionary
         $found = isset($this->wordIndex[$word]);
         if ($found && $this->checked) {
             $this->wordIndex[$word]++;
+        }
+
+        return $found;
+    }
+
+    public function containsWithoutDiacritics(string $word): bool
+    {
+        $found = isset($this->strippedIndex[$word]);
+        if ($found && $this->checked) {
+            $this->strippedIndex[$word]++;
         }
 
         return $found;

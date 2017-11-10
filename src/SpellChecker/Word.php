@@ -18,13 +18,28 @@ class Word
     public $rowNumber;
 
     /** @var string */
+    public $rowStart;
+
+    /** @var string */
+    public $rowEnd;
+
+    /** @var string */
     public $row;
 
-    public function __construct(string $word, ?string $block, int $position)
+    public function __construct(
+        string $word,
+        ?string $block,
+        int $position,
+        int $rowNumber,
+        int $rowStart,
+        int $rowEnd
+    )
     {
         $this->word = $word;
         $this->block = $block;
         $this->position = $position;
+        $this->rowStart = $rowStart;
+        $this->rowEnd = $rowEnd;
     }
 
 }

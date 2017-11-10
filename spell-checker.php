@@ -5,9 +5,14 @@ namespace SpellChecker;
 use Dogma\Tools\Colors as C;
 use Dogma\Tools\Configurator;
 use Dogma\Tools\Console;
+use SpellChecker\Heuristic\Base64ImageDetector;
 use SpellChecker\Heuristic\CssUnitsDetector;
+use SpellChecker\Heuristic\DictionarySearch;
+use SpellChecker\Heuristic\FileNameDetector;
 use SpellChecker\Heuristic\GarbageDetector;
 use SpellChecker\Heuristic\PrintfDetector;
+use SpellChecker\Heuristic\SqlTableShortcutDetector;
+use SpellChecker\Heuristic\NoDiacriticsDetector;
 use Tracy\Debugger;
 
 require_once __DIR__ . '/src/Colors.php';
@@ -54,6 +59,7 @@ $arguments = [
     'fileContexts' =>   ['', Configurator::VALUES],
     'contexts' =>       ['', Configurator::VALUES],
     'dictionaries' =>   ['', Configurator::VALUES],
+    'diacritics' =>     ['', Configurator::VALUES, 'dictionaries containing words with diacritics', 'dictionaries'],
     'checkDictionaries' => ['', Configurator::VALUES, 'list of user dictionaries to check for unused words', 'dictionaries'],
     'wordsParserExceptions' => ['', Configurator::VALUES, 'irregular words', 'words'],
         'Help:',
@@ -100,12 +106,17 @@ foreach ($config->config as $path) {
 try {
     $files = (new FileFinder())->findFilesByConfig($config);
     $resolver = new DictionaryResolver($config->fileContexts, $config->contexts);
-    $dictionaries = new DictionaryCollection($config->dictionaries, $config->checkDictionaries ?? [], $config->baseDir);
+    $dictionaries = new DictionaryCollection($config->dictionaries, $config->diacritics, $config->checkDictionaries ?? [], $config->baseDir);
     $wordsParser = new WordsParser($config->wordsParserExceptions);
     $heuristics = [
-        new GarbageDetector(),
+        new DictionarySearch($dictionaries),
         new CssUnitsDetector(),
         new PrintfDetector(),
+        new SqlTableShortcutDetector(),
+        new NoDiacriticsDetector($dictionaries),
+        new FileNameDetector($dictionaries),
+        new Base64ImageDetector(),
+        new GarbageDetector(),
     ];
     $spellChecker = new SpellChecker($wordsParser, $heuristics, $resolver, $dictionaries, $config->baseDir);
 
@@ -117,12 +128,12 @@ try {
     $console->ln(2);
     Console::switchTerminalToUtf8();
 
-    $formatter = new ResultFormatter();
+    $formatter = new ResultFormatter($resolver);
     $console->writeLn($formatter->summarize($result));
     if ($result->errorsFound()) {
         if ($config->topWords) {
             //$console->ln()->write($formatter->formatFilesList($result->getFiles()));
-            //$console->ln()->write($formatter->formatTopBlocksByContext($result, $resolver));
+            //$console->ln()->write($formatter->formatTopBlocksByContext($result));
             $console->ln()->write($formatter->formatErrors($result));
         } else {
             $console->ln()->write($formatter->formatErrors($result));

@@ -8,6 +8,14 @@ use Dogma\Tools\Console;
 class ResultFormatter
 {
 
+    /** @var \SpellChecker\DictionaryResolver */
+    private $dictionaryResolver;
+
+    public function __construct(DictionaryResolver $dictionaryResolver)
+    {
+        $this->dictionaryResolver = $dictionaryResolver;
+    }
+
     public function summarize(Result $result): string
     {
         if (!$result->errorsFound()) {
@@ -57,11 +65,11 @@ class ResultFormatter
         return $output;
     }
 
-    public function formatTopWordsByContext(Result $result, DictionaryResolver $resolver): string
+    public function formatTopWordsByContext(Result $result): string
     {
         $contexts = [];
         foreach ($result->getErrors() as $fileName => $fileErrors) {
-            $context = $resolver->getContextForFileName($fileName);
+            $context = $this->dictionaryResolver->getContextForFileName($fileName);
             foreach ($fileErrors as $error) {
                 $word = $error->word;
                 if (isset($contexts[$context][$word])) {
@@ -90,11 +98,11 @@ class ResultFormatter
         return $output;
     }
 
-    public function formatTopBlocksByContext(Result $result, DictionaryResolver $resolver): string
+    public function formatTopBlocksByContext(Result $result): string
     {
         $contexts = [];
         foreach ($result->getErrors() as $fileName => $fileErrors) {
-            $context = $resolver->getContextForFileName($fileName);
+            $context = $this->dictionaryResolver->getContextForFileName($fileName);
             foreach ($fileErrors as $error) {
                 $word = $error->block ?? $error->word;
                 if (isset($contexts[$context][$word])) {
@@ -142,7 +150,8 @@ class ResultFormatter
      */
     public function formatFileErrors(string $fileName, array $errors, int $maxWidth): string
     {
-        $output = '' . C::lcyan($fileName) . C::gray(":\n");
+        $output = '' . C::lcyan($fileName) . C::gray(' (')
+            . $this->dictionaryResolver->getContextForFileName($fileName) .  C::gray("):\n");
         foreach ($errors as $word) {
             $row = $word->row;
             $width = mb_strlen($word->word . $row . $word->rowNumber) + 27;

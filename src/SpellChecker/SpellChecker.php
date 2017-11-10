@@ -79,71 +79,41 @@ class SpellChecker
         ///
         $string = file_get_contents($fileName);
         $string = \Nette\Utils\Strings::normalize($string);
+        $ignores = [];
+        if (preg_match('/spell-check-ignore: ([^\\n]+)\\n/', $string, $match)) {
+            $ignores = explode(' ', $match[1]);
+        }
         ///
 
-        return $this->checkString($string, $dictionaries);
+        return $this->checkString($string, $dictionaries, $ignores);
     }
 
     /**
      * @param string $string
      * @param string[] $dictionaries
+     * @param string[] $ignores
      * @return \SpellChecker\Word[]
      */
-    public function checkString(string $string, array $dictionaries): array
+    public function checkString(string $string, array $dictionaries, array $ignores): array
     {
+        $ignores = array_flip($ignores);
         $errors = [];
         foreach ($this->wordsParser->parse($string) as $word) {
-            if ($this->dictionaries->contains($word->word, $dictionaries)) {
-                continue;
-            }
-            if ($this->dictionaries->contains(mb_strtolower($word->word), $dictionaries)) {
-                continue;
-            }
-            if ($word->block !== null && $this->dictionaries->contains($word->block, $dictionaries)) {
+            if (isset($ignores[$word->word])) {
                 continue;
             }
 
-            $trimmed = $this->trimNumbersFromRight($word->word);
-            if ($trimmed !== null) {
-                if ($this->dictionaries->contains($trimmed, $dictionaries)) {
-                    continue;
-                }
-                if ($this->dictionaries->contains(mb_strtolower($trimmed), $dictionaries)) {
-                    continue;
-                }
-            }
             foreach ($this->heuristics as $heuristic) {
-                if ($heuristic->check($word, $string)) {
+                if ($heuristic->check($word, $string, $dictionaries)) {
                     continue 2;
                 }
             }
 
-            $this->completeWordInfo($word, $string);
+            $word->row = trim(substr($string, $word->rowStart, $word->rowEnd - $word->rowStart));
             $errors[] = $word;
         }
 
         return $errors;
-    }
-
-    private function completeWordInfo(Word $word, &$string): void
-    {
-        $rowStart = (int) strrpos($string, "\n", $word->position - strlen($string));
-        $rowEnd = strpos($string, "\n", $rowStart + 1) ?: strlen($string);
-        $row = trim(substr($string, $rowStart, $rowEnd - $rowStart));
-        if (strlen($row) > 300) {
-            $row = substr($row, 0, 300) . '…';
-        }
-        $word->row = $row;
-        $word->rowNumber = $word->position - strlen(str_replace("\n", '', substr($string, 0, $word->position))) + 1;
-    }
-
-    private function trimNumbersFromRight(string $word): ?string
-    {
-        if (preg_match('/[0-9]+$/', $word, $match)) {
-            return substr($word, 0, -strlen($match[0]));
-        } else {
-            return null;
-        }
     }
 
 }

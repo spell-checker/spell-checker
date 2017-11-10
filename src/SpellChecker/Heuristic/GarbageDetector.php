@@ -11,9 +11,10 @@ class GarbageDetector implements \SpellChecker\Heuristic\Heuristic
      * Guesses if a word may be a token or part of base64 encoded string to filter them from results
      * @param \SpellChecker\Word $word
      * @param string &$string
+     * @param string[] $dictionaries
      * @return bool
      */
-    public function check(Word $word, string &$string): bool
+    public function check(Word $word, string &$string, array $dictionaries): bool
     {
         if ($word->block !== null && $this->checkWord($word->block)) {
             return true;

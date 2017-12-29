@@ -2,13 +2,13 @@
 
 namespace SpellChecker\Heuristic;
 
-use SpellChecker\DictionaryCollection;
+use SpellChecker\Dictionary\DictionaryCollection;
 use SpellChecker\Word;
 
 class DictionarySearch implements \SpellChecker\Heuristic\Heuristic
 {
 
-    /** @var \SpellChecker\DictionaryCollection */
+    /** @var \SpellChecker\Dictionary\DictionaryCollection */
     private $dictionaries;
 
     public function __construct(DictionaryCollection $dictionaries)

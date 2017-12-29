@@ -1,4 +1,5 @@
 <?php declare(strict_types = 1);
+// spell-check-ignore: px pc vh vw vmin vmax ic lh rlh dpi dppx dpcm
 
 namespace SpellChecker\Heuristic;
 

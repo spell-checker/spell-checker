@@ -5,14 +5,17 @@ namespace SpellChecker;
 use Dogma\Tools\Colors as C;
 use Dogma\Tools\Configurator;
 use Dogma\Tools\Console;
+use SpellChecker\Dictionary\DictionaryCollection;
+use SpellChecker\Dictionary\DictionaryResolver;
 use SpellChecker\Heuristic\Base64ImageDetector;
 use SpellChecker\Heuristic\CssUnitsDetector;
 use SpellChecker\Heuristic\DictionarySearch;
+use SpellChecker\Heuristic\EscapeSequenceDetector;
 use SpellChecker\Heuristic\FileNameDetector;
 use SpellChecker\Heuristic\GarbageDetector;
 use SpellChecker\Heuristic\PrintfDetector;
 use SpellChecker\Heuristic\SqlTableShortcutDetector;
-use SpellChecker\Heuristic\NoDiacriticsDetector;
+use SpellChecker\Heuristic\IdentifiersDetector;
 use Tracy\Debugger;
 
 require_once __DIR__ . '/src/Colors.php';
@@ -59,7 +62,9 @@ $arguments = [
     'fileContexts' =>   ['', Configurator::VALUES],
     'contexts' =>       ['', Configurator::VALUES],
     'dictionaries' =>   ['', Configurator::VALUES],
-    'diacritics' =>     ['', Configurator::VALUES, 'dictionaries containing words with diacritics', 'dictionaries'],
+    'dictionaryDirectories' => ['D', Configurator::VALUES, 'paths to directories containing dictionaries', 'paths'],
+    'dictionariesByFileExtension' => ['', Configurator::VALUES],
+    'dictionariesWithDiacritics' => ['', Configurator::VALUES, 'dictionaries containing words with diacritics', 'dictionaries'],
     'checkDictionaries' => ['', Configurator::VALUES, 'list of user dictionaries to check for unused words', 'dictionaries'],
     'wordsParserExceptions' => ['', Configurator::VALUES, 'irregular words', 'words'],
         'Help:',
@@ -105,25 +110,40 @@ foreach ($config->config as $path) {
 
 try {
     $files = (new FileFinder())->findFilesByConfig($config);
-    $resolver = new DictionaryResolver($config->fileContexts, $config->contexts);
-    $dictionaries = new DictionaryCollection($config->dictionaries, $config->diacritics, $config->checkDictionaries ?? [], $config->baseDir);
-    $wordsParser = new WordsParser($config->wordsParserExceptions);
+    $resolver = new DictionaryResolver(
+        $config->fileContexts ?? [],
+        $config->contexts ?? [],
+        $config->dictionariesByFileExtension ?? []
+    );
+    $dictionaries = new DictionaryCollection(
+        $config->dictionaryDirectories ?? [],
+        $config->dictionariesWithDiacritics ?? [],
+        $config->checkDictionaries ?? [],
+        $config->baseDir
+    );
+    $wordsParser = new WordsParser(
+        $config->wordsParserExceptions ?? []
+    );
     $heuristics = [
         new DictionarySearch($dictionaries),
         new CssUnitsDetector(),
         new PrintfDetector(),
+        new EscapeSequenceDetector(),
         new SqlTableShortcutDetector(),
-        new NoDiacriticsDetector($dictionaries),
+        new IdentifiersDetector($dictionaries),
         new FileNameDetector($dictionaries),
-        new Base64ImageDetector(),
         new GarbageDetector(),
+        new Base64ImageDetector(),
     ];
     $spellChecker = new SpellChecker($wordsParser, $heuristics, $resolver, $dictionaries, $config->baseDir);
 
-    $result = $spellChecker->checkFiles($files, function () use ($console) {
+    $startTime = microtime(true);
+    $result = $spellChecker->checkFiles($files, function (string $fileName) use ($console) {
         $console->write('.');
         return true;
     });
+    $totalTime = microtime(true) - $startTime;
+    $console->writeLn(' (', number_format($totalTime, 3), 's)');
 
     $console->ln(2);
     Console::switchTerminalToUtf8();

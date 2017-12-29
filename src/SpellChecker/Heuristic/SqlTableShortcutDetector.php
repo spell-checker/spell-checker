@@ -7,7 +7,9 @@ use SpellChecker\Word;
 class SqlTableShortcutDetector implements \SpellChecker\Heuristic\Heuristic
 {
 
+    /** @var string[] */
     private $prefixes = [
+        // SQL
         'SELECT',
         'FROM',
         'JOIN',
@@ -24,18 +26,24 @@ class SqlTableShortcutDetector implements \SpellChecker\Heuristic\Heuristic
         'COALESCE',
         'IF',
         'IFNULL',
+        'LEAST',
+        // Doctrine etc.
         '->select(',
         '->addSelect(',
+        '->delete(',
         '->from(',
         '->join(',
         '->leftJoin(',
+        '->on(',
         '->where(',
         '->andWhere(',
         '->orWhere(',
         '->groupBy(',
         '->addGroupBy(',
         '->orderBy(',
-        '->addOrderBy('
+        '->addOrderBy(',
+        '->addRootEntityFromClassMetadata(',
+        '->applyMailStatisticsOrderSubqueryForFilter(',
     ];
 
     /** @var string */

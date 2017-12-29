@@ -1,6 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace SpellChecker;
+namespace SpellChecker\Dictionary;
+
+use SpellChecker\DiacriticsHelper;
+use Symfony\Component\Finder\Finder;
 
 class DictionaryCollection
 {
@@ -9,27 +12,30 @@ class DictionaryCollection
     private $baseDir;
 
     /** @var string[] */
+    private $directories;
+
+    /** @var string[] */
     private $files;
 
     /** @var string[] */
-    private $checked;
+    private $checkedFiles;
 
-    /** @var \SpellChecker\Dictionary[] */
+    /** @var \SpellChecker\Dictionary\Dictionary[] */
     private $dictionaries;
 
     /** @var string[] */
     private $diacriticDictionaries;
 
     /**
-     * @param string[] $files
+     * @param string[] $directories
      * @param string[] $diacriticDictionaries
-     * @param string[] $checked
+     * @param string[] $checkedFiles
      * @param string|null $baseDir
      */
-    public function __construct(array $files, array $diacriticDictionaries, array $checked, ?string $baseDir = null)
+    public function __construct(array $directories, array $diacriticDictionaries, array $checkedFiles, ?string $baseDir = null)
     {
-        $this->files = $files;
-        $this->checked = $checked;
+        $this->directories = $directories;
+        $this->checkedFiles = $checkedFiles;
         $this->baseDir = $baseDir !== null ? trim($baseDir, '/') : null;
         $this->dictionaries = [];
         $this->diacriticDictionaries = $diacriticDictionaries;
@@ -81,22 +87,48 @@ class DictionaryCollection
 
     private function createDictionary(string $dictionary): void
     {
-        if (!isset($this->files[$dictionary])) {
-            throw new \SpellChecker\DictionaryNotDefinedException($dictionary);
+        if ($this->files === null) {
+            $this->findDictionaryFiles();
         }
-        $dictionaryPath = $this->baseDir !== null
-            ? $this->baseDir . '/' . $this->files[$dictionary]
-            : getcwd() . '/' . $this->files[$dictionary];
+
+        $files = array_filter($this->files, function (string $filePath) use ($dictionary): bool {
+            $fileName = basename($filePath);
+            return strpos($fileName, $dictionary) === 0;
+        });
+        $checkedFiles = array_filter($this->files, function (string $filePath): bool {
+            $fileName = basename($filePath);
+            return in_array($fileName, $this->checkedFiles);
+        });
+        if ($files === []) {
+            throw new \SpellChecker\NoDictionaryFileFoundException($dictionary);
+        }
 
         $this->dictionaries[$dictionary] = new Dictionary(
-            $dictionaryPath,
+            $files,
             in_array($dictionary, $this->diacriticDictionaries),
-            in_array($dictionary, $this->checked)
+            $checkedFiles
         );
     }
 
+    private function findDictionaryFiles(): void
+    {
+        $directories = array_map(function (string $directory): string {
+            return $this->baseDir !== null
+                ? $this->baseDir . '/' . $directory
+                : getcwd() . '/' . $directory;
+        }, $this->directories);
+
+        $finder = new Finder();
+        $finder->files();
+        $finder->name('*.dic');
+        $finder->in($directories);
+        $finder->ignoreDotFiles(true);
+        $finder->ignoreVCS(true);
+        $this->files = array_keys(iterator_to_array($finder->getIterator()));
+    }
+
     /**
-     * @return \SpellChecker\Dictionary[]
+     * @return \SpellChecker\Dictionary\Dictionary[]
      */
     public function getDictionaries(): array
     {

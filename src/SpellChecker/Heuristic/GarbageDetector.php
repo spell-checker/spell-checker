@@ -10,7 +10,7 @@ class GarbageDetector implements \SpellChecker\Heuristic\Heuristic
     /**
      * Guesses if a word may be a token or part of base64 encoded string to filter them from results
      * @param \SpellChecker\Word $word
-     * @param string &$string
+     * @param string $string
      * @param string[] $dictionaries
      * @return bool
      */

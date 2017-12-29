@@ -17,10 +17,10 @@ class Word
     /** @var int */
     public $rowNumber;
 
-    /** @var string */
+    /** @var int */
     public $rowStart;
 
-    /** @var string */
+    /** @var int */
     public $rowEnd;
 
     /** @var string */
@@ -38,6 +38,7 @@ class Word
         $this->word = $word;
         $this->block = $block;
         $this->position = $position;
+        $this->rowNumber = $rowNumber;
         $this->rowStart = $rowStart;
         $this->rowEnd = $rowEnd;
     }

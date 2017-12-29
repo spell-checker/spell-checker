@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace SpellChecker;
+namespace SpellChecker\Dictionary;
 
 class DictionaryResolver
 {
@@ -13,14 +13,19 @@ class DictionaryResolver
     /** @var string[][] */
     private $contexts;
 
+    /** @var string[][] */
+    private $extensions;
+
     /**
      * @param string[] $filePatterns
      * @param string[][] $contexts
+     * @param string[][] $dictionariesByFileExtension
      */
-    public function __construct(array $filePatterns, array $contexts)
+    public function __construct(array $filePatterns, array $contexts, array $dictionariesByFileExtension)
     {
         $this->setPatterns($filePatterns);
         $this->contexts = $contexts;
+        $this->extensions = $dictionariesByFileExtension;
     }
 
     private function setPatterns(array $patterns): void
@@ -37,15 +42,22 @@ class DictionaryResolver
     public function getDictionariesForFileName(string $fileName): array
     {
         $context = $this->getContextForFileName($fileName);
-        if ($context === null || $context === self::SKIP_FILE_CONTEXT) {
+        if ($context === self::SKIP_FILE_CONTEXT) {
             return [];
         }
 
-        if (!isset($this->contexts[$context])) {
-            throw new \SpellChecker\ContextNotDefinedException($context);
+        $dictionaries = [];
+        if ($context !== null) {
+            $dictionaries = $this->contexts[$context] ?? [];
         }
 
-        return $this->contexts[$context];
+        $parts = explode('.', $fileName);
+        $extension = end($parts);
+        if (isset($this->extensions[$extension])) {
+            $dictionaries = array_merge($dictionaries, $this->extensions[$extension]);
+        }
+
+        return $dictionaries;
     }
 
     public function getContextForFileName(string $fileName): ?string
@@ -61,22 +73,6 @@ class DictionaryResolver
         }
 
         return null;
-    }
-
-    /**
-     * @param string $context
-     * @return string[]
-     */
-    public function getDictionariesForContext(string $context): array
-    {
-        if ($context === self::SKIP_FILE_CONTEXT) {
-            return [];
-        }
-        if (!isset($this->contexts[$context])) {
-            throw new \SpellChecker\ContextNotDefinedException($context);
-        }
-
-        return $this->contexts[$context];
     }
 
 }

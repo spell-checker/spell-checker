@@ -4,11 +4,12 @@ namespace SpellChecker;
 
 use Dogma\Tools\Colors as C;
 use Dogma\Tools\Console;
+use SpellChecker\Dictionary\DictionaryResolver;
 
 class ResultFormatter
 {
 
-    /** @var \SpellChecker\DictionaryResolver */
+    /** @var \SpellChecker\Dictionary\DictionaryResolver */
     private $dictionaryResolver;
 
     public function __construct(DictionaryResolver $dictionaryResolver)
@@ -151,7 +152,7 @@ class ResultFormatter
     public function formatFileErrors(string $fileName, array $errors, int $maxWidth): string
     {
         $output = '' . C::lcyan($fileName) . C::gray(' (')
-            . $this->dictionaryResolver->getContextForFileName($fileName) .  C::gray("):\n");
+            . $this->dictionaryResolver->getContextForFileName($fileName) . C::gray("):\n");
         foreach ($errors as $word) {
             $row = $word->row;
             $width = mb_strlen($word->word . $row . $word->rowNumber) + 27;

@@ -9,10 +9,16 @@ class PrintfDetector implements \SpellChecker\Heuristic\Heuristic
 
     public function check(Word $word, string &$string, array $dictionaries): bool
     {
-        // "%d"
         if (preg_match('/^[bcdeEfFgGosuxX]/', $word->word)) {
-            $char = $string[$word->position - 1];
-            if ($char === '%') {
+            $char1 = $string[$word->position - 1];
+            // "%d"
+            if ($char1 === '%') {
+                return true;
+            }
+            // "%1$d"
+            $char2 = $string[$word->position - 2];
+            $char3 = $string[$word->position - 3];
+            if ($char1 === '$' && $char3 === '%' && ctype_digit($char2)) {
                 return true;
             }
         }

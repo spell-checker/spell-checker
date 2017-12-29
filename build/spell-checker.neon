@@ -1,4 +1,5 @@
 
+# directories to search for files
 directories:
     - build
     - src
@@ -6,6 +7,7 @@ directories:
     - util
     - //
 
+# file extensions to check
 extensions:
     - *.php
     - *.phpt
@@ -15,6 +17,7 @@ extensions:
     - *.json
     - *.md
 
+# file name pattern -> file context name (first matched is used)
 fileContexts:
     *.php: php
     *.phpt: php
@@ -24,17 +27,28 @@ fileContexts:
     *.json: txt
     *.md: txt
 
+# file context -> dictionary name
+# every dictionary name can match several dictionary files by its prefix. eg:
+# dictionary "php" will load "php.dic", "php-ext.dic", "php-config.dic"
 contexts:
-    php: [en, php, php-ext, custom]
+    php: [en, custom]
     neon: [en, custom]
     xml: [en, custom]
     txt: [en, custom]
 
-dictionaries:
-    en: vendor/spell-checker/dictionary-en/en.dic
-    php: dictionaries/php.dic
-    php-ext: dictionaries/php-ext.dic
-    custom: build/spell-checker/custom.dic
+# automatically used dictionaries. does not have to be configured in contexts
+# (useful on larger projects with lots of contexts)
+dictionariesByFileExtension:
+	php: [php]
+	phpt: [php]
+	neon: [neon]
 
+# paths to search for dictionary files. must have .dic extension
+dictionaryDirectories:
+    - vendor/spell-checker/dictionary-en
+    - dictionaries
+    - build/spell-checker
+
+# words, that cannot be parsed by default conventions
 wordsParserExceptions:
     - PHPUnit

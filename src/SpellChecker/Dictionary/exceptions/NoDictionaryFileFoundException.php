@@ -2,7 +2,7 @@
 
 namespace SpellChecker;
 
-class DictionaryNotDefinedException extends \Exception
+class NoDictionaryFileFoundException extends \Exception
 {
 
     /** @var string */
@@ -10,7 +10,7 @@ class DictionaryNotDefinedException extends \Exception
 
     public function __construct(string $dictionary, ?\Throwable $previous = null)
     {
-        parent::__construct(sprintf('Dictionary with name "%s" is not defined in your configuration.', $dictionary), 0, $previous);
+        parent::__construct(sprintf('No dictionary files found for dictionary name "%s".', $dictionary), 0, $previous);
 
         $this->dictionary = $dictionary;
     }

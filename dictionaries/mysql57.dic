@@ -2942,5 +2942,13 @@ young_make_per_thousand_gets
 zip_dict
 zip_page_size
 
+# storage engines
+innodb
+myisam
+csv
+archive
+blackhole
+federated
+
 # other
 ibfk

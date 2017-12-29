@@ -107,6 +107,7 @@ stdout
 
 # extensions
 bcmath
+blackfire
 calendar
 cgi
 fcgi
@@ -129,6 +130,7 @@ readline
 Reflection
 session
 SimpleXML
+simplexml
 SPL
 spl
 standard

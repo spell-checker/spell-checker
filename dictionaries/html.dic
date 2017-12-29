@@ -120,6 +120,7 @@ axis
 background
 bgcolor
 border
+bottommargin
 cellpadding
 cellspacing
 char
@@ -158,6 +159,7 @@ id
 ismap
 lang
 language
+leftmargin
 longdesc
 marginheight
 marginwidth
@@ -194,6 +196,7 @@ prompt
 readonly
 rel
 rev
+rightmargin
 rows
 rowspan
 rules
@@ -210,6 +213,7 @@ summary
 tabindex
 target
 text
+topmargin
 type
 usemap
 valign

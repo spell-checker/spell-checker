@@ -55,6 +55,7 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 $arguments = [
         'Configuration:',
     'config' =>         ['c', Configurator::VALUES, 'configuration files', 'paths'],
+    'memoryLimit' =>    ['m', Configurator::VALUE, 'memory limit'],
     'use' =>            ['', Configurator::VALUES, 'configuration profiles to use', 'profiles'],
     'baseDir' =>        ['b', Configurator::VALUE, 'base directory for relative paths', 'path'],
     'files' =>          ['f', Configurator::VALUES, 'files to check', 'paths'],
@@ -110,6 +111,17 @@ foreach ($config->config as $path) {
     $config->loadConfig($path);
 }
 
+if ($config->memoryLimit !== null) {
+    if (!preg_match('#^\d+[kMG]?$#i', $config->memoryLimit)) {
+        $console->writeLn(C::white(sprintf('Invalid memory limit format "%s".', $config->memoryLimit), C::RED));
+        return 1;
+    }
+    if (ini_set('memory_limit', $config->memoryLimit) === false) {
+        $console->writeLn(C::white(sprintf('Memory limit "%s" cannot be set.', $config->memoryLimit), C::RED));
+        return 1;
+    }
+}
+
 try {
     $files = (new FileFinder())->findFilesByConfig($config);
     $resolver = new DictionaryResolver(
@@ -147,7 +159,8 @@ try {
         return true;
     });
     $totalTime = microtime(true) - $startTime;
-    $console->writeLn(' (', number_format($totalTime, 3), 's)');
+    $peakMemoryUsage = memory_get_peak_usage(true) / (1024 * 1024);
+    $console->writeLn(sprintf(' (%s s, %s MB)', number_format($totalTime, 3), $peakMemoryUsage));
 
     $console->ln(2);
     Console::switchTerminalToUtf8();

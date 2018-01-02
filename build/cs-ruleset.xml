@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!-- spell-check-ignore: Allman -->
 <ruleset name="Slevomat">
     <rule ref="../vendor/consistence/coding-standard/Consistence/ruleset.xml">
         <exclude name="Generic.CodeAnalysis.EmptyStatement.DetectedIF"/><!-- allow empty if statements - usually with a comment -->

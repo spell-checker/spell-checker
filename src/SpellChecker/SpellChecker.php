@@ -4,12 +4,15 @@ namespace SpellChecker;
 
 use SpellChecker\Dictionary\DictionaryCollection;
 use SpellChecker\Dictionary\DictionaryResolver;
+use SpellChecker\Parser\Parser;
 
 class SpellChecker
 {
 
-    /** @var \SpellChecker\WordsParser */
-    private $wordsParser;
+    public const DEFAULT_PARSER = '*';
+
+    /** @var \SpellChecker\Parser\Parser[] */
+    private $wordsParsers;
 
     /** @var \SpellChecker\Heuristic\Heuristic[] */
     private $heuristics;
@@ -21,19 +24,19 @@ class SpellChecker
     private $dictionaries;
 
     /**
-     * @param \SpellChecker\WordsParser $wordsParser
+     * @param \SpellChecker\Parser\Parser[] $wordsParsers
      * @param \SpellChecker\Heuristic\Heuristic[] $heuristics
      * @param \SpellChecker\Dictionary\DictionaryResolver $resolver
      * @param \SpellChecker\Dictionary\DictionaryCollection $dictionaries
      */
     public function __construct(
-        WordsParser $wordsParser,
+        array $wordsParsers,
         array $heuristics,
         DictionaryResolver $resolver,
         DictionaryCollection $dictionaries
     )
     {
-        $this->wordsParser = $wordsParser;
+        $this->wordsParsers = $wordsParsers;
         $this->heuristics = $heuristics;
         $this->resolver = $resolver;
         $this->dictionaries = $dictionaries;
@@ -87,17 +90,24 @@ class SpellChecker
             $ignores = explode(' ', $match[1]);
         }
 
-        return $this->checkString($string, $dictionaries, $ignores);
+        $fileNameParts = explode('.', basename($fileName));
+        $extension = end($fileNameParts);
+        $parser = $this->wordsParsers[$extension] ?? $this->wordsParsers[self::DEFAULT_PARSER];
+
+        return $this->checkString($string, $dictionaries, $ignores, $parser);
     }
 
     /**
      * @param string $string
      * @param string[] $dictionaries
      * @param string[] $ignores
+     * @param \SpellChecker\Parser\Parser|null $parser
      * @return \SpellChecker\Word[]
      */
-    public function checkString(string $string, array $dictionaries, array $ignores): array
+    public function checkString(string $string, array $dictionaries, array $ignores, ?Parser $parser = null): array
     {
+        $parser = $parser ?? $this->wordsParsers[self::DEFAULT_PARSER];
+
         $errors = [];
         $string = preg_replace([
                 '~data:image/(?:jpeg|png|gif);base64,([A-Za-z0-9/+]+)~',
@@ -109,7 +119,7 @@ class SpellChecker
 
         if ($ignores !== []) {
             $ignores = array_flip($ignores);
-            foreach ($this->wordsParser->parse($string) as $n => $word) {
+            foreach ($parser->parse($string) as $n => $word) {
                 if (isset($ignores[$word->word])) {
                     continue;
                 }
@@ -125,7 +135,7 @@ class SpellChecker
             }
         } else {
             // the same as previous, only without checking ignores
-            foreach ($this->wordsParser->parse($string) as $n => $word) {
+            foreach ($parser->parse($string) as $n => $word) {
                 foreach ($this->heuristics as $heuristic) {
                     if ($heuristic->check($word, $string, $dictionaries)) {
                         continue 2;

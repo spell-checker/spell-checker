@@ -16,6 +16,8 @@ use SpellChecker\Heuristic\GarbageDetector;
 use SpellChecker\Heuristic\PrintfDetector;
 use SpellChecker\Heuristic\SqlTableShortcutDetector;
 use SpellChecker\Heuristic\IdentifiersDetector;
+use SpellChecker\Parser\DefaultParser;
+use SpellChecker\Parser\PoParser;
 use Tracy\Debugger;
 
 require_once __DIR__ . '/src/Colors.php';
@@ -121,9 +123,11 @@ try {
         $config->checkDictionaries ?? [],
         $config->baseDir
     );
-    $wordsParser = new WordsParser(
-        $config->wordsParserExceptions ?? []
-    );
+    $defaultParser = new DefaultParser($config->wordsParserExceptions ?? []);
+    $wordsParsers = [
+        'po' => new PoParser($defaultParser),
+        SpellChecker::DEFAULT_PARSER => $defaultParser,
+    ];
     $heuristics = [
         new DictionarySearch($dictionaries),
         new CssUnitsDetector(),
@@ -135,7 +139,7 @@ try {
         new GarbageDetector(),
         new Base64ImageDetector(),
     ];
-    $spellChecker = new SpellChecker($wordsParser, $heuristics, $resolver, $dictionaries, $config->baseDir);
+    $spellChecker = new SpellChecker($wordsParsers, $heuristics, $resolver, $dictionaries, $config->baseDir);
 
     $startTime = microtime(true);
     $result = $spellChecker->checkFiles($files, function (string $fileName) use ($console) {

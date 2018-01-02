@@ -55,6 +55,7 @@ multiline
 namespaces
 ORM
 param
+parsers
 redistributions
 regex
 ruleset

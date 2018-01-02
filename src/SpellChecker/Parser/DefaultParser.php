@@ -1,8 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace SpellChecker;
+namespace SpellChecker\Parser;
 
-class WordsParser
+use SpellChecker\Word;
+
+class DefaultParser implements \SpellChecker\Parser\Parser
 {
 
     /** @var string[] */
@@ -47,52 +49,65 @@ class WordsParser
                 $rowStart = $rowEnd + 1;
                 $rowEnd = $rowStarts[$rowNumber];
             }
-            $block = trim($block, '_-');
-
-            // skip numbers
-            if (preg_match('/^[0-9_-]+$/', $block)) {
-                continue;
-            }
-
-            if (strpos($block, '_') !== false || strpos($block, '-') !== false) {
-                // FOO_BAR or fooBar_barBaz or e-mail
-                $parts = preg_split('/[_-]/', $block);
-                $underscore = true;
-            } else {
-                $parts = [$block];
-                $underscore = false;
-            }
-
-            $offset = 0;
-            foreach ($parts as $part) {
-                if (in_array($part, $this->exceptions)) {
-                    // FOOBar
-                    $result[] = new Word($part, $underscore ? $block : null, $position + $offset, $rowNumber, $rowStart, $rowEnd);
-                } elseif (preg_match('/^[\\p{Lu}]+$/u', $part)) {
-                    // FOO
-                    $result[] = new Word($part, $underscore ? $block : null, $position + $offset, $rowNumber, $rowStart, $rowEnd);
-                } else {
-                    $words = array_values(array_filter(preg_split('/(?=[\\p{Lu}])/u', $part)));
-                    if (count($words) === 1) {
-                        // foo
-                        $result[] = new Word($words[0], $underscore ? $block : null, $position + $offset, $rowNumber, $rowStart, $rowEnd);
-                    } else {
-                        // fooBar
-                        $offset2 = 0;
-                        foreach ($words as $word) {
-                            if (preg_match('/^[0-9]+$/', $word)) {
-                                continue;
-                            }
-                            $result[] = new Word($word, $block, $position + $offset + $offset2, $rowNumber, $rowStart, $rowEnd);
-                            $offset2 += strlen($word);
-                        }
-                    }
-                }
-                $offset += strlen($part) + 1;
-            }
+            $this->blocksToWords($block, $position, $rowNumber, $rowStart, $rowEnd, $result);
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $block
+     * @param int $position
+     * @param int $rowNumber
+     * @param int $rowStart
+     * @param int $rowEnd
+     * @param \SpellChecker\Word[] $result
+     */
+    public function blocksToWords(string $block, int $position, int $rowNumber, int $rowStart, int $rowEnd, array &$result): void
+    {
+        $block = trim($block, '_-');
+
+        // skip numbers
+        if (preg_match('/^[0-9_-]+$/', $block)) {
+            return;
+        }
+
+        if (strpos($block, '_') !== false || strpos($block, '-') !== false) {
+            // FOO_BAR or fooBar_barBaz or e-mail
+            $parts = preg_split('/[_-]/', $block);
+            $underscore = true;
+        } else {
+            $parts = [$block];
+            $underscore = false;
+        }
+
+        $offset = 0;
+        foreach ($parts as $part) {
+            if (in_array($part, $this->exceptions)) {
+                // FOOBar
+                $result[] = new Word($part, $underscore ? $block : null, $position + $offset, $rowNumber, $rowStart, $rowEnd);
+            } elseif (preg_match('/^[\\p{Lu}]+$/u', $part)) {
+                // FOO
+                $result[] = new Word($part, $underscore ? $block : null, $position + $offset, $rowNumber, $rowStart, $rowEnd);
+            } else {
+                $words = array_values(array_filter(preg_split('/(?=[\\p{Lu}])/u', $part)));
+                if (count($words) === 1) {
+                    // foo
+                    $result[] = new Word($words[0], $underscore ? $block : null, $position + $offset, $rowNumber, $rowStart, $rowEnd);
+                } else {
+                    // fooBar
+                    $offset2 = 0;
+                    foreach ($words as $word) {
+                        if (preg_match('/^[0-9]+$/', $word)) {
+                            continue;
+                        }
+                        $result[] = new Word($word, $block, $position + $offset + $offset2, $rowNumber, $rowStart, $rowEnd);
+                        $offset2 += strlen($word);
+                    }
+                }
+            }
+            $offset += strlen($part) + 1;
+        }
     }
 
     /**

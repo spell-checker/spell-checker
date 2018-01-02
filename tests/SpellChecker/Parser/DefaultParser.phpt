@@ -1,13 +1,14 @@
 <?php declare(strict_types = 1);
 // spell-check-ignore: Nepodarilo sa prihlásiť používateľa zlavomat
 
-namespace SpellChecker;
+namespace SpellChecker\Parser;
 
+use SpellChecker\Word;
 use Tester\Assert;
 
-require '../bootstrap.php';
+require '../../bootstrap.php';
 
-$parser = new WordsParser(['PHPUnit']);
+$parser = new DefaultParser(['PHPUnit']);
 
 Assert::equal([], $parser->parse(''));
 

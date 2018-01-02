@@ -173,4 +173,30 @@ class ResultFormatter
         return $output;
     }
 
+    public function formatErrorsShort(Result $result): string
+    {
+        $output = '';
+        foreach ($result->getErrors() as $fileName => $errors) {
+            $output .= $this->formatFileErrorsShort($fileName, $errors);
+        }
+
+        return $output;
+    }
+
+    /**
+     * @param string $fileName
+     * @param \SpellChecker\Word[] $errors
+     * @return string
+     */
+    public function formatFileErrorsShort(string $fileName, array $errors): string
+    {
+        $output = '' . C::lcyan($fileName) . C::gray(' (')
+            . $this->dictionaryResolver->getContextForFileName($fileName) . C::gray("):\n");
+        $output .= implode(' ', array_unique(array_map(function (Word $word) {
+            return $word->word;
+        }, $errors))) . "\n";
+
+        return $output;
+    }
+
 }

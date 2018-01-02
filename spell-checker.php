@@ -158,7 +158,7 @@ try {
         if ($config->topWords) {
             //$console->ln()->write($formatter->formatFilesList($result->getFiles()));
             //$console->ln()->write($formatter->formatTopBlocksByContext($result));
-            $console->ln()->write($formatter->formatErrors($result));
+            $console->ln()->write($formatter->formatErrorsShort($result));
         } else {
             $console->ln()->write($formatter->formatErrors($result));
         }

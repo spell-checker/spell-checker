@@ -61,12 +61,24 @@ class DictionaryCollection
     public function contains(string $word, array $dictionaries): bool
     {
         foreach ($dictionaries as $dictionary) {
+            $withoutDiacritics = false;
+            if ($dictionary[0] === '*') {
+                $withoutDiacritics = true;
+                $dictionary = substr($dictionary, 1);
+            }
+
             if (!isset($this->dictionaries[$dictionary])) {
                 $this->createDictionary($dictionary);
             }
 
-            if ($this->dictionaries[$dictionary]->contains($word)) {
-                return true;
+            if ($withoutDiacritics) {
+                if ($this->dictionaries[$dictionary]->containsWithoutDiacritics($word)) {
+                    return true;
+                }
+            } else {
+                if ($this->dictionaries[$dictionary]->contains($word)) {
+                    return true;
+                }
             }
         }
 

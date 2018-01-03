@@ -71,7 +71,8 @@ $arguments = [
     'dictionariesWithDiacritics' => ['', Configurator::VALUES, 'dictionaries containing words with diacritics', 'list'],
     'dictionaryDirectories' => ['', Configurator::VALUES, 'paths to directories containing dictionaries', 'paths'],
         'Other:',
-    'checkDictionaries' => ['', Configurator::VALUES, 'list of user dictionaries to check for unused words', 'dictionaries'],
+    'checkLocalIgnores' => ['', Configurator::FLAG, 'check if all local exceptions are used'],
+    'checkDictionaryFiles' => ['', Configurator::VALUES, 'list of user dictionaries to check for unused words', 'names'],
     'topWords' =>       ['t', Configurator::FLAG, 'output list of top misspelled words'],
     'wordsParserExceptions' => ['', Configurator::VALUES, 'irregular words', 'words'],
         'Help:',
@@ -138,7 +139,7 @@ try {
     $dictionaries = new DictionaryCollection(
         $config->dictionaryDirectories ?? [],
         $config->dictionariesWithDiacritics ?? [],
-        $config->checkDictionaries ?? [],
+        $config->checkDictionaryFiles ?? [],
         $config->baseDir,
         $console
     );
@@ -158,7 +159,7 @@ try {
         new GarbageDetector(),
         new Base64ImageDetector(),
     ];
-    $spellChecker = new SpellChecker($wordsParsers, $heuristics, $resolver, $dictionaries, $config->baseDir);
+    $spellChecker = new SpellChecker($wordsParsers, $heuristics, $resolver, $dictionaries, (bool) $config->checkLocalIgnores);
 
     $startTime = microtime(true);
     $result = $spellChecker->checkFiles($files, function (string $fileName) use ($console) {
@@ -183,7 +184,7 @@ try {
             $console->ln()->write($formatter->formatErrors($result));
         }
     }
-    if ($config->checkDictionaries) {
+    if ($config->checkDictionaryFiles) {
         foreach ($dictionaries->getDictionaries() as $name => $dictionary) {
             if (!$dictionary->isChecked()) {
                 continue;

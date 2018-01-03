@@ -8,7 +8,7 @@ class Word
     /** @var string */
     public $word;
 
-    /** @var string|null */
+    /** @var string|bool|null (true for unused ignores) */
     public $block;
 
     /** @var int (in bytes, not characters!) */

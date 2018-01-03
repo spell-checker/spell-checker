@@ -23,23 +23,29 @@ class SpellChecker
     /** @var \SpellChecker\Dictionary\DictionaryCollection */
     private $dictionaries;
 
+    /** @var bool */
+    private $checkLocalIgnores;
+
     /**
      * @param \SpellChecker\Parser\Parser[] $wordsParsers
      * @param \SpellChecker\Heuristic\Heuristic[] $heuristics
      * @param \SpellChecker\Dictionary\DictionaryResolver $resolver
      * @param \SpellChecker\Dictionary\DictionaryCollection $dictionaries
+     * @param bool
      */
     public function __construct(
         array $wordsParsers,
         array $heuristics,
         DictionaryResolver $resolver,
-        DictionaryCollection $dictionaries
+        DictionaryCollection $dictionaries,
+        bool $checkLocalIgnores = false
     )
     {
         $this->wordsParsers = $wordsParsers;
         $this->heuristics = $heuristics;
         $this->resolver = $resolver;
         $this->dictionaries = $dictionaries;
+        $this->checkLocalIgnores = $checkLocalIgnores;
     }
 
     /**
@@ -88,6 +94,10 @@ class SpellChecker
         $ignores = [];
         if (preg_match('/spell-check-ignore: ([^\\n]+)\\n/', $string, $match)) {
             $ignores = explode(' ', $match[1]);
+            // may end with */ --> *} etc
+            if (!preg_match('/\\pL/u', end($ignores))) {
+                array_pop($ignores);
+            }
         }
 
         $fileNameParts = explode('.', basename($fileName));
@@ -118,20 +128,36 @@ class SpellChecker
         );
 
         if ($ignores !== []) {
-            $ignores = array_flip($ignores);
+            $ignores = array_combine($ignores, array_fill(0, count($ignores), 0));
             foreach ($parser->parse($string) as $n => $word) {
-                if (isset($ignores[$word->word])) {
-                    continue;
-                }
-
                 foreach ($this->heuristics as $heuristic) {
                     if ($heuristic->check($word, $string, $dictionaries)) {
                         continue 2;
                     }
                 }
+                if (isset($ignores[$word->word])) {
+                    $ignores[$word->word]++;
+                    continue;
+                }
 
                 $word->row = trim(substr($string, $word->rowStart, $word->rowEnd - $word->rowStart));
                 $errors[] = $word;
+            }
+
+            if ($this->checkLocalIgnores) {
+                foreach ($ignores as $word => $count) {
+                    if ($count < 2) {
+                        $position = strpos($string, $word);
+                        $preceding = substr($string, 0, $position);
+                        $rowNumber = strlen($preceding) - strlen(str_replace("\n", '', $preceding)) + 1;
+                        $rowStart = strrpos(substr($string, 0, $position), "\n") + 1;
+                        $rowEnd = $position + strpos(substr($string, $position), "\n");
+                        $word = new Word($word, null, $position, $rowNumber, $rowStart, $rowEnd);
+                        $word->block = true;
+                        $word->row = trim(substr($string, $rowStart, $rowEnd - $rowStart));
+                        $errors[] = $word;
+                    }
+                }
             }
         } else {
             // the same as previous, only without checking ignores

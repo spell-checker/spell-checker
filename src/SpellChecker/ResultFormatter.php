@@ -162,7 +162,8 @@ class ResultFormatter
             . implode(', ', $this->dictionaryResolver->getDictionariesForFileName($fileName)) . C::gray("):\n");
         foreach ($errors as $word) {
             $row = $word->row;
-            $width = mb_strlen($word->word . $row . $word->rowNumber) + 27;
+            $padding = $word->block === true ? 35 : 27;
+            $width = mb_strlen($word->word . $row . $word->rowNumber) + $padding;
             if ($width > $maxWidth) {
                 $row = mb_substr($row, 0, $maxWidth - $width) . '…';
             }
@@ -172,7 +173,8 @@ class ResultFormatter
                 $row
             );
 
-            $output .= C::gray(' - found "') . $word->word
+            $intro = $word->block === true ? ' - unused ignore "' : ' - found "';
+            $output .= C::gray($intro) . $word->word
                 . C::gray('" in "') . $row
                 . C::gray('" at row ') . $word->rowNumber . "\n";
         }

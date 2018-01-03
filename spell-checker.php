@@ -57,24 +57,26 @@ $arguments = [
     'config' =>         ['c', Configurator::VALUES, 'configuration files', 'paths'],
     'memoryLimit' =>    ['m', Configurator::VALUE, 'memory limit'],
     'use' =>            ['', Configurator::VALUES, 'configuration profiles to use', 'profiles'],
+        'File selection:',
     'baseDir' =>        ['b', Configurator::VALUE, 'base directory for relative paths', 'path'],
     'files' =>          ['f', Configurator::VALUES, 'files to check', 'paths'],
     'directories' =>    ['d', Configurator::VALUES, 'directories to check', 'paths'],
     'extensions' =>     ['e', Configurator::VALUES, 'file extensions to check', 'extensions'],
     'excludes' =>       ['E', Configurator::VALUES, 'file name patterns to exclude', 'patterns'],
-    'fileContexts' =>   ['', Configurator::VALUES],
-    'contexts' =>       ['', Configurator::VALUES],
-    'dictionaries' =>   ['', Configurator::VALUES],
-    'dictionaryDirectories' => ['D', Configurator::VALUES, 'paths to directories containing dictionaries', 'paths'],
-    'dictionariesByFileExtension' => ['', Configurator::VALUES],
-    'dictionariesWithDiacritics' => ['', Configurator::VALUES, 'dictionaries containing words with diacritics', 'dictionaries'],
+        'Dictionaries:',
+    'dictionaries' =>   ['D', Configurator::VALUES, 'dictionaries to use on all files', 'list'],
+    'dictionariesByFileName' => ['n', Configurator::VALUES, 'file name pattern -> list of dictionaries', 'map'],
+    'dictionariesByFileExtension' => ['x', Configurator::VALUES, 'file extension -> list of dictionaries', 'map'],
+    'dictionariesWithDiacritics' => ['', Configurator::VALUES, 'dictionaries containing words with diacritics', 'list'],
+    'dictionaryDirectories' => ['', Configurator::VALUES, 'paths to directories containing dictionaries', 'paths'],
+        'Other:',
     'checkDictionaries' => ['', Configurator::VALUES, 'list of user dictionaries to check for unused words', 'dictionaries'],
+    'topWords' =>       ['t', Configurator::FLAG, 'output list of top misspelled words'],
     'wordsParserExceptions' => ['', Configurator::VALUES, 'irregular words', 'words'],
         'Help:',
     'help' =>           ['h', Configurator::FLAG_VALUE, 'show help', 'command'],
     'license' =>        ['', Configurator::FLAG, 'show license'],
         'CLI output:',
-    'topWords' =>       ['t', Configurator::FLAG, 'output list of top misspelled words'],
     'noColors' =>       ['C', Configurator::FLAG, 'without colors'],
     'noLogo' =>         ['L', Configurator::FLAG, 'without logo'],
 ];
@@ -126,8 +128,8 @@ try {
     $finder = new FileFinder($config->baseDir);
     $files = $finder->findFilesByConfig($config);
     $resolver = new DictionaryResolver(
-        $config->fileContexts ?? [],
-        $config->contexts ?? [],
+        $config->dictionaries ?? [],
+        $config->dictionariesByFileName ?? [],
         $config->dictionariesByFileExtension ?? []
     );
     $dictionaries = new DictionaryCollection(

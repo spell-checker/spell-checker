@@ -77,7 +77,7 @@ class ResultFormatter
     {
         $contexts = [];
         foreach ($result->getErrors() as $fileName => $fileErrors) {
-            $context = $this->dictionaryResolver->getContextForFileName($fileName);
+            $context = implode('-', $this->dictionaryResolver->getDictionariesForFileName($fileName));
             foreach ($fileErrors as $error) {
                 $word = $error->word;
                 if (isset($contexts[$context][$word])) {
@@ -110,7 +110,7 @@ class ResultFormatter
     {
         $contexts = [];
         foreach ($result->getErrors() as $fileName => $fileErrors) {
-            $context = $this->dictionaryResolver->getContextForFileName($fileName);
+            $context = implode('-', $this->dictionaryResolver->getDictionariesForFileName($fileName));
             foreach ($fileErrors as $error) {
                 $word = $error->block ?? $error->word;
                 if (isset($contexts[$context][$word])) {
@@ -159,7 +159,7 @@ class ResultFormatter
     public function formatFileErrors(string $fileName, array $errors, int $maxWidth): string
     {
         $output = '' . C::lcyan($this->stripBaseDir($fileName)) . C::gray(' (')
-            . $this->dictionaryResolver->getContextForFileName($fileName) . C::gray("):\n");
+            . implode(', ', $this->dictionaryResolver->getDictionariesForFileName($fileName)) . C::gray("):\n");
         foreach ($errors as $word) {
             $row = $word->row;
             $width = mb_strlen($word->word . $row . $word->rowNumber) + 27;
@@ -198,7 +198,7 @@ class ResultFormatter
     public function formatFileErrorsShort(string $fileName, array $errors): string
     {
         $output = '' . C::lcyan($this->stripBaseDir($fileName)) . C::gray(' (')
-            . $this->dictionaryResolver->getContextForFileName($fileName) . C::gray("):\n");
+            . implode(',', $this->dictionaryResolver->getDictionariesForFileName($fileName)) . C::gray("):\n");
         $output .= implode(' ', array_unique(array_map(function (Word $word) {
             return $word->word;
         }, $errors))) . "\n";

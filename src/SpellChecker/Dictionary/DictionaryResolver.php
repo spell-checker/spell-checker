@@ -5,33 +5,45 @@ namespace SpellChecker\Dictionary;
 class DictionaryResolver
 {
 
-    private const SKIP_FILE_CONTEXT = 'skip';
+    private const SKIP_FILE_MARKER = 'skip';
 
     /** @var string[] */
-    private $filePatterns = [];
+    private $dictionaries;
 
     /** @var string[][] */
-    private $contexts;
+    private $byFileName;
 
     /** @var string[][] */
-    private $extensions;
+    private $byExtensions;
 
     /**
-     * @param string[] $filePatterns
-     * @param string[][] $contexts
-     * @param string[][] $dictionariesByFileExtension
+     * @param string[] $dictionaries
+     * @param string[][] $dictionariesByFileName
+     * @param string[][] $dictionariesByExtension
      */
-    public function __construct(array $filePatterns, array $contexts, array $dictionariesByFileExtension)
+    public function __construct(array $dictionaries, array $dictionariesByFileName, array $dictionariesByExtension)
     {
-        $this->setPatterns($filePatterns);
-        $this->contexts = $contexts;
-        $this->extensions = $dictionariesByFileExtension;
+        $this->dictionaries = $dictionaries;
+        $this->setPatterns($dictionariesByFileName);
+        $this->byExtensions = $this->sanitize($dictionariesByExtension);
+    }
+
+    /**
+     * @param string[] $values
+     * @return string[][]
+     */
+    private function sanitize(array $values): array
+    {
+        return array_map(function (string $value) {
+            return array_unique(array_filter(explode(' ', $value)));
+        }, $values);
     }
 
     private function setPatterns(array $patterns): void
     {
-        foreach ($patterns as $pattern => $context) {
-            $this->filePatterns['/^' . str_replace(['.', '*', '?', '/'], ['\\.', '.*', '.', '\\/'], $pattern) . '$/'] = $context;
+        foreach ($patterns as $pattern => $dictionaries) {
+            $pattern = '/^' . str_replace(['.', '*', '?', '/'], ['\\.', '.*', '.', '\\/'], $pattern) . '$/';
+            $this->byFileName[$pattern] = array_unique(array_filter(explode(' ', $dictionaries)));
         }
     }
 
@@ -41,38 +53,43 @@ class DictionaryResolver
      */
     public function getDictionariesForFileName(string $fileName): array
     {
-        $context = $this->getContextForFileName($fileName);
-        if ($context === self::SKIP_FILE_CONTEXT) {
+        $dictionaries = $this->getDictionariesByFileNamePattern($fileName);
+        if ($dictionaries === null) {
             return [];
         }
 
-        $dictionaries = [];
-        if ($context !== null) {
-            $dictionaries = $this->contexts[$context] ?? [];
+        $dictionaries = array_merge($this->dictionaries, $dictionaries);
+
+        if (strpos($fileName, '.') === false) {
+            return $dictionaries;
         }
 
         $parts = explode('.', $fileName);
         $extension = end($parts);
-        if (isset($this->extensions[$extension])) {
-            $dictionaries = array_merge($dictionaries, $this->extensions[$extension]);
+        if (isset($this->byExtensions[$extension])) {
+            $dictionaries = array_merge($dictionaries, $this->byExtensions[$extension]);
         }
 
         return $dictionaries;
     }
 
-    public function getContextForFileName(string $fileName): ?string
+    /**
+     * @param string $fileName
+     * @return string[]|null
+     */
+    private function getDictionariesByFileNamePattern(string $fileName): ?array
     {
-        if (strpos($fileName, '.') === false) {
-            return null;
-        }
-
-        foreach ($this->filePatterns as $pattern => $context) {
+        foreach ($this->byFileName as $pattern => $dictionaries) {
             if (preg_match($pattern, $fileName)) {
-                return $context;
+                if ($dictionaries === [self::SKIP_FILE_MARKER]) {
+                    return null;
+                } else {
+                    return $dictionaries;
+                }
             }
         }
 
-        return null;
+        return [];
     }
 
 }

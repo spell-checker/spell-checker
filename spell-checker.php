@@ -57,6 +57,7 @@ $arguments = [
     'config' =>         ['c', Configurator::VALUES, 'configuration files', 'paths'],
     'memoryLimit' =>    ['m', Configurator::VALUE, 'memory limit'],
     'use' =>            ['', Configurator::VALUES, 'configuration profiles to use', 'profiles'],
+    'debug' =>          ['', Configurator::FLAG, 'show debug info'],
         'File selection:',
     'baseDir' =>        ['b', Configurator::VALUE, 'base directory for relative paths', 'path'],
     'files' =>          ['f', Configurator::VALUES, 'files to check', 'paths'],
@@ -86,6 +87,8 @@ $defaults = [
 ];
 $config = new Configurator($arguments, $defaults);
 $config->loadCliArguments();
+
+$console->debug = $config->debug;
 
 if ($config->noColors) {
     C::$off = true;
@@ -136,7 +139,8 @@ try {
         $config->dictionaryDirectories ?? [],
         $config->dictionariesWithDiacritics ?? [],
         $config->checkDictionaries ?? [],
-        $config->baseDir
+        $config->baseDir,
+        $console
     );
     $defaultParser = new DefaultParser($config->wordsParserExceptions ?? []);
     $wordsParsers = [

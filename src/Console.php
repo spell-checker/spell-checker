@@ -12,6 +12,9 @@ namespace Dogma\Tools;
 class Console
 {
 
+    /** @var bool */
+    public $debug;
+
     public function write(string ...$params): self
     {
         foreach ($params as $param) {
@@ -46,6 +49,33 @@ class Console
         echo file_get_contents($fileName);
 
         return $this;
+    }
+
+    public function debugWrite(string ...$params): self
+    {
+        if (!$this->debug) {
+            return $this;
+        }
+
+        return $this->write(...$params);
+    }
+
+    public function debugWriteLn(string ...$params): self
+    {
+        if (!$this->debug) {
+            return $this;
+        }
+
+        return $this->writeLn(...$params);
+    }
+
+    public function debugLn(int $rows = 1): self
+    {
+        if (!$this->debug) {
+            return $this;
+        }
+
+        return $this->ln($rows);
     }
 
     public static function switchTerminalToUtf8(): void

@@ -2,6 +2,8 @@
 
 namespace SpellChecker\Dictionary;
 
+use Dogma\Tools\Colors as C;
+use Dogma\Tools\Console;
 use SpellChecker\DiacriticsHelper;
 use Symfony\Component\Finder\Finder;
 
@@ -26,19 +28,29 @@ class DictionaryCollection
     /** @var string[] */
     private $diacriticDictionaries;
 
+    /** @var \Dogma\Tools\Console|null */
+    private $console;
+
     /**
      * @param string[] $directories
      * @param string[] $diacriticDictionaries
      * @param string[] $checkedFiles
      * @param string|null $baseDir
      */
-    public function __construct(array $directories, array $diacriticDictionaries, array $checkedFiles, ?string $baseDir = null)
+    public function __construct(
+        array $directories,
+        array $diacriticDictionaries,
+        array $checkedFiles,
+        ?string $baseDir = null,
+        ?Console $console = null
+    )
     {
         $this->directories = $directories;
         $this->checkedFiles = $checkedFiles;
         $this->baseDir = $baseDir !== null ? trim($baseDir, '/') : null;
         $this->dictionaries = [];
         $this->diacriticDictionaries = $diacriticDictionaries;
+        $this->console = $console ?? new Console();
     }
 
     /**
@@ -87,13 +99,16 @@ class DictionaryCollection
 
     private function createDictionary(string $dictionary): void
     {
+        $this->console->debugWrite(C::gray('['), C::yellow($dictionary));
+
         if ($this->files === null) {
             $this->findDictionaryFiles();
         }
 
         $files = array_filter($this->files, function (string $filePath) use ($dictionary): bool {
             $fileName = basename($filePath);
-            return strpos($fileName, $dictionary) === 0;
+            $next = substr($fileName, strlen($dictionary), 1);
+            return strpos($fileName, $dictionary) === 0 && ($next === '-' || $next === '.');
         });
         $checkedFiles = array_filter($this->files, function (string $filePath): bool {
             $fileName = basename($filePath);
@@ -103,11 +118,19 @@ class DictionaryCollection
             throw new \SpellChecker\NoDictionaryFileFoundException($dictionary);
         }
 
+        $this->console->debugWrite(C::gray(': ' . implode(' ', array_map(function (string $filePath): string {
+            return basename($filePath);
+        }, $files))));
+
+        $startTime = microtime(true);
         $this->dictionaries[$dictionary] = new Dictionary(
             $files,
             in_array($dictionary, $this->diacriticDictionaries),
             $checkedFiles
         );
+
+        $totalTime = microtime(true) - $startTime;
+        $this->console->debugWrite(' ', number_format($totalTime, 3), 's', C::gray(']'));
     }
 
     private function findDictionaryFiles(): void
@@ -121,6 +144,7 @@ class DictionaryCollection
         $finder = new Finder();
         $finder->files();
         $finder->name('*.dic');
+        $finder->name('*.dia');
         $finder->in($directories);
         $finder->ignoreDotFiles(true);
         $finder->ignoreVCS(true);

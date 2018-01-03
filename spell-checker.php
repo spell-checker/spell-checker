@@ -123,7 +123,8 @@ if ($config->memoryLimit !== null) {
 }
 
 try {
-    $files = (new FileFinder())->findFilesByConfig($config);
+    $finder = new FileFinder($config->baseDir);
+    $files = $finder->findFilesByConfig($config);
     $resolver = new DictionaryResolver(
         $config->fileContexts ?? [],
         $config->contexts ?? [],
@@ -165,7 +166,7 @@ try {
     $console->ln(2);
     Console::switchTerminalToUtf8();
 
-    $formatter = new ResultFormatter($resolver);
+    $formatter = new ResultFormatter($resolver, $finder->getBaseDir());
     $console->writeLn($formatter->summarize($result));
     if ($result->errorsFound()) {
         if ($config->topWords) {

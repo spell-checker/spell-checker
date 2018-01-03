@@ -12,9 +12,16 @@ class ResultFormatter
     /** @var \SpellChecker\Dictionary\DictionaryResolver */
     private $dictionaryResolver;
 
-    public function __construct(DictionaryResolver $dictionaryResolver)
+    /** @var string|null */
+    private $baseDir;
+
+    public function __construct(
+        DictionaryResolver $dictionaryResolver,
+        ?string $baseDir
+    )
     {
         $this->dictionaryResolver = $dictionaryResolver;
+        $this->baseDir = $baseDir;
     }
 
     public function summarize(Result $result): string
@@ -36,7 +43,7 @@ class ResultFormatter
     {
         $output = '';
         foreach ($files as $fileName) {
-            $output .= C::lcyan($fileName) . "\n";
+            $output .= C::lcyan($this->stripBaseDir($fileName)) . "\n";
         }
 
         return $output;
@@ -151,7 +158,7 @@ class ResultFormatter
      */
     public function formatFileErrors(string $fileName, array $errors, int $maxWidth): string
     {
-        $output = '' . C::lcyan($fileName) . C::gray(' (')
+        $output = '' . C::lcyan($this->stripBaseDir($fileName)) . C::gray(' (')
             . $this->dictionaryResolver->getContextForFileName($fileName) . C::gray("):\n");
         foreach ($errors as $word) {
             $row = $word->row;
@@ -190,13 +197,23 @@ class ResultFormatter
      */
     public function formatFileErrorsShort(string $fileName, array $errors): string
     {
-        $output = '' . C::lcyan($fileName) . C::gray(' (')
+        $output = '' . C::lcyan($this->stripBaseDir($fileName)) . C::gray(' (')
             . $this->dictionaryResolver->getContextForFileName($fileName) . C::gray("):\n");
         $output .= implode(' ', array_unique(array_map(function (Word $word) {
             return $word->word;
         }, $errors))) . "\n";
 
         return $output;
+    }
+
+    private function stripBaseDir(string $fileName): string
+    {
+        if ($this->baseDir === '') {
+            return $fileName;
+        }
+        return substr($fileName, 0, strlen($this->baseDir)) === $this->baseDir
+            ? substr($fileName, strlen($this->baseDir))
+            : $fileName;
     }
 
 }

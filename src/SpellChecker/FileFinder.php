@@ -9,25 +9,40 @@ use Symfony\Component\Finder\Iterator\FilenameFilterIterator;
 class FileFinder
 {
 
+    /** @var string */
+    private $baseDir;
+
+    public function __construct(?string $baseDir = null)
+    {
+        $this->baseDir = $baseDir !== null ? $this->fixPath($baseDir) : $this->fixPath(getcwd());
+        if ($this->baseDir !== '') {
+            $this->baseDir .= '/';
+        }
+    }
+
+    public function getBaseDir(): string
+    {
+        return $this->baseDir;
+    }
+
     /**
      * @param \Dogma\Tools\Configurator $config
      * @return string[]
      */
     public function findFilesByConfig(Configurator $config): array
     {
-        return $this->filterFiles($config->files, $config->directories, $config->extensions, $config->excludes, $config->baseDir);
+        return $this->filterFiles($config->files, $config->directories, $config->extensions, $config->excludes);
     }
 
     /**
      * @param string[]|null $directories
      * @param string[]|null $extensions
      * @param string[]|null $excludes
-     * @param string|null $baseDir
      * @return string[]
      */
-    public function findFiles(?array $directories, ?array $extensions = [], ?array $excludes = [], ?string $baseDir = null): array
+    public function findFiles(?array $directories, ?array $extensions = [], ?array $excludes = []): array
     {
-        return $this->filterFiles([], $directories, $extensions, $excludes, $baseDir);
+        return $this->filterFiles([], $directories, $extensions, $excludes);
     }
 
     /**
@@ -35,24 +50,19 @@ class FileFinder
      * @param string[]|null $directories
      * @param string[]|null $extensions
      * @param string[]|null $excludes
-     * @param string|null $baseDir
      * @return string[]
      */
-    public function filterFiles(?array $files, ?array $directories, ?array $extensions = [], ?array $excludes = [], ?string $baseDir = null): array
+    public function filterFiles(?array $files, ?array $directories, ?array $extensions = [], ?array $excludes = []): array
     {
-        $baseDir = $baseDir !== null ? $this->fixPath($baseDir) : $this->fixPath(getcwd());
-        if ($baseDir !== '') {
-            $baseDir .= '/';
-        }
         $recursive = [];
         $nonRecursive = [];
         if ($directories) {
             foreach ($directories as $directory) {
                 $directory = $this->fixPath($directory);
                 if ($directory[strlen($directory) - 1] === '/' && strlen($directory) > 1) {
-                    $nonRecursive[] = $baseDir . trim($directory, '/');
+                    $nonRecursive[] = $this->baseDir . trim($directory, '/');
                 } else {
-                    $recursive[] = $baseDir . trim($directory, '/');
+                    $recursive[] = $this->baseDir . trim($directory, '/');
                 }
             }
         }
@@ -72,15 +82,15 @@ class FileFinder
 
             if ($files) {
                 // filter found files by given files (to keep all other constraints)
-                return array_intersect($foundFiles, $this->fixPaths($files));
+                return array_intersect($foundFiles, $this->fixPaths($files, $this->baseDir));
             } else {
                 return $foundFiles;
             }
 
         } elseif ($files) {
-            if ($baseDir !== '') {
-                $foundFiles = array_map(function (string $name) use ($baseDir): string {
-                    return $this->fixPath($baseDir . $name);
+            if ($this->baseDir !== '') {
+                $foundFiles = array_map(function (string $name): string {
+                    return $this->fixPath($this->baseDir . $name);
                 }, $files);
             } else {
                 $foundFiles = $this->fixPaths($files);
@@ -132,12 +142,13 @@ class FileFinder
 
     /**
      * @param string[] $paths
+     * @param string $baseDir
      * @return string[]
      */
-    public function fixPaths(array $paths): array
+    public function fixPaths(array $paths, string $baseDir = ''): array
     {
-        return array_map(function (string $path) {
-            return $this->fixPath($path);
+        return array_map(function (string $path) use ($baseDir) {
+            return $baseDir . $this->fixPath($path);
         }, $paths);
     }
 

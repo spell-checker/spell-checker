@@ -15,6 +15,8 @@ use Nette\Neon\Neon;
 final class Configurator extends \stdClass
 {
 
+    private const HELP_COLUMN_WIDTH = 32;
+
     public const FLAG = 'flag';
     public const FLAG_VALUE = 'flag-value';
     public const VALUE = 'value';
@@ -65,7 +67,7 @@ final class Configurator extends \stdClass
             if ($type === self::FLAG_VALUE || $type === self::VALUE || $type === self::VALUES || $type === self::ENUM || $type === self::SET) {
                 $row .= C::gray($hint ? sprintf(' <%s>', $hint) : ' <value>');
             }
-            $row = C::padString($row, 23);
+            $row = C::padString($row, self::HELP_COLUMN_WIDTH);
             $row .= ' ' . $info;
             if ($type === self::ENUM || $type === self::SET) {
                 $row .= '; values: ' . implode('|', array_map([C::class, 'lyellow'], $values));

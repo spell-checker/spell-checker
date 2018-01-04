@@ -18,8 +18,8 @@ class DictionaryResolver
 
     /**
      * @param string[] $dictionaries
-     * @param string[][] $dictionariesByFileName
-     * @param string[][] $dictionariesByExtension
+     * @param string[] $dictionariesByFileName
+     * @param string[] $dictionariesByExtension
      */
     public function __construct(array $dictionaries, array $dictionariesByFileName, array $dictionariesByExtension)
     {

@@ -17,31 +17,21 @@ extensions:
     - *.json
     - *.md
 
-# file name pattern -> file context name (first matched is used)
-fileContexts:
-    *.php: php
-    *.phpt: php
-    *.neon: neon
-    *.xml: xml
-    *.properties: txt
-    *.json: txt
-    *.md: txt
+# file name pattern -> list of dictionaries (first matched is used)
+dictionariesByFileName:
+    *.php: en
+    *.phpt: en
+    *.neon: en
+    *.xml: en
+    *.properties: en
+    *.json: en
+    *.md: en
 
-# file context -> dictionary name
-# every dictionary name can match several dictionary files by its prefix. eg:
-# dictionary "php" will load "php.dic", "php-ext.dic", "php-config.dic"
-contexts:
-    php: [en, custom]
-    neon: [en, custom]
-    xml: [en, custom]
-    txt: [en, custom]
-
-# automatically used dictionaries. does not have to be configured in contexts
-# (useful on larger projects with lots of contexts)
+# file extension -> list of dictionaries
 dictionariesByFileExtension:
-	php: [php]
-	phpt: [php]
-	neon: [neon]
+	php: php
+	phpt: php
+	neon: neon
 
 # paths to search for dictionary files. must have .dic extension
 dictionaryDirectories:

@@ -31,7 +31,7 @@ class SpellChecker
      * @param \SpellChecker\Heuristic\Heuristic[] $heuristics
      * @param \SpellChecker\Dictionary\DictionaryResolver $resolver
      * @param \SpellChecker\Dictionary\DictionaryCollection $dictionaries
-     * @param bool
+     * @param bool $checkLocalIgnores
      */
     public function __construct(
         array $wordsParsers,

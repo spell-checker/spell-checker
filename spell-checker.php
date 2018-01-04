@@ -72,7 +72,8 @@ $arguments = [
     'dictionaryDirectories' => ['', Configurator::VALUES, 'paths to directories containing dictionaries', 'paths'],
         'Other:',
     'checkLocalIgnores' => ['', Configurator::FLAG, 'check if all local exceptions are used'],
-    'checkDictionaryFiles' => ['', Configurator::VALUES, 'list of user dictionaries to check for unused words', 'names'],
+    'checkDictionaryFiles' => ['', Configurator::FLAG, 'check configured dictionary file for unused word'],
+    'dictionaryFilesToCheck' => ['', Configurator::VALUES, 'list of user dictionaries to check for unused words', 'names'],
     'topWords' =>       ['t', Configurator::FLAG, 'output list of top misspelled words'],
     'wordsParserExceptions' => ['', Configurator::VALUES, 'irregular words', 'words'],
         'Help:',
@@ -136,10 +137,13 @@ try {
         $config->dictionariesByFileName ?? [],
         $config->dictionariesByFileExtension ?? []
     );
+    $checkFiles = $config->checkDictionaryFiles
+        ? $config->dictionaryFilesToCheck ?? []
+        : [];
     $dictionaries = new DictionaryCollection(
         $config->dictionaryDirectories ?? [],
         $config->dictionariesWithDiacritics ?? [],
-        $config->checkDictionaryFiles ?? [],
+        $checkFiles,
         $config->baseDir,
         $console
     );

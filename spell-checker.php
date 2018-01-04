@@ -74,6 +74,7 @@ $arguments = [
     'checkLocalIgnores' => ['', Configurator::FLAG, 'check if all local exceptions are used'],
     'checkDictionaryFiles' => ['', Configurator::FLAG, 'check configured dictionary file for unused word'],
     'dictionaryFilesToCheck' => ['', Configurator::VALUES, 'list of user dictionaries to check for unused words', 'names'],
+    'short' =>          ['s', Configurator::FLAG, 'shorter output with only file and list of words'],
     'topWords' =>       ['t', Configurator::FLAG, 'output list of top misspelled words'],
     'wordsParserExceptions' => ['', Configurator::VALUES, 'irregular words', 'words'],
         'Help:',
@@ -182,7 +183,9 @@ try {
     if ($result->errorsFound()) {
         if ($config->topWords) {
             //$console->ln()->write($formatter->formatFilesList($result->getFiles()));
-            //$console->ln()->write($formatter->formatTopBlocksByContext($result));
+            $console->ln()->write($formatter->formatTopBlocksByContext($result));
+        }
+        if ($config->short) {
             $console->ln()->write($formatter->formatErrorsShort($result));
         } else {
             $console->ln()->write($formatter->formatErrors($result));

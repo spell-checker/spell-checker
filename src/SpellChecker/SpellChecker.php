@@ -9,6 +9,8 @@ use SpellChecker\Parser\Parser;
 class SpellChecker
 {
 
+    public const DEFAULT_MAX_ERRORS = 1000;
+
     public const DEFAULT_PARSER = '*';
 
     /** @var \SpellChecker\Parser\Parser[] */
@@ -23,6 +25,9 @@ class SpellChecker
     /** @var \SpellChecker\Dictionary\DictionaryCollection */
     private $dictionaries;
 
+    /** @var int */
+    private $maxErrors;
+
     /** @var bool */
     private $checkLocalIgnores;
 
@@ -31,6 +36,7 @@ class SpellChecker
      * @param \SpellChecker\Heuristic\Heuristic[] $heuristics
      * @param \SpellChecker\Dictionary\DictionaryResolver $resolver
      * @param \SpellChecker\Dictionary\DictionaryCollection $dictionaries
+     * @param int $maxErrors
      * @param bool $checkLocalIgnores
      */
     public function __construct(
@@ -38,6 +44,7 @@ class SpellChecker
         array $heuristics,
         DictionaryResolver $resolver,
         DictionaryCollection $dictionaries,
+        int $maxErrors = self::DEFAULT_MAX_ERRORS,
         bool $checkLocalIgnores = false
     )
     {
@@ -45,6 +52,7 @@ class SpellChecker
         $this->heuristics = $heuristics;
         $this->resolver = $resolver;
         $this->dictionaries = $dictionaries;
+        $this->maxErrors = $maxErrors;
         $this->checkLocalIgnores = $checkLocalIgnores;
     }
 
@@ -56,7 +64,7 @@ class SpellChecker
     public function checkFiles(array $files, ?callable $fileCallback = null): Result
     {
         $errors = [];
-        $count = 0;
+        $count = $prevCount = 0;
         foreach ($files as $path) {
             if (!is_readable($path)) {
                 continue;
@@ -70,6 +78,12 @@ class SpellChecker
                 $errors[$path] = $fileErrors;
                 $count += count($fileErrors);
             }
+            if ($count >= $this->maxErrors) {
+                $errors[$path] = array_slice($errors[$path], 0, $this->maxErrors - $prevCount);
+                $count = $this->maxErrors;
+                break;
+            }
+            $prevCount = $count;
         }
 
         return new Result($errors, $count);

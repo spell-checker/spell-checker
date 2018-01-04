@@ -76,6 +76,7 @@ $arguments = [
     'dictionaryFilesToCheck' => ['', Configurator::VALUES, 'list of user dictionaries to check for unused words', 'names'],
     'short' =>          ['s', Configurator::FLAG, 'shorter output with only file and list of words'],
     'topWords' =>       ['t', Configurator::FLAG, 'output list of top misspelled words'],
+    'maxErrors' =>      ['', Configurator::VALUE, 'maximum number of error before check stops', 'number'],
     'wordsParserExceptions' => ['', Configurator::VALUES, 'irregular words', 'words'],
         'Help:',
     'help' =>           ['h', Configurator::FLAG_VALUE, 'show help', 'command'],
@@ -86,6 +87,7 @@ $arguments = [
 ];
 $defaults = [
     'config' => [strtr(__DIR__, '\\', '/') . '/build/spell-checker.neon'],
+    'maxErrors' => SpellChecker::DEFAULT_MAX_ERRORS,
     'wordsParserExceptions' => ['PHPUnit'],
 ];
 $config = new Configurator($arguments, $defaults);
@@ -164,7 +166,7 @@ try {
         new GarbageDetector(),
         new Base64ImageDetector(),
     ];
-    $spellChecker = new SpellChecker($wordsParsers, $heuristics, $resolver, $dictionaries, (bool) $config->checkLocalIgnores);
+    $spellChecker = new SpellChecker($wordsParsers, $heuristics, $resolver, $dictionaries, (int) $config->maxErrors, (bool) $config->checkLocalIgnores);
 
     $startTime = microtime(true);
     $result = $spellChecker->checkFiles($files, function (string $fileName) use ($console) {
@@ -189,6 +191,9 @@ try {
             $console->ln()->write($formatter->formatErrorsShort($result));
         } else {
             $console->ln()->write($formatter->formatErrors($result));
+        }
+        if ($result->getErrorsCount() >= $config->maxErrors) {
+            $console->ln()->writeLn(sprintf('Check stopped after %d errors.', $config->maxErrors));
         }
     }
     if ($config->checkDictionaryFiles) {

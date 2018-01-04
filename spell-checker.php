@@ -63,7 +63,7 @@ $arguments = [
     'files' =>          ['f', Configurator::VALUES, 'files to check', 'paths'],
     'directories' =>    ['d', Configurator::VALUES, 'directories to check', 'paths'],
     'extensions' =>     ['e', Configurator::VALUES, 'file extensions to check', 'extensions'],
-    'excludes' =>       ['E', Configurator::VALUES, 'file name patterns to exclude', 'patterns'],
+    //'excludes' =>       ['E', Configurator::VALUES, 'file name patterns to exclude', 'patterns'],
         'Dictionaries:',
     'dictionaries' =>   ['D', Configurator::VALUES, 'dictionaries to use on all files', 'list'],
     'dictionariesByFileName' => ['n', Configurator::VALUES, 'file name pattern -> list of dictionaries', 'map'],

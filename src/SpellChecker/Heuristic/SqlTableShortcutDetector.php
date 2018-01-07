@@ -4,6 +4,9 @@ namespace SpellChecker\Heuristic;
 
 use SpellChecker\Word;
 
+/**
+ * Searches for signs, that the word is a table name abbreviation used in SQL code
+ */
 class SqlTableShortcutDetector implements \SpellChecker\Heuristic\Heuristic
 {
 
@@ -58,8 +61,6 @@ class SqlTableShortcutDetector implements \SpellChecker\Heuristic\Heuristic
     private $pattern;
 
     /**
-     * Searches for signs, that the word is a table shortcut used in SQL FROM, JOIN
-     * or previously used table shortcut used in WHERE, SELECT, HAVING, ON
      * @param \SpellChecker\Word $word
      * @param string $string
      * @param string[] $dictionaries

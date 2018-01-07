@@ -4,6 +4,9 @@ namespace SpellChecker\Heuristic;
 
 use SpellChecker\Word;
 
+/**
+ * Detects words, that are probably a string escape sequence or HTML entity
+ */
 class EscapeSequenceDetector implements \SpellChecker\Heuristic\Heuristic
 {
 

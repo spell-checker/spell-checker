@@ -4,11 +4,13 @@ namespace SpellChecker\Heuristic;
 
 use SpellChecker\Word;
 
+/**
+ * Guesses if a word may be a token or password or part of base64 encoded string
+ */
 class GarbageDetector implements \SpellChecker\Heuristic\Heuristic
 {
 
     /**
-     * Guesses if a word may be a token or part of base64 encoded string to filter them from results
      * @param \SpellChecker\Word $word
      * @param string $string
      * @param string[] $dictionaries

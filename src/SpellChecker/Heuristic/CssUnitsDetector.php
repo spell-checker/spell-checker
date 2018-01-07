@@ -5,6 +5,9 @@ namespace SpellChecker\Heuristic;
 
 use SpellChecker\Word;
 
+/**
+ * Heuristic to filter CSS color codes and values starting with a number
+ */
 class CssUnitsDetector implements \SpellChecker\Heuristic\Heuristic
 {
 

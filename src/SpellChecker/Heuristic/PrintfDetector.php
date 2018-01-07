@@ -4,6 +4,9 @@ namespace SpellChecker\Heuristic;
 
 use SpellChecker\Word;
 
+/**
+ * Filters characters, that are probably a formatting character in printf function
+ */
 class PrintfDetector implements \SpellChecker\Heuristic\Heuristic
 {
 

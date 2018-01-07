@@ -5,6 +5,9 @@ namespace SpellChecker\Heuristic;
 use SpellChecker\Dictionary\DictionaryCollection;
 use SpellChecker\Word;
 
+/**
+ * Finds out if a word is probably part of file path and tries to match it against dictionaries without accents
+ */
 class FileNameDetector implements \SpellChecker\Heuristic\Heuristic
 {
 

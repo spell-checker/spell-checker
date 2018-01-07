@@ -8,12 +8,14 @@ use Dogma\Tools\Console;
 use SpellChecker\Dictionary\DictionaryCollection;
 use SpellChecker\Dictionary\DictionaryResolver;
 use SpellChecker\Heuristic\Base64ImageDetector;
+use SpellChecker\Heuristic\BulletsDetector;
 use SpellChecker\Heuristic\CssUnitsDetector;
 use SpellChecker\Heuristic\DictionarySearch;
 use SpellChecker\Heuristic\EscapeSequenceDetector;
 use SpellChecker\Heuristic\FileNameDetector;
 use SpellChecker\Heuristic\GarbageDetector;
 use SpellChecker\Heuristic\PrintfDetector;
+use SpellChecker\Heuristic\SimpleHtmlDetector;
 use SpellChecker\Heuristic\SqlTableShortcutDetector;
 use SpellChecker\Heuristic\IdentifiersDetector;
 use SpellChecker\Parser\DefaultParser;
@@ -163,6 +165,8 @@ try {
         new SqlTableShortcutDetector(),
         new IdentifiersDetector($dictionaries),
         new FileNameDetector($dictionaries),
+        new BulletsDetector(),
+        new SimpleHtmlDetector(),
         new GarbageDetector(),
         new Base64ImageDetector(),
     ];

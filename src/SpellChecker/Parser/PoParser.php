@@ -5,6 +5,9 @@ namespace SpellChecker\Parser;
 class PoParser implements \SpellChecker\Parser\Parser
 {
 
+    public const CONTEXT_MESSAGE = 'msgid';
+    public const CONTEXT_TRANSLATION = 'msgstr';
+
     /** @var \SpellChecker\Parser\DefaultParser */
     private $defaultParser;
 
@@ -27,17 +30,20 @@ class PoParser implements \SpellChecker\Parser\Parser
         foreach ($rows as $rowIndex => $row) {
             $rowStart = $rowEnd;
             $rowEnd = $rowStart + strlen($row) + 1;
-            if (substr($row, 0, 8) !== 'msgstr "') {
+            if (!preg_match('/^(msgid|msgid_plural|msgstr)(\\[\\d+\\])? "(.*)"$/', $row, $match)) {
                 continue;
             }
-            if (!preg_match_all('/[\\p{L}0-9_-]+/u', $row, $blockMatches, PREG_OFFSET_CAPTURE)) {
+            $context = $match[1] === 'msgstr' ? self::CONTEXT_TRANSLATION : self::CONTEXT_MESSAGE;
+            $rowOffset = strlen($match[1]) + strlen($match[2]) + 2;
+            if (!preg_match_all(DefaultParser::WORD_BLOCK_REGEXP, $match[3], $blockMatches, PREG_OFFSET_CAPTURE)) {
                 continue;
             }
-            foreach ($blockMatches[0] as [$block, $position]) {
+            foreach ($blockMatches[0] as [$block, $blockPosition]) {
                 if ($block === 'msgstr') {
                     continue;
                 }
-                $this->defaultParser->blocksToWords($block, $rowStart + $position, $rowIndex + 1, $rowStart, $rowEnd, $result);
+                $position = $rowStart + $rowOffset + $blockPosition;
+                $this->defaultParser->blocksToWords($block, $position, $rowIndex + 1, $rowStart, $rowEnd, $result, $context);
             }
         }
 

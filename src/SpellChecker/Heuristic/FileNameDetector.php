@@ -32,7 +32,7 @@ class FileNameDetector implements \SpellChecker\Heuristic\Heuristic
         if (preg_match_all($this->pattern, $row, $matches)) {
             foreach ($matches[0] as $match) {
                 if (strrpos($match, $word->word) !== false) {
-                    if ($this->dictionaries->containsWithoutDiacritics($word->word, $dictionaries)) {
+                    if ($this->dictionaries->containsWithoutDiacritics($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED)) {
                         return true;
                     }
                 }

@@ -32,7 +32,7 @@ class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
         if (preg_match_all(self::URL_REGEX, $row, $matches)) {
             foreach ($matches[0] as $match) {
                 if (strrpos($match, $word->word) !== false) {
-                    if ($this->dictionaries->containsWithoutDiacritics($word->word, $dictionaries)) {
+                    if ($this->dictionaries->containsWithoutDiacritics($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED)) {
                         return true;
                     }
                 }
@@ -43,7 +43,7 @@ class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
         if (preg_match_all(self::EMAIL_REGEX, $row, $matches)) {
             foreach ($matches[0] as $match) {
                 if (strrpos($match, $word->word) !== false) {
-                    if ($this->dictionaries->containsWithoutDiacritics($word->word, $dictionaries)) {
+                    if ($this->dictionaries->containsWithoutDiacritics($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED)) {
                         return true;
                     }
                 }
@@ -58,7 +58,7 @@ class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
         if (preg_match_all('/(?:href=|id=|class=|->createUrl\\()(["\'])([^\\1]+)\\1/', $row, $matches)) {
             foreach ($matches[2] as $match) {
                 if (strrpos($match, $word->word) !== false) {
-                    if ($this->dictionaries->containsWithoutDiacritics($word->word, $dictionaries)) {
+                    if ($this->dictionaries->containsWithoutDiacritics($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED)) {
                         return true;
                     }
                 }
@@ -70,23 +70,19 @@ class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
         if (preg_match_all('/(?:msgid|msgstr) "URL: ([^"]+)"/', $row, $matches)) {
             foreach ($matches[1] as $match) {
                 if (strrpos($match, $word->word) !== false) {
-                    if ($this->dictionaries->containsWithoutDiacritics($word->word, $dictionaries)) {
+                    if ($this->dictionaries->containsWithoutDiacritics($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED)) {
                         return true;
                     }
                 }
             }
         }
 
-        // const public const HRADEC_KRALOVE_REGION
+        // public const HRADEC_KRALOVE_REGION
         if (preg_match_all('/(?:const)\\s([^A-Z0-9_]+)\\s/', $row, $matches)) {
             foreach ($matches[1] as $match) {
                 if (strrpos($match, $word->word) !== false) {
-                    $word = Strings::lower($word->word);
-                    if ($this->dictionaries->containsWithoutDiacritics($word, $dictionaries)) {
-                        return true;
-                    }
-                    $word = Strings::firstUpper($word);
-                    if ($this->dictionaries->containsWithoutDiacritics($word, $dictionaries)) {
+                    $lower = Strings::lower($word->word);
+                    if ($this->dictionaries->containsWithoutDiacritics($dictionaries, $lower, $word->context, DictionarySearch::TRY_LOWERCASE | DictionarySearch::TRY_CAPITALIZED)) {
                         return true;
                     }
                 }

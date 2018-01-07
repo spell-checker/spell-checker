@@ -1,5 +1,4 @@
 <?php declare(strict_types = 1);
-// spell-check-ignore: zlavomat
 
 namespace SpellChecker\Dictionary;
 
@@ -13,15 +12,10 @@ $always = [
 
 $byName = [
     '*.php' => 'en cs code',
-    '*.js' => 'en cs code',
-    '*.sql' => 'en cs sk code',
-    '*-slevomat.latte' => 'cs code',
-    '*-zlavomat.latte' => 'sk code',
+    '*-sk.latte' => 'sk code',
     '*.latte' => 'cs code',
-    '*.styl' => 'en css',
-    '*.neon' => 'en',
-    '*cs_CZ.po' => 'cs po code',
-    '*sk_SK.po' => 'cs sk po code',
+    '*cs.po' => 'skip',
+    '*sk.po' => 'cs/msgid sk/msgstr',
 ];
 
 $byExtension = [
@@ -39,6 +33,21 @@ Assert::same(
 );
 
 Assert::same(
+    ['foo', 'cs', 'code', 'latte', 'html'],
+    $resolver->getDictionariesForFileName('/some/path/some-file.latte')
+);
+
+Assert::same(
     ['foo', 'sk', 'code', 'latte', 'html'],
-    $resolver->getDictionariesForFileName('/some/path/some-file-zlavomat.latte')
+    $resolver->getDictionariesForFileName('/some/path/some-file-sk.latte')
+);
+
+Assert::same(
+    [],
+    $resolver->getDictionariesForFileName('/some/path/cs.po')
+);
+
+Assert::same(
+    ['foo', 'cs/msgid', 'sk/msgstr'],
+    $resolver->getDictionariesForFileName('/some/path/sk.po')
 );

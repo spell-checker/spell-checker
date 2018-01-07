@@ -7,6 +7,8 @@ use SpellChecker\Word;
 class DefaultParser implements \SpellChecker\Parser\Parser
 {
 
+    public const WORD_BLOCK_REGEXP = '/[\\p{L}0-9_-]+/u';
+
     /** @var string[] */
     private $exceptions;
 
@@ -27,7 +29,7 @@ class DefaultParser implements \SpellChecker\Parser\Parser
     {
         $result = [];
 
-        if (!preg_match_all('/[\\p{L}0-9_-]+/u', $string, $blockMatches, PREG_OFFSET_CAPTURE)) {
+        if (!preg_match_all(self::WORD_BLOCK_REGEXP, $string, $blockMatches, PREG_OFFSET_CAPTURE)) {
             return $result;
         }
 
@@ -62,8 +64,9 @@ class DefaultParser implements \SpellChecker\Parser\Parser
      * @param int $rowStart
      * @param int $rowEnd
      * @param \SpellChecker\Word[] $result
+     * @param string|null $context
      */
-    public function blocksToWords(string $block, int $position, int $rowNumber, int $rowStart, int $rowEnd, array &$result): void
+    public function blocksToWords(string $block, int $position, int $rowNumber, int $rowStart, int $rowEnd, array &$result, ?string $context = null): void
     {
         $block = trim($block, '_-');
 
@@ -75,25 +78,42 @@ class DefaultParser implements \SpellChecker\Parser\Parser
         if (strpos($block, '_') !== false || strpos($block, '-') !== false) {
             // FOO_BAR or fooBar_barBaz or e-mail
             $parts = preg_split('/[_-]/', $block);
-            $underscore = true;
+            $split = true;
         } else {
             $parts = [$block];
-            $underscore = false;
+            $split = false;
         }
 
         $offset = 0;
-        foreach ($parts as $part) {
+        $prefixNext = null;
+        foreach ($parts as $i => $part) {
+            // fucking e-mail exception
+            if (($part === 'e' || $part === 'E')
+                && isset($parts[$i + 1])
+                && strpos($block, '-') === 1
+            ) {
+                $prefixNext = $part . '-';
+                continue;
+            }
+            if ($prefixNext !== null) {
+                $part = $prefixNext . $part;
+                if ($part === $block) {
+                    $split = false;
+                }
+                $prefixNext = null;
+            }
+
             if (in_array($part, $this->exceptions)) {
                 // FOOBar
-                $result[] = new Word($part, $underscore ? $block : null, $position + $offset, $rowNumber, $rowStart, $rowEnd);
+                $result[] = new Word($part, $split ? $block : null, $position + $offset, $rowNumber, $rowStart, $rowEnd, $context);
             } elseif (preg_match('/^[\\p{Lu}]+$/u', $part)) {
                 // FOO
-                $result[] = new Word($part, $underscore ? $block : null, $position + $offset, $rowNumber, $rowStart, $rowEnd);
+                $result[] = new Word($part, $split ? $block : null, $position + $offset, $rowNumber, $rowStart, $rowEnd, $context);
             } else {
                 $words = array_values(array_filter(preg_split('/(?=[\\p{Lu}])/u', $part)));
                 if (count($words) === 1) {
                     // foo
-                    $result[] = new Word($words[0], $underscore ? $block : null, $position + $offset, $rowNumber, $rowStart, $rowEnd);
+                    $result[] = new Word($words[0], $split ? $block : null, $position + $offset, $rowNumber, $rowStart, $rowEnd, $context);
                 } else {
                     // fooBar
                     $offset2 = 0;
@@ -101,7 +121,7 @@ class DefaultParser implements \SpellChecker\Parser\Parser
                         if (preg_match('/^[0-9]+$/', $word)) {
                             continue;
                         }
-                        $result[] = new Word($word, $block, $position + $offset + $offset2, $rowNumber, $rowStart, $rowEnd);
+                        $result[] = new Word($word, $block, $position + $offset + $offset2, $rowNumber, $rowStart, $rowEnd, $context);
                         $offset2 += strlen($word);
                     }
                 }

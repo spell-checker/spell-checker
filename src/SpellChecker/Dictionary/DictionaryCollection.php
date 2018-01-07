@@ -4,7 +4,9 @@ namespace SpellChecker\Dictionary;
 
 use Dogma\Tools\Colors as C;
 use Dogma\Tools\Console;
+use Nette\Utils\Strings;
 use SpellChecker\DiacriticsHelper;
+use SpellChecker\Heuristic\DictionarySearch;
 use Symfony\Component\Finder\Finder;
 
 class DictionaryCollection
@@ -54,12 +56,16 @@ class DictionaryCollection
     }
 
     /**
-     * @param string $word
      * @param string[] $dictionaries
+     * @param string $word
+     * @param string|null $context
+     * @param int $flags
      * @return bool
      */
-    public function contains(string $word, array $dictionaries): bool
+    public function contains(array $dictionaries, string $word, ?string $context = null, int $flags = 0): bool
     {
+        $dictionaries = $this->filterDictionaries($dictionaries, $context);
+
         foreach ($dictionaries as $dictionary) {
             $withoutDiacritics = false;
             if ($dictionary[0] === '*') {
@@ -75,9 +81,33 @@ class DictionaryCollection
                 if ($this->dictionaries[$dictionary]->containsWithoutDiacritics($word)) {
                     return true;
                 }
+                if ($flags & DictionarySearch::TRY_LOWERCASE) {
+                    $lower = mb_strtolower($word);
+                    if ($this->dictionaries[$dictionary]->containsWithoutDiacritics($lower)) {
+                        return true;
+                    }
+                }
+                if ($flags & DictionarySearch::TRY_CAPITALIZED) {
+                    $capitalized = Strings::firstUpper(mb_strtolower($word));
+                    if ($this->dictionaries[$dictionary]->containsWithoutDiacritics($capitalized)) {
+                        return true;
+                    }
+                }
             } else {
                 if ($this->dictionaries[$dictionary]->contains($word)) {
                     return true;
+                }
+                if ($flags & DictionarySearch::TRY_LOWERCASE) {
+                    $lower = mb_strtolower($word);
+                    if ($this->dictionaries[$dictionary]->contains($lower)) {
+                        return true;
+                    }
+                }
+                if ($flags & DictionarySearch::TRY_CAPITALIZED) {
+                    $capitalized = Strings::firstUpper(mb_strtolower($word));
+                    if ($this->dictionaries[$dictionary]->contains($capitalized)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -86,12 +116,16 @@ class DictionaryCollection
     }
 
     /**
-     * @param string $word
      * @param string[] $dictionaries
+     * @param string $word
+     * @param string|null $context
+     * @param int $flags
      * @return bool
      */
-    public function containsWithoutDiacritics(string $word, array $dictionaries): bool
+    public function containsWithoutDiacritics(array $dictionaries, string $word, string $context = null, int $flags = 0): bool
     {
+        $dictionaries = $this->filterDictionaries($dictionaries, $context);
+
         $stripped = DiacriticsHelper::removeDiacritics($word);
         foreach ($dictionaries as $dictionary) {
             if (!in_array($dictionary, $this->diacriticDictionaries)) {
@@ -104,9 +138,39 @@ class DictionaryCollection
             if ($this->dictionaries[$dictionary]->containsWithoutDiacritics($stripped)) {
                 return true;
             }
+            if ($flags & DictionarySearch::TRY_LOWERCASE) {
+                $lower = mb_strtolower($word);
+                if ($this->dictionaries[$dictionary]->containsWithoutDiacritics($lower)) {
+                    return true;
+                }
+            }
+            if ($flags & DictionarySearch::TRY_CAPITALIZED) {
+                $capitalized = Strings::firstUpper(mb_strtolower($word));
+                if ($this->dictionaries[$dictionary]->containsWithoutDiacritics($capitalized)) {
+                    return true;
+                }
+            }
         }
 
         return false;
+    }
+
+    /**
+     * @param string[] $dictionaries
+     * @param string $context
+     * @return string[]
+     */
+    private function filterDictionaries(array $dictionaries, ?string $context): array
+    {
+        $result = [];
+        foreach ($dictionaries as $dictionary) {
+            [$dic, $dicContext] = explode('/', $dictionary . '/');
+            if ($dicContext === '' || $dicContext === $context) {
+                $result[] = $dic;
+            }
+        }
+
+        return $result;
     }
 
     private function createDictionary(string $dictionary): void

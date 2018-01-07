@@ -13,6 +13,10 @@ $parser = new DefaultParser(['PHPUnit']);
 Assert::equal([], $parser->parse(''));
 
 Assert::equal([
+    new Word('e-mailů', null, 0, 1, 0, 8)
+], $parser->parse('e-mailů'));
+
+Assert::equal([
     new Word('foo', null, 0, 1, 0, 3)
 ], $parser->parse('foo'));
 

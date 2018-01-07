@@ -8,6 +8,9 @@ use SpellChecker\Word;
 class DictionarySearch implements \SpellChecker\Heuristic\Heuristic
 {
 
+    public const TRY_LOWERCASE = 1;
+    public const TRY_CAPITALIZED = 2;
+
     /** @var \SpellChecker\Dictionary\DictionaryCollection */
     private $dictionaries;
 
@@ -18,24 +21,16 @@ class DictionarySearch implements \SpellChecker\Heuristic\Heuristic
 
     public function check(Word $word, string &$string, array $dictionaries): bool
     {
-        if ($this->dictionaries->contains($word->word, $dictionaries)) {
+        if ($this->dictionaries->contains($dictionaries, $word->word, $word->context, self::TRY_LOWERCASE)) {
             return true;
         }
-        if ($this->dictionaries->contains(mb_strtolower($word->word), $dictionaries)) {
-            return true;
-        }
-        if ($word->block !== null && $this->dictionaries->contains($word->block, $dictionaries)) {
+        if ($word->block !== null && $this->dictionaries->contains($dictionaries, $word->block, $word->context)) {
             return true;
         }
 
         $trimmed = $this->trimNumbersFromRight($word->word);
-        if ($trimmed !== null) {
-            if ($this->dictionaries->contains($trimmed, $dictionaries)) {
-                return true;
-            }
-            if ($this->dictionaries->contains(mb_strtolower($trimmed), $dictionaries)) {
-                return true;
-            }
+        if ($trimmed !== null && $this->dictionaries->contains($dictionaries, $trimmed, $word->context, self::TRY_LOWERCASE)) {
+            return true;
         }
 
         return false;

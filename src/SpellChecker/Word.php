@@ -23,6 +23,9 @@ class Word
     /** @var int */
     public $rowEnd;
 
+    /** @var string|null */
+    public $context;
+
     /** @var string */
     public $row;
 
@@ -32,7 +35,8 @@ class Word
         int $position,
         int $rowNumber,
         int $rowStart,
-        int $rowEnd
+        int $rowEnd,
+        ?string $context = null
     )
     {
         $this->word = $word;
@@ -41,6 +45,7 @@ class Word
         $this->rowNumber = $rowNumber;
         $this->rowStart = $rowStart;
         $this->rowEnd = $rowEnd;
+        $this->context = $context;
     }
 
 }

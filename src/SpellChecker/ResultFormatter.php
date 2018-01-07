@@ -163,6 +163,9 @@ class ResultFormatter
         foreach ($errors as $word) {
             $row = $word->row;
             $padding = $word->block === true ? 35 : 27;
+            if ($word->context !== null) {
+                $padding += 3 + strlen($word->context);
+            }
             $width = mb_strlen($word->word . $row . $word->rowNumber) + $padding;
             if ($width > $maxWidth) {
                 $row = mb_substr($row, 0, $maxWidth - $width) . '…';
@@ -174,8 +177,9 @@ class ResultFormatter
             );
 
             $intro = $word->block === true ? ' - unused ignore "' : ' - found "';
-            $output .= C::gray($intro) . $word->word
-                . C::gray('" in "') . $row
+            $output .= C::gray($intro) . $word->word . C::gray('"')
+                . ($word->context !== null ? C::gray(' (') . $word->context . C::gray(')') : '')
+                . C::gray(' in "') . $row
                 . C::gray('" at row ') . $word->rowNumber . "\n";
         }
 

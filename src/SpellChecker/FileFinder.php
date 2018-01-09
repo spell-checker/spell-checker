@@ -31,7 +31,11 @@ class FileFinder
      */
     public function findFilesByConfig(Configurator $config): array
     {
-        return $this->filterFiles($config->files, $config->directories, $config->extensions, $config->excludes);
+        return $this->filterFiles(
+            $config->files ?? [],
+            $config->directories ?? [],
+            $config->extensions ?? []
+        );
     }
 
     /**

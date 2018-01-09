@@ -39,6 +39,9 @@ class DictionaryResolver
         }, $values);
     }
 
+    /**
+     * @param string[] $patterns
+     */
     private function setPatterns(array $patterns): void
     {
         foreach ($patterns as $pattern => $dictionaries) {

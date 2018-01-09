@@ -73,6 +73,7 @@ $arguments = [
     'dictionariesWithDiacritics' => ['', Configurator::VALUES, 'dictionaries containing words with diacritics', 'list'],
     'dictionaryDirectories' => ['', Configurator::VALUES, 'paths to directories containing dictionaries', 'paths'],
         'Other:',
+    'localIgnores'      => ['', Configurator::VALUES, 'file name pattern -> list of locally ignored words', 'map'],
     'checkLocalIgnores' => ['', Configurator::FLAG, 'check if all local exceptions are used'],
     'checkDictionaryFiles' => ['', Configurator::FLAG, 'check configured dictionary file for unused word'],
     'dictionaryFilesToCheck' => ['', Configurator::VALUES, 'list of user dictionaries to check for unused words', 'names'],
@@ -137,7 +138,7 @@ if ($config->memoryLimit !== null) {
 try {
     $finder = new FileFinder($config->baseDir);
     $files = $finder->findFilesByConfig($config);
-    $resolver = new DictionaryResolver(
+    $dictionaryResolver = new DictionaryResolver(
         $config->dictionaries ?? [],
         $config->dictionariesByFileName ?? [],
         $config->dictionariesByFileExtension ?? []
@@ -170,7 +171,15 @@ try {
         new GarbageDetector(),
         new Base64ImageDetector(),
     ];
-    $spellChecker = new SpellChecker($wordsParsers, $heuristics, $resolver, $dictionaries, (int) $config->maxErrors, (bool) $config->checkLocalIgnores);
+    $spellChecker = new SpellChecker(
+        $wordsParsers,
+        $heuristics,
+        $dictionaryResolver,
+        $dictionaries,
+        (int) $config->maxErrors,
+        $config->localIgnores ?: [],
+        (bool) $config->checkLocalIgnores
+    );
 
     $startTime = microtime(true);
     $result = $spellChecker->checkFiles($files, function (string $fileName) use ($console) {
@@ -184,7 +193,7 @@ try {
     $console->ln(2);
     Console::switchTerminalToUtf8();
 
-    $formatter = new ResultFormatter($resolver, $finder->getBaseDir());
+    $formatter = new ResultFormatter($dictionaryResolver, $finder->getBaseDir());
     $console->writeLn($formatter->summarize($result));
     if ($result->errorsFound()) {
         if ($config->topWords) {

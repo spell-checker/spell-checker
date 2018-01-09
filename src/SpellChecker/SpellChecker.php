@@ -28,6 +28,9 @@ class SpellChecker
     /** @var int */
     private $maxErrors;
 
+    /** @var  string[][] */
+    private $localIgnores;
+
     /** @var bool */
     private $checkLocalIgnores;
 
@@ -37,6 +40,7 @@ class SpellChecker
      * @param \SpellChecker\Dictionary\DictionaryResolver $resolver
      * @param \SpellChecker\Dictionary\DictionaryCollection $dictionaries
      * @param int $maxErrors
+     * @param string[] $localIgnores
      * @param bool $checkLocalIgnores
      */
     public function __construct(
@@ -45,6 +49,7 @@ class SpellChecker
         DictionaryResolver $resolver,
         DictionaryCollection $dictionaries,
         int $maxErrors = self::DEFAULT_MAX_ERRORS,
+        array $localIgnores = [],
         bool $checkLocalIgnores = false
     )
     {
@@ -53,7 +58,19 @@ class SpellChecker
         $this->resolver = $resolver;
         $this->dictionaries = $dictionaries;
         $this->maxErrors = $maxErrors;
+        $this->setIgnores($localIgnores);
         $this->checkLocalIgnores = $checkLocalIgnores;
+    }
+
+    /**
+     * @param string[] $patterns
+     */
+    private function setIgnores(array $patterns): void
+    {
+        foreach ($patterns as $pattern => $words) {
+            $pattern = '/^' . str_replace(['.', '*', '?', '/'], ['\\.', '.*', '.', '\\/'], $pattern) . '$/';
+            $this->localIgnores[$pattern] = array_unique(array_filter(explode(' ', $words)));
+        }
     }
 
     /**
@@ -105,13 +122,22 @@ class SpellChecker
 
         $string = file_get_contents($fileName);
         $string = \Nette\Utils\Strings::normalize($string);
+
         $ignores = [];
-        if (preg_match('/spell-check-ignore: ([^\\n]+)\\n/', $string, $match)) {
-            $ignores = explode(' ', $match[1]);
-            // may end with */ --> *} etc
-            if (!preg_match('/\\pL/u', end($ignores))) {
-                array_pop($ignores);
+        if ($this->localIgnores !== []) {
+            foreach ($this->localIgnores as $pattern => $words) {
+                if (preg_match($pattern, $fileName)) {
+                    $ignores = $words;
+                }
             }
+        }
+        if (preg_match('/spell-check-ignore: ([^\\n]+)\\n/', $string, $match)) {
+            $commentIgnores = explode(' ', $match[1]);
+            // may end with */ --> *} etc
+            if (!preg_match('/\\pL/u', end($commentIgnores))) {
+                array_pop($commentIgnores);
+            }
+            $ignores = array_merge($ignores, $commentIgnores);
         }
 
         $fileNameParts = explode('.', basename($fileName));
@@ -161,15 +187,25 @@ class SpellChecker
             if ($this->checkLocalIgnores) {
                 foreach ($ignores as $word => $count) {
                     if ($count < 2) {
-                        $position = strpos($string, $word);
-                        $preceding = substr($string, 0, $position);
-                        $rowNumber = strlen($preceding) - strlen(str_replace("\n", '', $preceding)) + 1;
-                        $rowStart = strrpos(substr($string, 0, $position), "\n") + 1;
-                        $rowEnd = $position + strpos(substr($string, $position), "\n");
-                        $word = new Word($word, null, $position, $rowNumber, $rowStart, $rowEnd);
-                        $word->block = true;
-                        $word->row = trim(substr($string, $rowStart, $rowEnd - $rowStart));
-                        $errors[] = $word;
+                        if (!isset($ignoreRow)) {
+                            preg_match('/spell-check-ignore: ([^\\n]+)\\n/', $string, $ignoreRow);
+                        }
+                        if (isset($ignoreRow[1]) && strpos($ignoreRow[1], $word) !== false) {
+                            $position = strpos($string, $word);
+                            $preceding = substr($string, 0, $position);
+                            $rowNumber = strlen($preceding) - strlen(str_replace("\n", '', $preceding)) + 1;
+                            $rowStart = strrpos(substr($string, 0, $position), "\n") + 1;
+                            $rowEnd = $position + strpos(substr($string, $position), "\n");
+                            $word = new Word($word, null, $position, $rowNumber, $rowStart, $rowEnd);
+                            $word->block = true;
+                            $word->row = trim(substr($string, $rowStart, $rowEnd - $rowStart));
+                            $errors[] = $word;
+                        } elseif ($count === 0) {
+                            $word = new Word($word, null, -1, -1, -1, -1);
+                            $word->block = true;
+                            $word->row = 'configuration';
+                            $errors[] = $word;
+                        }
                     }
                 }
             }

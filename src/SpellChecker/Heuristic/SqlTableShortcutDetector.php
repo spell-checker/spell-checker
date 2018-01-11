@@ -2,6 +2,7 @@
 
 namespace SpellChecker\Heuristic;
 
+use SpellChecker\RowHelper;
 use SpellChecker\Word;
 
 /**
@@ -78,8 +79,11 @@ class SqlTableShortcutDetector implements \SpellChecker\Heuristic\Heuristic
             return false;
         }
 
-        $row = substr($string, $word->rowStart, $word->rowEnd - $word->rowStart);
-        if (preg_match($this->pattern, $row, $match)) {
+        if ($word->row === null) {
+            $word->row = RowHelper::getRowAtPosition($string, $word->position);
+        }
+
+        if (preg_match($this->pattern, $word->row, $match)) {
             if (strpos($match[1], $word->word) !== false) {
                 return true;
             }

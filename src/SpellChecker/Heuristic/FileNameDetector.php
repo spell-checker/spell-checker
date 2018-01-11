@@ -3,6 +3,7 @@
 namespace SpellChecker\Heuristic;
 
 use SpellChecker\Dictionary\DictionaryCollection;
+use SpellChecker\RowHelper;
 use SpellChecker\Word;
 
 /**
@@ -30,9 +31,11 @@ class FileNameDetector implements \SpellChecker\Heuristic\Heuristic
 
     public function check(Word $word, string &$string, array $dictionaries): bool
     {
-        $row = substr($string, $word->rowStart, $word->rowEnd - $word->rowStart);
+        if ($word->row === null) {
+            $word->row = RowHelper::getRowAtPosition($string, $word->position);
+        }
 
-        if (preg_match_all($this->pattern, $row, $matches)) {
+        if (preg_match_all($this->pattern, $word->row, $matches)) {
             foreach ($matches[0] as $match) {
                 if (strrpos($match, $word->word) !== false) {
                     if ($this->dictionaries->contains($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED)) {

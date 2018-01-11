@@ -180,7 +180,9 @@ class SpellChecker
                     continue;
                 }
 
-                $word->row = trim(substr($string, $word->rowStart, $word->rowEnd - $word->rowStart));
+                if ($word->row === null) {
+                    $word->row = RowHelper::getRowAtPosition($string, $word->position);
+                }
                 $errors[] = $word;
             }
 
@@ -196,12 +198,12 @@ class SpellChecker
                             $rowNumber = strlen($preceding) - strlen(str_replace("\n", '', $preceding)) + 1;
                             $rowStart = strrpos(substr($string, 0, $position), "\n") + 1;
                             $rowEnd = $position + strpos(substr($string, $position), "\n");
-                            $word = new Word($word, null, $position, $rowNumber, $rowStart, $rowEnd);
+                            $word = new Word($word, null, $position, $rowNumber);
                             $word->block = true;
                             $word->row = trim(substr($string, $rowStart, $rowEnd - $rowStart));
                             $errors[] = $word;
                         } elseif ($count === 0) {
-                            $word = new Word($word, null, -1, -1, -1, -1);
+                            $word = new Word($word, null, -1, -1);
                             $word->block = true;
                             $word->row = 'configuration';
                             $errors[] = $word;
@@ -218,7 +220,9 @@ class SpellChecker
                     }
                 }
 
-                $word->row = trim(substr($string, $word->rowStart, $word->rowEnd - $word->rowStart));
+                if ($word->row === null) {
+                    $word->row = RowHelper::getRowAtPosition($string, $word->position);
+                }
                 $errors[] = $word;
             }
         }

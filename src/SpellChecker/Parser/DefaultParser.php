@@ -42,16 +42,11 @@ class DefaultParser implements \SpellChecker\Parser\Parser
         array_push($rowStarts, strlen($string));
 
         $rowNumber = 1;
-        $rowStart = 0;
-        $rowEnd = $rowStarts[$rowNumber];
-
         foreach ($blockMatches[0] as [$block, $position]) {
-            while ($position >= $rowEnd) {
+            while ($position >= $rowStarts[$rowNumber]) {
                 $rowNumber++;
-                $rowStart = $rowEnd + 1;
-                $rowEnd = $rowStarts[$rowNumber];
             }
-            $this->blocksToWords($block, $position, $rowNumber, $rowStart, $rowEnd, $result);
+            $this->blocksToWords($block, $position, $rowNumber, $result);
         }
 
         return $result;
@@ -61,12 +56,10 @@ class DefaultParser implements \SpellChecker\Parser\Parser
      * @param string $block
      * @param int $position
      * @param int $rowNumber
-     * @param int $rowStart
-     * @param int $rowEnd
      * @param \SpellChecker\Word[] $result
      * @param string|null $context
      */
-    public function blocksToWords(string $block, int $position, int $rowNumber, int $rowStart, int $rowEnd, array &$result, ?string $context = null): void
+    public function blocksToWords(string $block, int $position, int $rowNumber, array &$result, ?string $context = null): void
     {
         $block = trim($block, '_-');
 
@@ -105,15 +98,15 @@ class DefaultParser implements \SpellChecker\Parser\Parser
 
             if (in_array($part, $this->exceptions)) {
                 // FOOBar
-                $result[] = new Word($part, $split ? $block : null, $position + $offset, $rowNumber, $rowStart, $rowEnd, $context);
+                $result[] = new Word($part, $split ? $block : null, $position + $offset, $rowNumber, $context);
             } elseif (preg_match('/^[\\p{Lu}]+$/u', $part)) {
                 // FOO
-                $result[] = new Word($part, $split ? $block : null, $position + $offset, $rowNumber, $rowStart, $rowEnd, $context);
+                $result[] = new Word($part, $split ? $block : null, $position + $offset, $rowNumber, $context);
             } else {
                 $words = array_values(array_filter(preg_split('/(?=[\\p{Lu}])/u', $part)));
                 if (count($words) === 1) {
                     // foo
-                    $result[] = new Word($words[0], $split ? $block : null, $position + $offset, $rowNumber, $rowStart, $rowEnd, $context);
+                    $result[] = new Word($words[0], $split ? $block : null, $position + $offset, $rowNumber, $context);
                 } else {
                     // fooBar
                     $offset2 = 0;
@@ -121,7 +114,7 @@ class DefaultParser implements \SpellChecker\Parser\Parser
                         if (preg_match('/^[0-9]+$/', $word)) {
                             continue;
                         }
-                        $result[] = new Word($word, $block, $position + $offset + $offset2, $rowNumber, $rowStart, $rowEnd, $context);
+                        $result[] = new Word($word, $block, $position + $offset + $offset2, $rowNumber, $context);
                         $offset2 += strlen($word);
                     }
                 }

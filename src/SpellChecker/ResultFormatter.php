@@ -161,7 +161,7 @@ class ResultFormatter
         $output = '' . C::lcyan($this->stripBaseDir($fileName)) . C::gray(' (')
             . implode(', ', $this->dictionaryResolver->getDictionariesForFileName($fileName)) . C::gray("):\n");
         foreach ($errors as $word) {
-            $row = $word->row;
+            $row = trim($word->row);
             $padding = $word->block === true ? 35 : 27;
             if ($word->context !== null) {
                 $padding += 3 + strlen($word->context);

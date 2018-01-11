@@ -43,7 +43,7 @@ class PoParser implements \SpellChecker\Parser\Parser
                     continue;
                 }
                 $position = $rowStart + $rowOffset + $blockPosition;
-                $this->defaultParser->blocksToWords($block, $position, $rowIndex + 1, $rowStart, $rowEnd, $result, $context);
+                $this->defaultParser->blocksToWords($block, $position, $rowIndex + 1, $result, $context);
             }
         }
 

@@ -17,12 +17,6 @@ class Word
     /** @var int */
     public $rowNumber;
 
-    /** @var int */
-    public $rowStart;
-
-    /** @var int */
-    public $rowEnd;
-
     /** @var string|null */
     public $context;
 
@@ -34,8 +28,6 @@ class Word
         ?string $block,
         int $position,
         int $rowNumber,
-        int $rowStart,
-        int $rowEnd,
         ?string $context = null
     )
     {
@@ -43,8 +35,6 @@ class Word
         $this->block = $block;
         $this->position = $position;
         $this->rowNumber = $rowNumber;
-        $this->rowStart = $rowStart;
-        $this->rowEnd = $rowEnd;
         $this->context = $context;
     }
 

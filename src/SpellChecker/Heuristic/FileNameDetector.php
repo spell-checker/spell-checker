@@ -17,7 +17,7 @@ class FileNameDetector implements \SpellChecker\Heuristic\Heuristic
 
     /** @var string[] */
     private $fileExtensions = [
-        'html', 'xml', 'js', 'styl', 'css', 'php', 'latte', 'csv', 'pdf', 'jpg', 'png', 'docx',
+        'html', 'xml', 'js', 'styl', 'css', 'php', 'latte', 'csv', 'pdf', 'jpg', 'png', 'docx', 'svg',
     ];
 
     /** @var string */

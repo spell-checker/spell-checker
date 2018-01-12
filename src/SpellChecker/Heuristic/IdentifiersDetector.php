@@ -48,7 +48,7 @@ class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
             }
         }
 
-        // words used in an URL may not use diacritics
+        // words used in an e-mail address may not use diacritics
         if (preg_match_all(self::EMAIL_REGEX, $word->row, $matches)) {
             foreach ($matches[0] as $match) {
                 if (strrpos($match, $word->word) !== false) {

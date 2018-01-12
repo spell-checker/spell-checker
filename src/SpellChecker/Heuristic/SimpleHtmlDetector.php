@@ -10,7 +10,7 @@ use SpellChecker\Word;
 class SimpleHtmlDetector implements \SpellChecker\Heuristic\Heuristic
 {
 
-    /** @var string[] */
+    /** @var bool[] */
     private $tags = [
         'a' => true,
         'i' => true,

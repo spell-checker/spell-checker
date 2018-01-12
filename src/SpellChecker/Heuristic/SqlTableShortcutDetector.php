@@ -55,7 +55,6 @@ class SqlTableShortcutDetector implements \SpellChecker\Heuristic\Heuristic
         '->orderBy\\(',
         '->addOrderBy\\(',
         '->addRootEntityFromClassMetadata\\(',
-        '->applyMailStatisticsOrderSubqueryForFilter\\(',
     ];
 
     /** @var string */

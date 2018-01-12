@@ -106,7 +106,7 @@ class ResultFormatter
         return $output;
     }
 
-    public function formatTopBlocksByContext(Result $result): string
+    public function formatTopBlocksByDictionaries(Result $result): string
     {
         $contexts = [];
         foreach ($result->getErrors() as $fileName => $fileErrors) {

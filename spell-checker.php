@@ -65,7 +65,6 @@ $arguments = [
     'files' =>          ['f', Configurator::VALUES, 'files to check', 'paths'],
     'directories' =>    ['d', Configurator::VALUES, 'directories to check', 'paths'],
     'extensions' =>     ['e', Configurator::VALUES, 'file extensions to check', 'extensions'],
-    //'excludes' =>       ['E', Configurator::VALUES, 'file name patterns to exclude', 'patterns'],
         'Dictionaries:',
     'dictionaries' =>   ['D', Configurator::VALUES, 'dictionaries to use on all files', 'list'],
     'dictionariesByFileName' => ['n', Configurator::VALUES, 'file name pattern -> list of dictionaries', 'map'],
@@ -188,7 +187,7 @@ try {
     });
     $totalTime = microtime(true) - $startTime;
     $peakMemoryUsage = memory_get_peak_usage(true) / (1024 * 1024);
-    $console->writeLn(sprintf(' (%s s, %s MB)', number_format($totalTime, 3), $peakMemoryUsage));
+    $console->ln()->writeLn(sprintf(' (%s s, %s MB)', number_format($totalTime, 3), $peakMemoryUsage));
 
     $console->ln(2);
     Console::switchTerminalToUtf8();
@@ -197,8 +196,7 @@ try {
     $console->writeLn($formatter->summarize($result));
     if ($result->errorsFound()) {
         if ($config->topWords) {
-            //$console->ln()->write($formatter->formatFilesList($result->getFiles()));
-            $console->ln()->write($formatter->formatTopBlocksByContext($result));
+            $console->ln()->write($formatter->formatTopBlocksByDictionaries($result));
         }
         if ($config->short) {
             $console->ln()->write($formatter->formatErrorsShort($result));

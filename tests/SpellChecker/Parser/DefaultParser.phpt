@@ -1,5 +1,5 @@
 <?php declare(strict_types = 1);
-// spell-check-ignore: Nepodarilo sa prihlásiť používateľa zlavomat
+// spell-check-ignore: Nepodarilo sa prihlásiť používateľa zlavomat e-mailů
 
 namespace SpellChecker\Parser;
 

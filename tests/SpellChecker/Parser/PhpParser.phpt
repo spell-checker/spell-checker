@@ -1,4 +1,5 @@
 <?php declare(strict_types = 1);
+// spell-check-ignore: aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll EOT
 
 namespace SpellChecker\Parser;
 

@@ -6,6 +6,7 @@ github
 jakub
 nette
 Neubauer
+nikic
 onderka
 paranoiq
 phing
@@ -38,6 +39,7 @@ dev
 dir
 dirs
 duplicities
+e-mail
 eg
 elseif
 encodings
@@ -48,6 +50,7 @@ filename
 formatter
 getcomposer
 globals
+heredoc
 href
 http
 https
@@ -55,6 +58,7 @@ ifnull
 isn
 lang1
 lang2
+lexing
 ln
 logoutput
 merchantability
@@ -103,6 +107,7 @@ sk
 www
 
 # files
+conf
 css
 csv
 dia

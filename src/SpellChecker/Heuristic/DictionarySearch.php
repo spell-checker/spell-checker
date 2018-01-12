@@ -10,6 +10,7 @@ class DictionarySearch implements \SpellChecker\Heuristic\Heuristic
 
     public const TRY_LOWERCASE = 1;
     public const TRY_CAPITALIZED = 2;
+    public const TRY_WITHOUT_DIACRITICS = 4;
 
     /** @var \SpellChecker\Dictionary\DictionaryCollection */
     private $dictionaries;

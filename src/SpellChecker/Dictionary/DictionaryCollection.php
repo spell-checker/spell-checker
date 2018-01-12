@@ -66,10 +66,14 @@ class DictionaryCollection
     {
         $dictionaries = $this->filterDictionaries($dictionaries, $context);
 
+        $stripped = null;
+        if ($flags & DictionarySearch::TRY_WITHOUT_DIACRITICS) {
+            $stripped = DiacriticsHelper::removeDiacritics($word);
+        }
         foreach ($dictionaries as $dictionary) {
-            $withoutDiacritics = false;
+            $forceWithoutDiacritics = false;
             if ($dictionary[0] === '*') {
-                $withoutDiacritics = true;
+                $forceWithoutDiacritics = true;
                 $dictionary = substr($dictionary, 1);
             }
 
@@ -77,7 +81,7 @@ class DictionaryCollection
                 $this->createDictionary($dictionary);
             }
 
-            if ($withoutDiacritics) {
+            if ($forceWithoutDiacritics) {
                 if ($this->dictionaries[$dictionary]->containsWithoutDiacritics($word)) {
                     return true;
                 }
@@ -110,44 +114,22 @@ class DictionaryCollection
                     }
                 }
             }
-        }
 
-        return false;
-    }
-
-    /**
-     * @param string[] $dictionaries
-     * @param string $word
-     * @param string|null $context
-     * @param int $flags
-     * @return bool
-     */
-    public function containsWithoutDiacritics(array $dictionaries, string $word, string $context = null, int $flags = 0): bool
-    {
-        $dictionaries = $this->filterDictionaries($dictionaries, $context);
-
-        $stripped = DiacriticsHelper::removeDiacritics($word);
-        foreach ($dictionaries as $dictionary) {
-            if (!in_array($dictionary, $this->diacriticDictionaries)) {
-                continue;
-            }
-            if (!isset($this->dictionaries[$dictionary])) {
-                $this->createDictionary($dictionary);
-            }
-
-            if ($this->dictionaries[$dictionary]->containsWithoutDiacritics($stripped)) {
-                return true;
-            }
-            if ($flags & DictionarySearch::TRY_LOWERCASE) {
-                $lower = mb_strtolower($word);
-                if ($this->dictionaries[$dictionary]->containsWithoutDiacritics($lower)) {
+            if ($flags & DictionarySearch::TRY_WITHOUT_DIACRITICS) {
+                if ($this->dictionaries[$dictionary]->containsWithoutDiacritics($stripped)) {
                     return true;
                 }
-            }
-            if ($flags & DictionarySearch::TRY_CAPITALIZED) {
-                $capitalized = Strings::firstUpper(mb_strtolower($word));
-                if ($this->dictionaries[$dictionary]->containsWithoutDiacritics($capitalized)) {
-                    return true;
+                if ($flags & DictionarySearch::TRY_LOWERCASE) {
+                    $lower = mb_strtolower($stripped);
+                    if ($this->dictionaries[$dictionary]->containsWithoutDiacritics($lower)) {
+                        return true;
+                    }
+                }
+                if ($flags & DictionarySearch::TRY_CAPITALIZED) {
+                    $capitalized = Strings::firstUpper(mb_strtolower($stripped));
+                    if ($this->dictionaries[$dictionary]->containsWithoutDiacritics($capitalized)) {
+                        return true;
+                    }
                 }
             }
         }

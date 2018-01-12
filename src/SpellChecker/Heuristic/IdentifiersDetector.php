@@ -38,10 +38,7 @@ class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
         if (preg_match_all(self::URL_REGEX, $word->row, $matches)) {
             foreach ($matches[0] as $match) {
                 if (strrpos($match, $word->word) !== false) {
-                    if ($this->dictionaries->contains($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED)) {
-                        return true;
-                    }
-                    if ($this->dictionaries->containsWithoutDiacritics($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED)) {
+                    if ($this->dictionaries->contains($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED | DictionarySearch::TRY_WITHOUT_DIACRITICS)) {
                         return true;
                     }
                 }
@@ -52,10 +49,7 @@ class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
         if (preg_match_all(self::EMAIL_REGEX, $word->row, $matches)) {
             foreach ($matches[0] as $match) {
                 if (strrpos($match, $word->word) !== false) {
-                    if ($this->dictionaries->contains($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED)) {
-                        return true;
-                    }
-                    if ($this->dictionaries->containsWithoutDiacritics($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED)) {
+                    if ($this->dictionaries->contains($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED | DictionarySearch::TRY_WITHOUT_DIACRITICS)) {
                         return true;
                     }
                 }
@@ -70,10 +64,7 @@ class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
         if (preg_match_all('/(?:href=|id=|class=|->createUrl\\()(["\'])([^\\1]+)\\1/', $word->row, $matches)) {
             foreach ($matches[2] as $match) {
                 if (strrpos($match, $word->word) !== false) {
-                    if ($this->dictionaries->contains($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED)) {
-                        return true;
-                    }
-                    if ($this->dictionaries->containsWithoutDiacritics($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED)) {
+                    if ($this->dictionaries->contains($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED | DictionarySearch::TRY_WITHOUT_DIACRITICS)) {
                         return true;
                     }
                 }
@@ -85,10 +76,7 @@ class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
         if (preg_match_all('/(?:msgid|msgstr) "URL: ([^"]+)"/', $word->row, $matches)) {
             foreach ($matches[1] as $match) {
                 if (strrpos($match, $word->word) !== false) {
-                    if ($this->dictionaries->contains($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED)) {
-                        return true;
-                    }
-                    if ($this->dictionaries->containsWithoutDiacritics($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED)) {
+                    if ($this->dictionaries->contains($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED | DictionarySearch::TRY_WITHOUT_DIACRITICS)) {
                         return true;
                     }
                 }
@@ -100,10 +88,7 @@ class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
             foreach ($matches[1] as $match) {
                 if (strrpos($match, $word->word) !== false) {
                     $lower = Strings::lower($word->word);
-                    if ($this->dictionaries->contains($dictionaries, $lower, $word->context, DictionarySearch::TRY_LOWERCASE | DictionarySearch::TRY_CAPITALIZED)) {
-                        return true;
-                    }
-                    if ($this->dictionaries->containsWithoutDiacritics($dictionaries, $lower, $word->context, DictionarySearch::TRY_LOWERCASE | DictionarySearch::TRY_CAPITALIZED)) {
+                    if ($this->dictionaries->contains($dictionaries, $lower, $word->context, DictionarySearch::TRY_LOWERCASE | DictionarySearch::TRY_CAPITALIZED | DictionarySearch::TRY_WITHOUT_DIACRITICS)) {
                         return true;
                     }
                 }

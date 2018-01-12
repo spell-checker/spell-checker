@@ -5,21 +5,6 @@ namespace SpellChecker;
 use Dogma\Tools\Colors as C;
 use Dogma\Tools\Configurator;
 use Dogma\Tools\Console;
-use SpellChecker\Dictionary\DictionaryCollection;
-use SpellChecker\Dictionary\DictionaryResolver;
-use SpellChecker\Heuristic\Base64ImageDetector;
-use SpellChecker\Heuristic\BulletsDetector;
-use SpellChecker\Heuristic\CssUnitsDetector;
-use SpellChecker\Heuristic\DictionarySearch;
-use SpellChecker\Heuristic\EscapeSequenceDetector;
-use SpellChecker\Heuristic\FileNameDetector;
-use SpellChecker\Heuristic\GarbageDetector;
-use SpellChecker\Heuristic\PrintfDetector;
-use SpellChecker\Heuristic\SimpleHtmlDetector;
-use SpellChecker\Heuristic\SqlTableShortcutDetector;
-use SpellChecker\Heuristic\IdentifiersDetector;
-use SpellChecker\Parser\DefaultParser;
-use SpellChecker\Parser\PoParser;
 use Tracy\Debugger;
 
 require_once __DIR__ . '/src/Colors.php';
@@ -134,105 +119,6 @@ if ($config->memoryLimit !== null) {
     }
 }
 
-try {
-    $finder = new FileFinder($config->baseDir);
-    $files = $finder->findFilesByConfig($config);
-    $dictionaryResolver = new DictionaryResolver(
-        $config->dictionaries ?? [],
-        $config->dictionariesByFileName ?? [],
-        $config->dictionariesByFileExtension ?? []
-    );
-    $checkFiles = $config->checkDictionaryFiles
-        ? $config->dictionaryFilesToCheck ?? []
-        : [];
-    $dictionaries = new DictionaryCollection(
-        $config->dictionaryDirectories ?? [],
-        $config->dictionariesWithDiacritics ?? [],
-        $checkFiles,
-        $config->baseDir,
-        $console
-    );
-    $defaultParser = new DefaultParser($config->wordsParserExceptions ?? []);
-    $wordsParsers = [
-        'po' => new PoParser($defaultParser),
-        SpellChecker::DEFAULT_PARSER => $defaultParser,
-    ];
-    $heuristics = [
-        new DictionarySearch($dictionaries),
-        new CssUnitsDetector(),
-        new PrintfDetector(),
-        new EscapeSequenceDetector(),
-        new SqlTableShortcutDetector(),
-        new IdentifiersDetector($dictionaries),
-        new FileNameDetector($dictionaries),
-        new BulletsDetector(),
-        new SimpleHtmlDetector(),
-        new GarbageDetector(),
-        new Base64ImageDetector(),
-    ];
-    $spellChecker = new SpellChecker(
-        $wordsParsers,
-        $heuristics,
-        $dictionaryResolver,
-        $dictionaries,
-        (int) $config->maxErrors,
-        $config->localIgnores ?: [],
-        (bool) $config->checkLocalIgnores
-    );
+$application = new SpellCheckerApplication($console);
+$application->run($config);
 
-    $startTime = microtime(true);
-    $result = $spellChecker->checkFiles($files, function (string $fileName) use ($console) {
-        $console->write('.');
-        return true;
-    });
-    $totalTime = microtime(true) - $startTime;
-    $peakMemoryUsage = memory_get_peak_usage(true) / (1024 * 1024);
-    $console->ln()->writeLn(sprintf(' (%s s, %s MB)', number_format($totalTime, 3), $peakMemoryUsage));
-
-    $console->ln(2);
-    Console::switchTerminalToUtf8();
-
-    $formatter = new ResultFormatter($dictionaryResolver, $finder->getBaseDir());
-    $console->writeLn($formatter->summarize($result));
-    if ($result->errorsFound()) {
-        if ($config->topWords) {
-            $console->ln()->write($formatter->formatTopBlocksByDictionaries($result));
-        }
-        if ($config->short) {
-            $console->ln()->write($formatter->formatErrorsShort($result));
-        } else {
-            $console->ln()->write($formatter->formatErrors($result));
-        }
-        if ($result->getErrorsCount() >= $config->maxErrors) {
-            $console->ln()->writeLn(sprintf('Check stopped after %d errors.', $config->maxErrors));
-        }
-    }
-    if ($config->checkDictionaryFiles) {
-        foreach ($dictionaries->getDictionaries() as $name => $dictionary) {
-            if (!$dictionary->isChecked()) {
-                continue;
-            }
-            $unusedWords = $dictionary->getUnusedWords();
-            if ($unusedWords !== []) {
-                $console->writeLn(C::red('Unused words in dictionary "' . $name . '"'));
-                $console->writeLn(implode(', ', $unusedWords));
-            }
-        }
-    }
-
-    if ($result->errorsFound()) {
-        exit(1);
-    }
-} catch (\SpellChecker\FileSearchNotConfiguredException $e) {
-    $console->writeLn(C::red('Nothing to check. Configure directories or files.'));
-    exit(1);
-} catch (\Throwable $e) {
-    $console->ln()->writeLn(C::white(sprintf('Error occurred while spell-checking: %s', $e->getMessage()), C::RED));
-    if (class_exists(Debugger::class)) {
-        Debugger::log($e);
-        exit(1);
-    } else {
-        throw $e;
-    }
-}
-$console->ln();

@@ -93,9 +93,15 @@ class SpellCheckerApplication
             );
 
             $startTime = microtime(true);
-            $result = $spellChecker->checkFiles($files, function (string $fileName) {
-                $this->console->write('.');
-                return true;
+            $result = $spellChecker->checkFiles($files, function (string $fileName, array $errors) {
+                if (count($errors) === 0) {
+                    $this->console->write('.');
+                } else {
+                    $log = number_format(min(log(count($errors), 2), 9), 0);
+                    $this->console->write($log);
+                }
+
+                return $errors;
             });
             $totalTime = microtime(true) - $startTime;
             $peakMemoryUsage = memory_get_peak_usage(true) / (1024 * 1024);

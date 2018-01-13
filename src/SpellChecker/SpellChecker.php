@@ -114,12 +114,6 @@ class SpellChecker
      */
     private function checkFile(string $fileName, array $dictionaries, ?callable $fileCallback = null): array
     {
-        if ($fileCallback !== null) {
-            if (!$fileCallback($fileName)) {
-                return [];
-            }
-        }
-
         $string = file_get_contents($fileName);
         $string = \Nette\Utils\Strings::normalize($string);
 
@@ -146,7 +140,12 @@ class SpellChecker
         $extension = end($fileNameParts);
         $parser = $this->wordsParsers[$extension] ?? $this->wordsParsers[self::DEFAULT_PARSER];
 
-        return $this->checkString($string, $dictionaries, $ignores, $parser);
+        $errors = $this->checkString($string, $dictionaries, $ignores, $parser);
+        if ($fileCallback !== null) {
+            $errors = $fileCallback($fileName, $errors);
+        }
+
+        return $errors;
     }
 
     /**

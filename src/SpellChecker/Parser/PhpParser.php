@@ -30,7 +30,7 @@ class PhpParser implements \SpellChecker\Parser\Parser
 
     /**
      * @param string $string
-     * @return string[]
+     * @return \SpellChecker\Word[]
      */
     public function parse(string $string): array
     {

@@ -17,9 +17,8 @@ class PoParser implements \SpellChecker\Parser\Parser
     }
 
     /**
-     * Parses only translations, not message ids
      * @param string $string
-     * @return string[]
+     * @return \SpellChecker\Word[]
      */
     public function parse(string $string): array
     {

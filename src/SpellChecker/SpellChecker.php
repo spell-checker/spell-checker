@@ -133,7 +133,7 @@ class SpellChecker
         }
         if (preg_match_all('/spell-check-ignore: ([^\\n]+)\\n/', $string, $match)) {
         	foreach ($match[1] as $line) {
-		        $commentIgnores = explode(' ', $line);
+		        $commentIgnores = preg_split('/[\\s+,]+/', $line);
 		        // may end with */ --> *} etc
 		        if (!preg_match('/\\pL/u', end($commentIgnores))) {
 			        array_pop($commentIgnores);

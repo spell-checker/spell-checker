@@ -29,7 +29,7 @@ class SpellChecker
     private $maxErrors;
 
     /** @var  string[][] */
-    private $localIgnores;
+    private $localIgnores = [];
 
     /** @var bool */
     private $checkLocalIgnores;
@@ -131,13 +131,15 @@ class SpellChecker
                 }
             }
         }
-        if (preg_match('/spell-check-ignore: ([^\\n]+)\\n/', $string, $match)) {
-            $commentIgnores = explode(' ', $match[1]);
-            // may end with */ --> *} etc
-            if (!preg_match('/\\pL/u', end($commentIgnores))) {
-                array_pop($commentIgnores);
-            }
-            $ignores = array_merge($ignores, $commentIgnores);
+        if (preg_match_all('/spell-check-ignore: ([^\\n]+)\\n/', $string, $match)) {
+        	foreach ($match[1] as $line) {
+		        $commentIgnores = preg_split('/[\\s+,]+/', $line);
+		        // may end with */ --> *} etc
+		        if (!preg_match('/\\pL/u', end($commentIgnores))) {
+			        array_pop($commentIgnores);
+		        }
+		        $ignores = array_merge($ignores, $commentIgnores);
+	        }
         }
 
         $fileNameParts = explode('.', basename($fileName));

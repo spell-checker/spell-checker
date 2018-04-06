@@ -4,7 +4,7 @@ namespace SpellChecker\Dictionary;
 
 use Tester\Assert;
 
-require '../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 $always = [
     'foo'

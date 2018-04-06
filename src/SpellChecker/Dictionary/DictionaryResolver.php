@@ -11,7 +11,7 @@ class DictionaryResolver
     private $dictionaries;
 
     /** @var string[][] */
-    private $byFileName;
+    private $byFileName = [];
 
     /** @var string[][] */
     private $byExtensions;

@@ -6,7 +6,7 @@ namespace SpellChecker\Parser;
 use SpellChecker\Word;
 use Tester\Assert;
 
-require '../../bootstrap.php';
+require __DIR__ . '/../../bootstrap.php';
 
 $parser = new DefaultParser(['PHPUnit']);
 

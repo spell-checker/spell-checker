@@ -29,7 +29,7 @@ class SpellChecker
     private $maxErrors;
 
     /** @var  string[][] */
-    private $localIgnores;
+    private $localIgnores = [];
 
     /** @var bool */
     private $checkLocalIgnores;

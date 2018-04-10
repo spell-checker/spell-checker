@@ -5,9 +5,6 @@ namespace SpellChecker\Parser;
 class PoParser implements \SpellChecker\Parser\Parser
 {
 
-    public const CONTEXT_MESSAGE = 'msgid';
-    public const CONTEXT_TRANSLATION = 'msgstr';
-
     /** @var \SpellChecker\Parser\DefaultParser */
     private $defaultParser;
 
@@ -32,7 +29,7 @@ class PoParser implements \SpellChecker\Parser\Parser
             if (!preg_match('/^(msgid|msgid_plural|msgstr)(\\[\\d+\\])? "(.*)"$/', $row, $match)) {
                 continue;
             }
-            $context = $match[1] === 'msgstr' ? self::CONTEXT_TRANSLATION : self::CONTEXT_MESSAGE;
+            $context = $match[1] === 'msgstr' ? Context::TRANSLATION : Context::STRING;
             $rowOffset = strlen($match[1]) + strlen($match[2]) + 2;
             if (!preg_match_all(DefaultParser::WORD_BLOCK_REGEXP, $match[3], $blockMatches, PREG_OFFSET_CAPTURE)) {
                 continue;

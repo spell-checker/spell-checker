@@ -75,6 +75,8 @@ class DefaultParser implements \SpellChecker\Parser\Parser
      */
     public function blocksToWords(string $block, int $position, int $rowNumber, array &$result, ?string $context = null): void
     {
+        $prefixLength = strlen($block) - strlen(ltrim($block, '_-'));
+        $position += $prefixLength;
         $block = trim($block, '_-');
 
         // skip numbers

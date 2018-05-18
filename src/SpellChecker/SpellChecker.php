@@ -75,7 +75,7 @@ class SpellChecker
 
     /**
      * @param string[] $files
-     * @param callable|null (string fileName: bool) $fileCallback
+     * @param callable|null $fileCallback (string fileName: bool)
      * @return \SpellChecker\Result
      */
     public function checkFiles(array $files, ?callable $fileCallback = null): Result
@@ -109,7 +109,7 @@ class SpellChecker
     /**
      * @param string $fileName
      * @param string[] $dictionaries
-     * @param callable|null (string fileName: bool) $fileCallback
+     * @param callable|null $fileCallback (string fileName: bool)
      * @return \SpellChecker\Word[]
      */
     private function checkFile(string $fileName, array $dictionaries, ?callable $fileCallback = null): array

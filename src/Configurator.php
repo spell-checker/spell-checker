@@ -24,7 +24,7 @@ final class Configurator extends \stdClass
     public const ENUM = 'enum';
     public const SET = 'set';
 
-    /** @var string[][] */
+    /** @var string[]|string[][] */
     private $arguments;
 
     /** @var mixed[] */
@@ -36,6 +36,10 @@ final class Configurator extends \stdClass
     /** @var mixed[] */
     private $profiles = [];
 
+    /**
+     * @param string[]|string[][] $arguments
+     * @param mixed[] $defaults
+     */
     public function __construct(array $arguments, array $defaults = [])
     {
         $this->arguments = $arguments;

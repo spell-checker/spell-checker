@@ -13,10 +13,10 @@ class Dictionary
     /** @var string[] */
     private $checkedFiles;
 
-    /** @var int[] */
+    /** @var int[]|string[] */
     private $wordIndex;
 
-    /** @var int[] */
+    /** @var int[]|string[] */
     private $strippedIndex;
 
     public function __construct(array $files, bool $diacritics = false, array $checkedFiles = [])

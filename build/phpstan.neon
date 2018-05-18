@@ -1,5 +1,5 @@
 
 parameters:
     ignoreErrors:
-        - '/Parameter #1 \$value of method Dogma\\Tools\\Configurator::normalize\(\) expects string\[\]\|string\|null, true given\./'
+        - '/(checkWord|contains)\(\) expects string, string\|true given./' # two conflicting rules
     universalObjectCratesClasses: []

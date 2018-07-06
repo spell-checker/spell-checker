@@ -11,6 +11,8 @@ use SpellChecker\Word;
 class SimpleHtmlDetector implements \SpellChecker\Heuristic\Heuristic
 {
 
+    public const RESULT_HTML = 'html';
+
     /** @var bool[] */
     private $tags = [
         'a' => true,
@@ -23,22 +25,22 @@ class SimpleHtmlDetector implements \SpellChecker\Heuristic\Heuristic
         'sup' => true,
     ];
 
-    public function check(Word $word, string &$string, array $dictionaries): bool
+    public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         // <b>, </b>
         if (isset($this->tags[$word->word])) {
             $after = $string[$word->position + 1];
             if ($after !== '>' && $after !== ' ') {
-                return false;
+                return self::RESULT_HTML;
             }
 
             $before = $string[$word->position - 1];
             if (($before === '<' || ($before === '/' && $string[$word->position - 2] === '<'))) {
-                return true;
+                return self::RESULT_HTML;
             }
         }
 
-        return false;
+        return null;
     }
 
 }

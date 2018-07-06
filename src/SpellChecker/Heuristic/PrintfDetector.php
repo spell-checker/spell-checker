@@ -10,26 +10,28 @@ use SpellChecker\Word;
 class PrintfDetector implements \SpellChecker\Heuristic\Heuristic
 {
 
-    public function check(Word $word, string &$string, array $dictionaries): bool
+    public const RESULT_PRINTF = 'printf';
+
+    public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         if (preg_match('/^[bcdeEfFgGosuxX]/', $word->word)) {
             $char1 = $string[$word->position - 1];
             // "%d"
             if ($char1 === '%') {
-                return true;
+                return self::RESULT_PRINTF;
             }
             // "%1$d"
             $char2 = $string[$word->position - 2];
             $char3 = $string[$word->position - 3];
             if ($char1 === '$' && $char3 === '%' && ctype_digit($char2)) {
-                return true;
+                return self::RESULT_PRINTF;
             }
         }
 
         // "%'.9d", "%'.9d", "%2$d, "%1$04d"
         /// todo?
 
-        return false;
+        return null;
     }
 
 }

@@ -11,6 +11,9 @@ use SpellChecker\Word;
 class BulletsDetector implements \SpellChecker\Heuristic\Heuristic
 {
 
+    public const RESULT_LATIN = 'latin';
+    public const RESULT_ROMAN = 'roman';
+
     /** @var string[] */
     private $bullets;
 
@@ -19,14 +22,14 @@ class BulletsDetector implements \SpellChecker\Heuristic\Heuristic
         $this->bullets = array_flip(range('a', 'z') + range('A', 'Z'));
     }
 
-    public function check(Word $word, string &$string, array $dictionaries): bool
+    public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         // a) b) c) / A) B) C)
         if ($string[$word->position + 1] === ')'
             && isset($this->bullets[$word->word])
             && ctype_space($string[$word->position - 1])
         ) {
-            return true;
+            return self::RESULT_LATIN;
         }
 
         // i) iv) x) / I) IV) X)
@@ -34,10 +37,10 @@ class BulletsDetector implements \SpellChecker\Heuristic\Heuristic
             && ctype_space($string[$word->position - 1])
             && preg_match('/[ivxlcdm]+/i', $word->word)
         ) {
-            return true;
+            return self::RESULT_ROMAN;
         }
 
-        return false;
+        return null;
     }
 
 }

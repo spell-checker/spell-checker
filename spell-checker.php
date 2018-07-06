@@ -65,6 +65,8 @@ $arguments = [
     'topWords' =>       ['t', Configurator::FLAG, 'output list of top misspelled words'],
     'maxErrors' =>      ['', Configurator::VALUE, 'maximum number of error before check stops', 'number'],
     'wordsParserExceptions' => ['', Configurator::VALUES, 'irregular words', 'words'],
+    'ignoreUrls' =>     ['', Configurator::FLAG, 'ignore all words from URL addresses'],
+    'ignoreEmails' =>   ['', Configurator::FLAG, 'ignore all words from email addresses'],
         'Help:',
     'help' =>           ['h', Configurator::FLAG_VALUE, 'show help', 'command'],
     'license' =>        ['', Configurator::FLAG, 'show license'],
@@ -76,6 +78,8 @@ $defaults = [
     'config' => [strtr(__DIR__, '\\', '/') . '/build/spell-checker.neon'],
     'maxErrors' => SpellChecker::DEFAULT_MAX_ERRORS,
     'wordsParserExceptions' => ['PHPUnit'],
+    'ignoreUrls' => false,
+    'ignoreEmails' => false,
 ];
 $config = new Configurator($arguments, $defaults);
 $config->loadCliArguments();

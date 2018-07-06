@@ -7,6 +7,7 @@ use Dogma\Tools\Configurator;
 use Dogma\Tools\Console;
 use SpellChecker\Dictionary\DictionaryCollection;
 use SpellChecker\Dictionary\DictionaryResolver;
+use SpellChecker\Heuristic\AddressDetector;
 use SpellChecker\Heuristic\Base64ImageDetector;
 use SpellChecker\Heuristic\BulletsDetector;
 use SpellChecker\Heuristic\CssUnitsDetector;
@@ -68,6 +69,7 @@ class SpellCheckerApplication
 
             // heuristics
             $heuristics = [
+                new AddressDetector($dictionaries, (bool) $config->ignoreUrls, (bool) $config->ignoreEmails),
                 new DictionarySearch($dictionaries),
                 new CssUnitsDetector(),
                 new PrintfDetector(),

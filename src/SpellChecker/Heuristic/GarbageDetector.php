@@ -10,21 +10,24 @@ use SpellChecker\Word;
 class GarbageDetector implements \SpellChecker\Heuristic\Heuristic
 {
 
+    public const RESULT_GARBAGE = 'garbage';
+
     /**
      * @param \SpellChecker\Word $word
      * @param string $string
      * @param string[] $dictionaries
      * @return bool
      */
-    public function check(Word $word, string &$string, array $dictionaries): bool
+    public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         if ($word->block !== null && $this->checkWord($word->block)) {
-            return true;
+            return self::RESULT_GARBAGE;
         }
         if ($this->checkWord($word->word)) {
-            return true;
+            return self::RESULT_GARBAGE;
         }
-        return false;
+
+        return null;
     }
 
     private function checkWord(string $string): bool
@@ -43,6 +46,7 @@ class GarbageDetector implements \SpellChecker\Heuristic\Heuristic
         if (count(preg_split('/[0-9]/', $string)) > 3) {
             return true;
         }
+
         return false;
     }
 

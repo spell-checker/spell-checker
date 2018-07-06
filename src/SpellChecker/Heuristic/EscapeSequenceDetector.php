@@ -10,23 +10,26 @@ use SpellChecker\Word;
 class EscapeSequenceDetector implements \SpellChecker\Heuristic\Heuristic
 {
 
-    public function check(Word $word, string &$string, array $dictionaries): bool
+    public const RESULT_ESCAPE_CODE = 'escape';
+    public const RESULT_ENTITY = 'entity';
+
+    public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         // "\s"
         if (preg_match('/^[aefnpPrRtdDhHsSvVwWbBAzZG]/', $word->word)) {
             if ($string[$word->position - 1] === '\\') {
-                return true;
+                return self::RESULT_ESCAPE_CODE;
             }
         }
 
         // hexadecimal HTML entity &#xeabb;
         if (preg_match('/^x[a-f0-9]{4}/', $word->word)) {
             if ($string[$word->position - 1] === '#' && $string[$word->position - 2] === '&') {
-                return true;
+                return self::RESULT_ENTITY;
             }
         }
 
-        return false;
+        return null;
     }
 
 }

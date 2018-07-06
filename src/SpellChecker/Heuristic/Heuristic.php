@@ -8,11 +8,13 @@ interface Heuristic
 {
 
     /**
+     * Checks the given word.
+     * Returns the name of rule or dictionary for which the word matches or null if it does not match.
      * @param \SpellChecker\Word $word
      * @param string $string
      * @param string[] $dictionaries
-     * @return bool
+     * @return string|null
      */
-    public function check(Word $word, string &$string, array $dictionaries): bool;
+    public function check(Word $word, string &$string, array $dictionaries): ?string;
 
 }

@@ -4,6 +4,7 @@ namespace SpellChecker;
 
 use SpellChecker\Dictionary\DictionaryCollection;
 use SpellChecker\Dictionary\DictionaryResolver;
+use SpellChecker\Heuristic\Heuristic;
 use SpellChecker\Parser\Parser;
 
 class SpellChecker
@@ -18,6 +19,9 @@ class SpellChecker
 
     /** @var \SpellChecker\Heuristic\Heuristic[] */
     private $heuristics;
+
+    /** @var int[][] (string $rule => (string $word => int $count)) */
+    private $heuristicStats = [];
 
     /** @var \SpellChecker\Dictionary\DictionaryResolver */
     private $resolver;
@@ -60,6 +64,11 @@ class SpellChecker
         $this->maxErrors = $maxErrors;
         $this->setIgnores($localIgnores);
         $this->checkLocalIgnores = $checkLocalIgnores;
+    }
+
+    public function getStats(): array
+    {
+        return $this->heuristicStats;
     }
 
     /**
@@ -171,16 +180,13 @@ class SpellChecker
         if ($ignores !== []) {
             $ignores = array_combine($ignores, array_fill(0, count($ignores), 0));
             foreach ($parser->parse($string) as $n => $word) {
-                foreach ($this->heuristics as $heuristic) {
-                    if ($heuristic->check($word, $string, $dictionaries)) {
-                        continue 2;
-                    }
+                if ($this->checkWord($word, $string, $dictionaries)) {
+                    continue;
                 }
                 if (isset($ignores[$word->word])) {
                     $ignores[$word->word]++;
                     continue;
                 }
-
                 if ($word->row === null) {
                     $word->row = RowHelper::getRowAtPosition($string, $word->position);
                 }
@@ -215,12 +221,9 @@ class SpellChecker
         } else {
             // the same as previous, only without checking ignores
             foreach ($parser->parse($string) as $n => $word) {
-                foreach ($this->heuristics as $heuristic) {
-                    if ($heuristic->check($word, $string, $dictionaries)) {
-                        continue 2;
-                    }
+                if ($this->checkWord($word, $string, $dictionaries)) {
+                    continue;
                 }
-
                 if ($word->row === null) {
                     $word->row = RowHelper::getRowAtPosition($string, $word->position);
                 }
@@ -229,6 +232,25 @@ class SpellChecker
         }
 
         return $errors;
+    }
+
+    private function checkWord(Word $word, string &$string, array $dictionaries): bool
+    {
+        foreach ($this->heuristics as $i => $heuristic) {
+            $result = $heuristic->check($word, $string, $dictionaries);
+            if ($result !== null) {
+                if (!isset($this->heuristicStats[$result])) {
+                    $this->heuristicStats[$result] = [];
+                }
+                if (!isset($this->heuristicStats[$result][$word->word])) {
+                    $this->heuristicStats[$result][$word->word] = 1;
+                } else {
+                    $this->heuristicStats[$result][$word->word]++;
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
 }

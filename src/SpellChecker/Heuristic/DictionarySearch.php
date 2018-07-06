@@ -20,21 +20,21 @@ class DictionarySearch implements \SpellChecker\Heuristic\Heuristic
         $this->dictionaries = $dictionaries;
     }
 
-    public function check(Word $word, string &$string, array $dictionaries): bool
+    public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         if ($this->dictionaries->contains($dictionaries, $word->word, $word->context, self::TRY_LOWERCASE)) {
-            return true;
+            return implode(',', $dictionaries) . '|word';
         }
         if ($word->block !== null && $this->dictionaries->contains($dictionaries, $word->block, $word->context)) {
-            return true;
+            return implode(',', $dictionaries) . '|block';
         }
 
         $trimmed = $this->trimNumbersFromRight($word->word);
         if ($trimmed !== null && $this->dictionaries->contains($dictionaries, $trimmed, $word->context, self::TRY_LOWERCASE)) {
-            return true;
+            return implode(',', $dictionaries) . '|trim';
         }
 
-        return false;
+        return null;
     }
 
     private function trimNumbersFromRight(string $word): ?string

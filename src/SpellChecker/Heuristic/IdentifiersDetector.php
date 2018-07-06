@@ -14,6 +14,9 @@ use SpellChecker\Word;
 class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
 {
 
+    public const ID = 'id';
+    public const CONSTANT = 'constant';
+
     // https://mathiasbynens.be/demo/url-regex
     // selected one with false positive behavior, because we need to match even urls formatted with sprintf etc.
     private const URL_REGEX = '~((https?|ftp)://|www\.)(-\.)?([^\s/?\.#]+\.?)+(/[^\s]*)?~i';
@@ -28,32 +31,10 @@ class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
         $this->dictionaries = $dictionaries;
     }
 
-    public function check(Word $word, string &$string, array $dictionaries): bool
+    public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         if ($word->row === null) {
             $word->row = RowHelper::getRowAtPosition($string, $word->position);
-        }
-
-        // words used in an URL may not use diacritics
-        if (preg_match_all(self::URL_REGEX, $word->row, $matches)) {
-            foreach ($matches[0] as $match) {
-                if (strrpos($match, $word->word) !== false) {
-                    if ($this->dictionaries->contains($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED | DictionarySearch::TRY_WITHOUT_DIACRITICS)) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        // words used in an e-mail address may not use diacritics
-        if (preg_match_all(self::EMAIL_REGEX, $word->row, $matches)) {
-            foreach ($matches[0] as $match) {
-                if (strrpos($match, $word->word) !== false) {
-                    if ($this->dictionaries->contains($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED | DictionarySearch::TRY_WITHOUT_DIACRITICS)) {
-                        return true;
-                    }
-                }
-            }
         }
 
         // href="#stavy-objednavky"
@@ -65,19 +46,7 @@ class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
             foreach ($matches[2] as $match) {
                 if (strrpos($match, $word->word) !== false) {
                     if ($this->dictionaries->contains($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED | DictionarySearch::TRY_WITHOUT_DIACRITICS)) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        // msgid "URL: ajax-hodnoceni"
-        // msgstr "URL: adventny-kalendar"
-        if (preg_match_all('/(?:msgid|msgstr) "URL: ([^"]+)"/', $word->row, $matches)) {
-            foreach ($matches[1] as $match) {
-                if (strrpos($match, $word->word) !== false) {
-                    if ($this->dictionaries->contains($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED | DictionarySearch::TRY_WITHOUT_DIACRITICS)) {
-                        return true;
+                        return self::ID;
                     }
                 }
             }
@@ -89,13 +58,13 @@ class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
                 if (strrpos($match, $word->word) !== false) {
                     $lower = Strings::lower($word->word);
                     if ($this->dictionaries->contains($dictionaries, $lower, $word->context, DictionarySearch::TRY_LOWERCASE | DictionarySearch::TRY_CAPITALIZED | DictionarySearch::TRY_WITHOUT_DIACRITICS)) {
-                        return true;
+                        return self::CONSTANT;
                     }
                 }
             }
         }
 
-        return false;
+        return null;
     }
 
 }

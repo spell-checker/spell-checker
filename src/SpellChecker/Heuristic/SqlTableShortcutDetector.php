@@ -11,6 +11,8 @@ use SpellChecker\Word;
 class SqlTableShortcutDetector implements \SpellChecker\Heuristic\Heuristic
 {
 
+    public const RESULT_SQL = 'sql';
+
     /** @var string[] */
     private $prefixes = [
         // SQL
@@ -64,18 +66,18 @@ class SqlTableShortcutDetector implements \SpellChecker\Heuristic\Heuristic
      * @param \SpellChecker\Word $word
      * @param string $string
      * @param string[] $dictionaries
-     * @return bool
+     * @return string|null
      */
-    public function check(Word $word, string &$string, array $dictionaries): bool
+    public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         if ($this->pattern === null) {
             $this->pattern = sprintf('/(?:%s)(.*)$/', implode('|', $this->prefixes));
         }
         if ($word->block !== null) {
-            return false;
+            return null;
         }
         if (!preg_match('/^[a-z][a-z0-9]{0,5}$/', $word->word)) {
-            return false;
+            return null;
         }
 
         if ($word->row === null) {
@@ -84,11 +86,11 @@ class SqlTableShortcutDetector implements \SpellChecker\Heuristic\Heuristic
 
         if (preg_match($this->pattern, $word->row, $match)) {
             if (strpos($match[1], $word->word) !== false) {
-                return true;
+                return self::RESULT_SQL;
             }
         }
 
-        return false;
+        return null;
     }
 
 }

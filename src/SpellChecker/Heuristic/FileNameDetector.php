@@ -12,6 +12,8 @@ use SpellChecker\Word;
 class FileNameDetector implements \SpellChecker\Heuristic\Heuristic
 {
 
+    public const RESULT_FILE_NAME = 'file';
+
     /** @var \SpellChecker\Dictionary\DictionaryCollection */
     private $dictionaries;
 
@@ -29,7 +31,7 @@ class FileNameDetector implements \SpellChecker\Heuristic\Heuristic
         $this->pattern = sprintf('~[A-Za-z0-9_/%%-]+\\.(?:%s)~', implode('|', $this->fileExtensions));
     }
 
-    public function check(Word $word, string &$string, array $dictionaries): bool
+    public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         if ($word->row === null) {
             $word->row = RowHelper::getRowAtPosition($string, $word->position);
@@ -39,13 +41,13 @@ class FileNameDetector implements \SpellChecker\Heuristic\Heuristic
             foreach ($matches[0] as $match) {
                 if (strrpos($match, $word->word) !== false) {
                     if ($this->dictionaries->contains($dictionaries, $word->word, $word->context, DictionarySearch::TRY_CAPITALIZED | DictionarySearch::TRY_WITHOUT_DIACRITICS)) {
-                        return true;
+                        return self::RESULT_FILE_NAME;
                     }
                 }
             }
         }
 
-        return false;
+        return null;
     }
 
 }

@@ -181,14 +181,16 @@ class DictionaryCollection
         }, $files))));
 
         $startTime = microtime(true);
+        $startMemory = memory_get_usage(true);
         $this->dictionaries[$dictionary] = new Dictionary(
             $files,
             in_array($dictionary, $this->diacriticDictionaries),
             $checkedFiles
         );
 
-        $totalTime = microtime(true) - $startTime;
-        $this->console->debugWrite(' ', number_format($totalTime, 3), 's', C::gray(']'));
+        $totalTime = number_format(microtime(true) - $startTime, 3);
+        $consumedMemory = (string) round((memory_get_usage(true) - $startMemory) / 1024 / 1024, 0);
+        $this->console->debugWrite(' ', $totalTime, 's ', $consumedMemory, 'MB', C::gray(']'));
     }
 
     private function findDictionaryFiles(): void

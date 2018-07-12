@@ -9,6 +9,10 @@
 
 namespace Dogma\Tools;
 
+use const PHP_OS;
+use function strstr;
+use function strtolower;
+
 class System
 {
 

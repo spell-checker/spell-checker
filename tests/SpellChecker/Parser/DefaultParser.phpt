@@ -1,4 +1,6 @@
 <?php declare(strict_types = 1);
+
+// phpcs:disable Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma
 // spell-check-ignore: Nepodarilo sa prihlásiť používateľa zlavomat e-mailů
 
 namespace SpellChecker\Parser;
@@ -13,11 +15,11 @@ $parser = new DefaultParser(['PHPUnit']);
 Assert::equal([], $parser->parse(''));
 
 Assert::equal([
-    new Word('e-mailů', null, 0, 1)
+    new Word('e-mailů', null, 0, 1),
 ], $parser->parse('e-mailů'));
 
 Assert::equal([
-    new Word('foo', null, 0, 1)
+    new Word('foo', null, 0, 1),
 ], $parser->parse('foo'));
 
 Assert::equal([

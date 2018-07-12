@@ -3,6 +3,8 @@
 namespace SpellChecker\Heuristic;
 
 use SpellChecker\Word;
+use function ctype_digit;
+use function preg_match;
 
 /**
  * Filters characters, that are probably a formatting character in printf function
@@ -12,6 +14,12 @@ class PrintfDetector implements \SpellChecker\Heuristic\Heuristic
 
     public const RESULT_PRINTF = 'printf';
 
+    /**
+     * @param \SpellChecker\Word $word
+     * @param string $string
+     * @param string[] $dictionaries
+     * @return string|string
+     */
     public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         if (preg_match('/^[bcdeEfFgGosuxX]/', $word->word)) {

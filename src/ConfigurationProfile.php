@@ -15,6 +15,9 @@ final class ConfigurationProfile extends \stdClass
     /** @var mixed[] */
     private $values;
 
+    /**
+     * @param mixed[] $values
+     */
     public function __construct(array $values)
     {
         $this->values = $values;

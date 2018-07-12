@@ -8,6 +8,7 @@ use SpellChecker\Heuristic\DictionarySearch;
 use SpellChecker\Parser\DefaultParser;
 use SpellChecker\Parser\PhpParser;
 use Tester\Assert;
+use function key;
 
 require __DIR__ . '/../bootstrap.php';
 
@@ -18,10 +19,9 @@ $heuristic = new DictionarySearch($dictionaries);
 $resolver = new DictionaryResolver(['en'], [], []);
 
 $spellChecker = new SpellChecker(
-	[SpellChecker::DEFAULT_PARSER => $phpParser],
-	[$heuristic],
-	$resolver,
-	$dictionaries
+    [SpellChecker::DEFAULT_PARSER => $phpParser],
+    [$heuristic],
+    $resolver
 );
 
 $file = __DIR__ . '/SpellCheckerTestClass.php';
@@ -37,13 +37,13 @@ $errors = $result->getErrors();
 Assert::count(1, $errors);
 Assert::same($file, key($errors));
 
-/** @var Word[] $words */
+/** @var \SpellChecker\Word[] $words */
 $words = $result->getErrors()[$file];
 Assert::count(1, $words);
 
 $word = $words[0];
 Assert::true($word instanceof Word);
 Assert::same('hakusema', $word->word);
-Assert::same(361, $word->position);
+Assert::same(397, $word->position);
 Assert::same(20, $word->rowNumber);
 Assert::same('string', $word->context);

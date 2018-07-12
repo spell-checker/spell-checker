@@ -1,10 +1,13 @@
 <?php declare(strict_types = 1);
+
+// phpcs:disable Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma
 // spell-check-ignore: více akcí viac akcií akce akcia akcie
 
 namespace SpellChecker\Parser;
 
 use SpellChecker\Word;
 use Tester\Assert;
+use function file_get_contents;
 
 require __DIR__ . '/../../bootstrap.php';
 

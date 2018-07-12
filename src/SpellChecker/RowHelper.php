@@ -2,6 +2,11 @@
 
 namespace SpellChecker;
 
+use function strlen;
+use function strpos;
+use function strrpos;
+use function substr;
+
 class RowHelper
 {
 

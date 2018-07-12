@@ -4,6 +4,7 @@
 namespace SpellChecker\Heuristic;
 
 use SpellChecker\Word;
+use function preg_match;
 
 /**
  * Heuristic to filter CSS color codes and values starting with a number
@@ -14,6 +15,12 @@ class CssUnitsDetector implements \SpellChecker\Heuristic\Heuristic
     public const RESULT_COLOR = 'color';
     public const RESULT_UNIT = 'unit';
 
+    /**
+     * @param \SpellChecker\Word $word
+     * @param string $string
+     * @param string[] $dictionaries
+     * @return string|null
+     */
     public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         // color codes

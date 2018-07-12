@@ -4,6 +4,10 @@ namespace SpellChecker\Heuristic;
 
 use SpellChecker\Dictionary\DictionaryCollection;
 use SpellChecker\Word;
+use function implode;
+use function preg_match;
+use function strlen;
+use function substr;
 
 class DictionarySearch implements \SpellChecker\Heuristic\Heuristic
 {
@@ -20,6 +24,12 @@ class DictionarySearch implements \SpellChecker\Heuristic\Heuristic
         $this->dictionaries = $dictionaries;
     }
 
+    /**
+     * @param \SpellChecker\Word $word
+     * @param string $string
+     * @param string[] $dictionaries
+     * @return string|null
+     */
     public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         if ($this->dictionaries->contains($dictionaries, $word->word, $word->context, self::TRY_LOWERCASE)) {

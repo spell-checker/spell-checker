@@ -2,6 +2,8 @@
 
 namespace SpellChecker;
 
+use function sprintf;
+
 class NoDictionaryFileFoundException extends \Exception
 {
 

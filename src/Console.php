@@ -9,6 +9,12 @@
 
 namespace Dogma\Tools;
 
+use function exec;
+use function explode;
+use function file_get_contents;
+use function str_repeat;
+use function trim;
+
 class Console
 {
 
@@ -95,7 +101,7 @@ class Console
 
         if (System::isWindows()) {
             exec('mode CON', $output);
-            list(, $columns) = explode(':', $output[4]);
+            [, $columns] = explode(':', $output[4]);
             $columns = (int) trim($columns);
         } else {
             $columns = (int) exec('/usr/bin/env tput cols');

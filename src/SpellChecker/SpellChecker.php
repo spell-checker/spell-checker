@@ -2,10 +2,31 @@
 
 namespace SpellChecker;
 
-use SpellChecker\Dictionary\DictionaryCollection;
 use SpellChecker\Dictionary\DictionaryResolver;
-use SpellChecker\Heuristic\Heuristic;
 use SpellChecker\Parser\Parser;
+use function array_combine;
+use function array_fill;
+use function array_filter;
+use function array_merge;
+use function array_pop;
+use function array_slice;
+use function array_unique;
+use function basename;
+use function count;
+use function end;
+use function explode;
+use function file_get_contents;
+use function is_readable;
+use function preg_match;
+use function preg_match_all;
+use function preg_replace;
+use function preg_split;
+use function str_replace;
+use function strlen;
+use function strpos;
+use function strrpos;
+use function substr;
+use function trim;
 
 class SpellChecker
 {
@@ -26,9 +47,6 @@ class SpellChecker
     /** @var \SpellChecker\Dictionary\DictionaryResolver */
     private $resolver;
 
-    /** @var \SpellChecker\Dictionary\DictionaryCollection */
-    private $dictionaries;
-
     /** @var int */
     private $maxErrors;
 
@@ -42,7 +60,6 @@ class SpellChecker
      * @param \SpellChecker\Parser\Parser[] $wordsParsers
      * @param \SpellChecker\Heuristic\Heuristic[] $heuristics
      * @param \SpellChecker\Dictionary\DictionaryResolver $resolver
-     * @param \SpellChecker\Dictionary\DictionaryCollection $dictionaries
      * @param int $maxErrors
      * @param string[] $localIgnores
      * @param bool $checkLocalIgnores
@@ -51,7 +68,6 @@ class SpellChecker
         array $wordsParsers,
         array $heuristics,
         DictionaryResolver $resolver,
-        DictionaryCollection $dictionaries,
         int $maxErrors = self::DEFAULT_MAX_ERRORS,
         array $localIgnores = [],
         bool $checkLocalIgnores = false
@@ -60,12 +76,14 @@ class SpellChecker
         $this->wordsParsers = $wordsParsers;
         $this->heuristics = $heuristics;
         $this->resolver = $resolver;
-        $this->dictionaries = $dictionaries;
         $this->maxErrors = $maxErrors;
         $this->setIgnores($localIgnores);
         $this->checkLocalIgnores = $checkLocalIgnores;
     }
 
+    /**
+     * @return int[][]
+     */
     public function getStats(): array
     {
         return $this->heuristicStats;
@@ -135,14 +153,14 @@ class SpellChecker
             }
         }
         if (preg_match_all('/spell-check-ignore: ([^\\n]+)\\n/', $string, $match)) {
-        	foreach ($match[1] as $line) {
-		        $commentIgnores = preg_split('/[\\s+,]+/', $line);
-		        // may end with */ --> *} etc
-		        if (!preg_match('/\\pL/u', end($commentIgnores))) {
-			        array_pop($commentIgnores);
-		        }
-		        $ignores = array_merge($ignores, $commentIgnores);
-	        }
+            foreach ($match[1] as $line) {
+                $commentIgnores = preg_split('/[\\s+,]+/', $line);
+                // may end with */ --> *} etc
+                if (!preg_match('/\\pL/u', end($commentIgnores))) {
+                    array_pop($commentIgnores);
+                }
+                $ignores = array_merge($ignores, $commentIgnores);
+            }
         }
 
         $fileNameParts = explode('.', basename($fileName));
@@ -170,12 +188,11 @@ class SpellChecker
 
         $errors = [];
         $string = preg_replace([
-                '~data:image/(?:jpeg|png|gif);base64,([A-Za-z0-9/+]+)~',
-                '~("[^\\\\]*)((?:\\\\n)+)([^"]*")~',
-                '~("[^\\\\]*)((?:\\\\r)+)([^"]*")~',
-                '~("[^\\\\]*)((?:\\\\t)+)([^"]*")~',
-            ], ['', '$1↓$3', '$1⬇$3', '$1→$3'], $string
-        );
+            '~data:image/(?:jpeg|png|gif);base64,([A-Za-z0-9/+]+)~',
+            '~("[^\\\\]*)((?:\\\\n)+)([^"]*")~',
+            '~("[^\\\\]*)((?:\\\\r)+)([^"]*")~',
+            '~("[^\\\\]*)((?:\\\\t)+)([^"]*")~',
+        ], ['', '$1↓$3', '$1⬇$3', '$1→$3'], $string);
 
         if ($ignores !== []) {
             $ignores = array_combine($ignores, array_fill(0, count($ignores), 0));
@@ -234,6 +251,12 @@ class SpellChecker
         return $errors;
     }
 
+    /**
+     * @param \SpellChecker\Word $word
+     * @param string $string
+     * @param string[] $dictionaries
+     * @return bool
+     */
     private function checkWord(Word $word, string &$string, array $dictionaries): bool
     {
         foreach ($this->heuristics as $i => $heuristic) {

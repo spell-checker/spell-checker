@@ -11,6 +11,23 @@ namespace Dogma\Tools;
 
 use Dogma\Tools\Colors as C;
 use Nette\Neon\Neon;
+use function array_key_exists;
+use function array_map;
+use function array_merge;
+use function array_pad;
+use function explode;
+use function file_get_contents;
+use function getopt;
+use function implode;
+use function is_array;
+use function is_bool;
+use function is_file;
+use function is_numeric;
+use function is_string;
+use function parse_ini_file;
+use function sprintf;
+use function substr;
+use function trigger_error;
 
 final class Configurator extends \stdClass
 {
@@ -65,7 +82,7 @@ final class Configurator extends \stdClass
                 continue;
             }
             $row = '';
-            @list($short, $type, $info, $hint, $values) = $config;
+            [$short, $type, $info, $hint, $values] = array_pad($config, 5, null);
             $row .= $short ? C::white('  -' . $short) : '    ';
             $row .= C::white(' --' . $name);
             if ($type === self::FLAG_VALUE || $type === self::VALUE || $type === self::VALUES || $type === self::ENUM || $type === self::SET) {
@@ -186,6 +203,10 @@ final class Configurator extends \stdClass
         }
     }
 
+    /**
+     * @param mixed[] $config
+     * @param mixed[] $section
+     */
     private function expandValues(array $config, array &$section): void
     {
         while (isset($section['include'])) {
@@ -203,6 +224,10 @@ final class Configurator extends \stdClass
         }
     }
 
+    /**
+     * @param mixed[] $config
+     * @param bool $rewrite
+     */
     private function loadValues(array $config, bool $rewrite): void
     {
         foreach ($this->arguments as $name => [, $type]) {

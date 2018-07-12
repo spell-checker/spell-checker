@@ -3,6 +3,20 @@
 namespace SpellChecker\Parser;
 
 use SpellChecker\Word;
+use const PREG_OFFSET_CAPTURE;
+use function array_filter;
+use function array_map;
+use function array_push;
+use function array_unshift;
+use function array_values;
+use function count;
+use function in_array;
+use function preg_match;
+use function preg_match_all;
+use function preg_split;
+use function strlen;
+use function strpos;
+use function trim;
 
 class DefaultParser implements \SpellChecker\Parser\Parser
 {

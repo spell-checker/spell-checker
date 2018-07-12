@@ -2,6 +2,9 @@
 
 namespace SpellChecker;
 
+use function array_keys;
+use function count;
+
 class Result
 {
 
@@ -11,6 +14,10 @@ class Result
     /** @var int */
     private $errorsCount;
 
+    /**
+     * @param \SpellChecker\Word[][] $errors
+     * @param int $errorsCount
+     */
     public function __construct(array $errors, int $errorsCount)
     {
         $this->errors = $errors;

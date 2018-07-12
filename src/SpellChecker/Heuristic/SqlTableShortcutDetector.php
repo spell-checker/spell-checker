@@ -4,6 +4,10 @@ namespace SpellChecker\Heuristic;
 
 use SpellChecker\RowHelper;
 use SpellChecker\Word;
+use function implode;
+use function preg_match;
+use function sprintf;
+use function strpos;
 
 /**
  * Searches for signs, that the word is a table name abbreviation used in SQL code

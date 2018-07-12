@@ -9,17 +9,17 @@ namespace SpellChecker;
 class SpellCheckerTestClass
 {
 
-	public function jambo(): void
-	{
-		echo $this->validate('hakuna matata');
-	}
+    public function jambo(): void
+    {
+        echo $this->validate('hakuna matata');
+    }
 
-	private function validate(string $neno): string
-	{
-		if ($neno === 'Enkai') {
-			return 'Mchungaji hakusema!';
-		}
-		return $neno;
-	}
+    private function validate(string $neno): string
+    {
+        if ($neno === 'Enkai') {
+            return 'Mchungaji hakusema!';
+        }
+        return $neno;
+    }
 
 }

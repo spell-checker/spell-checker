@@ -56,6 +56,17 @@ You may want to install some external dictionaries for native languages. eg
 composer require --dev spell-checker/dictionary-cs
 ```
 
+### Installing dev dependencies
+
+Since spell-checker uses a dogma-dev package, which requires spell-checker as one of the development tools, there is a
+circular reference, that prevents the package from being installed.
+
+You need to tell composer that the current version replaces the one from dependencies by installing it via:
+```
+COMPOSER_ROOT_VERSION=0.3.6 composer install
+```
+Use whatever version is the latest match for version constraint specified in dogma-dev dependencies.
+The vendor directory must be cleaned before updating for the composer update to succeed.
 
 ## Running
 

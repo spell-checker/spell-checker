@@ -14,7 +14,7 @@
     <property name="path.log" value="${path.root}/log"/>
     <property name="path.php.executable" value="php"/>
     <property name="path.phpcs.executable" value="${path.bin}/phpcs"/>
-    <property name="path.phpcs.ruleset" value="${path.build}/cs-ruleset.xml"/>
+    <property name="path.phpcs.ruleset" value="${path.root}/vendor/dogma/dogma-dev/src/CodeSniffer/ruleset.xml"/>
     <property name="path.phplint.executable" value="${path.bin}/parallel-lint"/>
     <property name="path.phpstan.executable" value="${path.bin}/phpstan"/>
     <property name="path.phpstan.config" value="${path.build}/phpstan.neon"/>
@@ -63,7 +63,7 @@
     <target name="phpcs">
         <exec executable="${path.phpcs.executable}" logoutput="true" passthru="true" checkreturn="true">
             <arg value="--standard=${path.phpcs.ruleset}"/>
-            <arg value="--extensions=php"/>
+            <arg value="--extensions=php,phpt"/>
             <arg value="--encoding=utf-8"/>
             <arg value="--tab-width=4"/>
             <arg value="-sp"/>

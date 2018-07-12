@@ -4,6 +4,10 @@
 namespace SpellChecker\Heuristic;
 
 use SpellChecker\Word;
+use function array_flip;
+use function ctype_space;
+use function preg_match;
+use function range;
 
 /**
  * Heuristic to filter alphabetic and roman letter bullets
@@ -22,6 +26,12 @@ class BulletsDetector implements \SpellChecker\Heuristic\Heuristic
         $this->bullets = array_flip(range('a', 'z') + range('A', 'Z'));
     }
 
+    /**
+     * @param \SpellChecker\Word $word
+     * @param string $string
+     * @param string[] $dictionaries
+     * @return string|null
+     */
     public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         // a) b) c) / A) B) C)

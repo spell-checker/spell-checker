@@ -6,6 +6,8 @@ namespace SpellChecker\Heuristic;
 use SpellChecker\Dictionary\DictionaryCollection;
 use SpellChecker\RowHelper;
 use SpellChecker\Word;
+use function preg_match_all;
+use function strrpos;
 
 /**
  * Identifies identifiers (classes, ids, constants...) and tries to match them against dictionaries without diacritics
@@ -43,6 +45,12 @@ class AddressDetector implements \SpellChecker\Heuristic\Heuristic
         $this->ignoreEmails = $ignoreEmails;
     }
 
+    /**
+     * @param \SpellChecker\Word $word
+     * @param string $string
+     * @param string[] $dictionaries
+     * @return string|null
+     */
     public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         if ($word->row === null) {

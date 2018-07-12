@@ -2,6 +2,16 @@
 
 namespace SpellChecker\Dictionary;
 
+use function array_filter;
+use function array_map;
+use function array_merge;
+use function array_unique;
+use function end;
+use function explode;
+use function preg_match;
+use function str_replace;
+use function strpos;
+
 class DictionaryResolver
 {
 

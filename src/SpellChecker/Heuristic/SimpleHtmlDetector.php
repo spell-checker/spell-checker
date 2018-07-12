@@ -25,6 +25,12 @@ class SimpleHtmlDetector implements \SpellChecker\Heuristic\Heuristic
         'sup' => true,
     ];
 
+    /**
+     * @param \SpellChecker\Word $word
+     * @param string $string
+     * @param string[] $dictionaries
+     * @return string|null
+     */
     public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         // <b>, </b>

@@ -1,5 +1,4 @@
 
 parameters:
     ignoreErrors:
-        - '/(checkWord|contains)\(\) expects string, string\|true given./' # two conflicting rules
     universalObjectCratesClasses: []

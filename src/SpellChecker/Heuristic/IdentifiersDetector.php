@@ -7,6 +7,8 @@ use Nette\Utils\Strings;
 use SpellChecker\Dictionary\DictionaryCollection;
 use SpellChecker\RowHelper;
 use SpellChecker\Word;
+use function preg_match_all;
+use function strrpos;
 
 /**
  * Identifies identifiers (URLs, classes, ids, constants...) and tries to match them against dictionaries without diacritics
@@ -17,12 +19,6 @@ class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
     public const ID = 'id';
     public const CONSTANT = 'constant';
 
-    // https://mathiasbynens.be/demo/url-regex
-    // selected one with false positive behavior, because we need to match even urls formatted with sprintf etc.
-    private const URL_REGEX = '~((https?|ftp)://|www\.)(-\.)?([^\s/?\.#]+\.?)+(/[^\s]*)?~i';
-
-    private const EMAIL_REGEX = '~[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+~';
-
     /** @var \SpellChecker\Dictionary\DictionaryCollection */
     private $dictionaries;
 
@@ -31,6 +27,12 @@ class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
         $this->dictionaries = $dictionaries;
     }
 
+    /**
+     * @param \SpellChecker\Word $word
+     * @param string $string
+     * @param string[] $dictionaries
+     * @return string|string
+     */
     public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         if ($word->row === null) {

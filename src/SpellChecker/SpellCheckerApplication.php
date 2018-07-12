@@ -23,6 +23,15 @@ use SpellChecker\Parser\DefaultParser;
 use SpellChecker\Parser\PhpParser;
 use SpellChecker\Parser\PoParser;
 use Tracy\Debugger;
+use function class_exists;
+use function count;
+use function implode;
+use function log;
+use function memory_get_peak_usage;
+use function microtime;
+use function min;
+use function number_format;
+use function sprintf;
 
 class SpellCheckerApplication
 {
@@ -88,7 +97,6 @@ class SpellCheckerApplication
                 $wordsParsers,
                 $heuristics,
                 $dictionaryResolver,
-                $dictionaries,
                 (int) $config->maxErrors,
                 $config->localIgnores ?: [],
                 (bool) $config->checkLocalIgnores

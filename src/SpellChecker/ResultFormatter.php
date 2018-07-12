@@ -5,6 +5,20 @@ namespace SpellChecker;
 use Dogma\Tools\Colors as C;
 use Dogma\Tools\Console;
 use SpellChecker\Dictionary\DictionaryResolver;
+use function array_map;
+use function array_unique;
+use function arsort;
+use function asort;
+use function count;
+use function implode;
+use function mb_strlen;
+use function mb_substr;
+use function sprintf;
+use function str_replace;
+use function strlen;
+use function substr;
+use function trim;
+use function uasort;
 
 class ResultFormatter
 {
@@ -39,6 +53,10 @@ class ResultFormatter
         }
     }
 
+    /**
+     * @param string[] $files
+     * @return string
+     */
     public function formatFilesList(array $files): string
     {
         $output = '';
@@ -130,9 +148,6 @@ class ResultFormatter
         foreach ($contexts as $context => $words) {
             $output .= C::lcyan($context) . "\n";
             foreach ($words as $word => $count) {
-                if ($count < 10) {
-                    //continue;
-                }
                 $output .= C::gray('- found "') . $word . C::gray('" ') . $count . C::gray(' times') . "\n";
             }
         }

@@ -3,6 +3,15 @@
 namespace SpellChecker\Parser;
 
 use PhpParser\Parser\Tokens;
+use const PREG_OFFSET_CAPTURE;
+use function explode;
+use function ltrim;
+use function preg_match_all;
+use function rtrim;
+use function str_replace;
+use function strlen;
+use function substr;
+use function trim;
 
 class PhpParser implements \SpellChecker\Parser\Parser
 {
@@ -104,6 +113,13 @@ class PhpParser implements \SpellChecker\Parser\Parser
         return $results;
     }
 
+    /**
+     * @param \SpellChecker\Word[] $result
+     * @param string $string
+     * @param int $filePosition
+     * @param int $rowNumber
+     * @param string $context
+     */
     private function parseString(array &$result, string $string, int $filePosition, int $rowNumber, string $context): void
     {
         $rowOffset = 0;

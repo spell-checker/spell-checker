@@ -4,12 +4,20 @@ namespace SpellChecker\Heuristic;
 
 use SpellChecker\RowHelper;
 use SpellChecker\Word;
+use function preg_match_all;
+use function strrpos;
 
 class Base64ImageDetector implements \SpellChecker\Heuristic\Heuristic
 {
 
     public const RESULT_IMAGE = 'image';
 
+    /**
+     * @param \SpellChecker\Word $word
+     * @param string $string
+     * @param string[] $dictionaries
+     * @return string|null
+     */
     public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         if ($word->row === null) {

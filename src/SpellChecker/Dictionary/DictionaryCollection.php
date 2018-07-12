@@ -8,6 +8,24 @@ use Nette\Utils\Strings;
 use SpellChecker\DiacriticsHelper;
 use SpellChecker\Heuristic\DictionarySearch;
 use Symfony\Component\Finder\Finder;
+use function array_filter;
+use function array_keys;
+use function array_map;
+use function basename;
+use function explode;
+use function getcwd;
+use function implode;
+use function in_array;
+use function iterator_to_array;
+use function mb_strtolower;
+use function memory_get_usage;
+use function microtime;
+use function number_format;
+use function round;
+use function strlen;
+use function strpos;
+use function substr;
+use function trim;
 
 class DictionaryCollection
 {
@@ -38,6 +56,7 @@ class DictionaryCollection
      * @param string[] $diacriticDictionaries
      * @param string[] $checkedFiles
      * @param string|null $baseDir
+     * @param \Dogma\Tools\Console|null $console
      */
     public function __construct(
         array $directories,

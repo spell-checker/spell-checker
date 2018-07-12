@@ -2,6 +2,8 @@
 
 namespace SpellChecker;
 
+use function sprintf;
+
 class DictionaryFileNotReadableException extends \Exception
 {
 

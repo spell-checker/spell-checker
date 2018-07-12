@@ -5,6 +5,14 @@ namespace SpellChecker;
 use Dogma\Tools\Configurator;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\Iterator\FilenameFilterIterator;
+use function array_intersect;
+use function array_keys;
+use function array_map;
+use function getcwd;
+use function iterator_to_array;
+use function strlen;
+use function strtr;
+use function trim;
 
 class FileFinder
 {
@@ -90,7 +98,6 @@ class FileFinder
             } else {
                 return $foundFiles;
             }
-
         } elseif ($files) {
             if ($this->baseDir !== '') {
                 $foundFiles = array_map(function (string $name): string {
@@ -106,7 +113,6 @@ class FileFinder
             } else {
                 return $foundFiles;
             }
-
         } else {
             throw new \SpellChecker\FileSearchNotConfiguredException();
         }

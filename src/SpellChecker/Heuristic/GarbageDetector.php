@@ -3,6 +3,10 @@
 namespace SpellChecker\Heuristic;
 
 use SpellChecker\Word;
+use function count;
+use function preg_replace;
+use function preg_split;
+use function strlen;
 
 /**
  * Guesses if a word may be a token or password or part of base64 encoded string
@@ -16,7 +20,7 @@ class GarbageDetector implements \SpellChecker\Heuristic\Heuristic
      * @param \SpellChecker\Word $word
      * @param string $string
      * @param string[] $dictionaries
-     * @return bool
+     * @return string|null
      */
     public function check(Word $word, string &$string, array $dictionaries): ?string
     {

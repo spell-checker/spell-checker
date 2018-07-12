@@ -9,6 +9,11 @@
 
 namespace Dogma\Tools;
 
+use const STR_PAD_RIGHT;
+use function preg_replace;
+use function str_pad;
+use function strlen;
+
 final class Colors
 {
 

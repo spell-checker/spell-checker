@@ -3,6 +3,7 @@
 namespace SpellChecker\Heuristic;
 
 use SpellChecker\Word;
+use function preg_match;
 
 /**
  * Detects words, that are probably a string escape sequence or HTML entity
@@ -13,6 +14,12 @@ class EscapeSequenceDetector implements \SpellChecker\Heuristic\Heuristic
     public const RESULT_ESCAPE_CODE = 'escape';
     public const RESULT_ENTITY = 'entity';
 
+    /**
+     * @param \SpellChecker\Word $word
+     * @param string $string
+     * @param string[] $dictionaries
+     * @return string|null
+     */
     public function check(Word $word, string &$string, array $dictionaries): ?string
     {
         // "\s"

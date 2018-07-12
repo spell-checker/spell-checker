@@ -1,4 +1,6 @@
 <?php declare(strict_types = 1);
+
+// phpcs:disable Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma
 // spell-check-ignore: aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll EOT
 
 namespace SpellChecker\Parser;
@@ -74,7 +76,6 @@ $expected = [
     new Word('EOT', null, 16, 2, PhpParser::CONTEXT_CODE),
     new Word('bbb', null, 20, 3, PhpParser::CONTEXT_STRING),
     new Word('ccc', null, 24, 4, PhpParser::CONTEXT_STRING),
-    new Word('EOT', null, 28, 5, PhpParser::CONTEXT_CODE),
 ];
 $actual = $phpParser->parse($string);
 Assert::equal($expected, $actual);
@@ -90,7 +91,6 @@ $expected = [
     new Word('EOT', null, 17, 2, PhpParser::CONTEXT_CODE),
     new Word('bbb', null, 22, 3, PhpParser::CONTEXT_STRING),
     new Word('ccc', null, 26, 4, PhpParser::CONTEXT_STRING),
-    new Word('EOT', null, 30, 5, PhpParser::CONTEXT_CODE),
 ];
 $actual = $phpParser->parse($string);
 Assert::equal($expected, $actual);

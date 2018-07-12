@@ -3,6 +3,14 @@
 namespace SpellChecker\Dictionary;
 
 use SpellChecker\DiacriticsHelper;
+use function array_search;
+use function explode;
+use function file_get_contents;
+use function in_array;
+use function is_file;
+use function is_readable;
+use function substr;
+use function trim;
 
 class Dictionary
 {
@@ -19,6 +27,11 @@ class Dictionary
     /** @var int[]|string[] */
     private $strippedIndex;
 
+    /**
+     * @param string[] $files
+     * @param bool $diacritics
+     * @param string[] $checkedFiles
+     */
     public function __construct(array $files, bool $diacritics = false, array $checkedFiles = [])
     {
         $this->files = $files;
@@ -59,6 +72,14 @@ class Dictionary
                 }
             }
         }
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getFiles(): array
+    {
+        return $this->files;
     }
 
     public function contains(string $word): bool

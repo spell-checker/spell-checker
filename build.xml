@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- spell-check-ignore: basedir checkreturn da defaultexcludes fileset logoutput mkdir passthru sp -->
+<!-- spell-check-ignore: basedir checkreturn da defaultexcludes fileset logoutput mkdir passthru sp phpcbf -->
 <project name="SpellChecker" default="build">
 
     <property name="path.build" value="${project.basedir}/build"/>
@@ -13,6 +13,7 @@
     <property name="path.bin" value="${path.root}/bin"/>
     <property name="path.log" value="${path.root}/log"/>
     <property name="path.php.executable" value="php"/>
+    <property name="path.phpcbf.executable" value="${path.bin}/phpcbf"/>
     <property name="path.phpcs.executable" value="${path.bin}/phpcs"/>
     <property name="path.phpcs.ruleset" value="${path.root}/vendor/dogma/dogma-dev/src/CodeSniffer/ruleset.xml"/>
     <property name="path.phplint.executable" value="${path.bin}/parallel-lint"/>
@@ -67,6 +68,17 @@
             <arg value="--encoding=utf-8"/>
             <arg value="--tab-width=4"/>
             <arg value="-sp"/>
+            <arg path="${path.src}"/>
+            <arg path="${path.tests}"/>
+        </exec>
+    </target>
+
+    <target name="phpcbf">
+        <exec executable="${path.phpcbf.executable}" logoutput="true" passthru="true" checkreturn="true">
+            <arg value="--standard=${path.phpcs.ruleset}"/>
+            <arg value="--extensions=php"/>
+            <arg value="--encoding=utf-8"/>
+            <arg value="--tab-width=4"/>
             <arg path="${path.src}"/>
             <arg path="${path.tests}"/>
         </exec>

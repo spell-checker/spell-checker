@@ -4,6 +4,7 @@ namespace SpellChecker;
 
 use SpellChecker\Dictionary\DictionaryResolver;
 use SpellChecker\Parser\Parser;
+use SpellChecker\Parser\ParserProvider;
 use function array_combine;
 use function array_fill;
 use function array_filter;
@@ -33,10 +34,8 @@ class SpellChecker
 
     public const DEFAULT_MAX_ERRORS = 1000;
 
-    public const DEFAULT_PARSER = '*';
-
-    /** @var \SpellChecker\Parser\Parser[] */
-    private $wordsParsers;
+    /** @var \SpellChecker\Parser\ParserProvider */
+    private $parserProvider;
 
     /** @var \SpellChecker\Heuristic\Heuristic[] */
     private $heuristics;
@@ -57,7 +56,7 @@ class SpellChecker
     private $checkLocalIgnores;
 
     /**
-     * @param \SpellChecker\Parser\Parser[] $wordsParsers
+     * @param \SpellChecker\Parser\ParserProvider $parserProvider
      * @param \SpellChecker\Heuristic\Heuristic[] $heuristics
      * @param \SpellChecker\Dictionary\DictionaryResolver $resolver
      * @param int $maxErrors
@@ -65,7 +64,7 @@ class SpellChecker
      * @param bool $checkLocalIgnores
      */
     public function __construct(
-        array $wordsParsers,
+        ParserProvider $parserProvider,
         array $heuristics,
         DictionaryResolver $resolver,
         int $maxErrors = self::DEFAULT_MAX_ERRORS,
@@ -73,7 +72,7 @@ class SpellChecker
         bool $checkLocalIgnores = false
     )
     {
-        $this->wordsParsers = $wordsParsers;
+        $this->parserProvider = $parserProvider;
         $this->heuristics = $heuristics;
         $this->resolver = $resolver;
         $this->maxErrors = $maxErrors;
@@ -165,7 +164,7 @@ class SpellChecker
 
         $fileNameParts = explode('.', basename($fileName));
         $extension = end($fileNameParts);
-        $parser = $this->wordsParsers[$extension] ?? $this->wordsParsers[self::DEFAULT_PARSER];
+        $parser = $this->parserProvider->getParser($extension);
 
         $errors = $this->checkString($string, $dictionaries, $ignores, $parser);
         if ($fileCallback !== null) {
@@ -184,7 +183,7 @@ class SpellChecker
      */
     public function checkString(string $string, array $dictionaries, array $ignores, ?Parser $parser = null): array
     {
-        $parser = $parser ?? $this->wordsParsers[self::DEFAULT_PARSER];
+        $parser = $parser ?: $this->parserProvider->getParser(ParserProvider::DEFAULT_PARSER);
 
         $errors = [];
         $string = preg_replace([

@@ -5,24 +5,22 @@ namespace SpellChecker;
 use SpellChecker\Dictionary\DictionaryCollection;
 use SpellChecker\Dictionary\DictionaryResolver;
 use SpellChecker\Heuristic\DictionarySearch;
-use SpellChecker\Parser\DefaultParser;
 use SpellChecker\Parser\PhpParser;
+use SpellChecker\Parser\PlainTextParser;
+use SpellChecker\Parser\SimpleParserProvider;
 use Tester\Assert;
 use function key;
 
 require __DIR__ . '/../bootstrap.php';
 
-$phpParser = new PhpParser(new DefaultParser());
+$phpParser = new PhpParser(new PlainTextParser());
+$parsers = new SimpleParserProvider(['php' => $phpParser]);
 $directory = '/../../vendor/spell-checker/dictionary-en';
 $dictionaries = new DictionaryCollection([$directory], [], [], __DIR__);
 $heuristic = new DictionarySearch($dictionaries);
 $resolver = new DictionaryResolver(['en'], [], []);
 
-$spellChecker = new SpellChecker(
-    [SpellChecker::DEFAULT_PARSER => $phpParser],
-    [$heuristic],
-    $resolver
-);
+$spellChecker = new SpellChecker($parsers, [$heuristic], $resolver);
 
 $file = __DIR__ . '/SpellCheckerTestClass.php';
 $result = $spellChecker->checkFiles([$file]);

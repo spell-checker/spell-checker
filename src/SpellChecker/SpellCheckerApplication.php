@@ -19,11 +19,10 @@ use SpellChecker\Heuristic\IdentifiersDetector;
 use SpellChecker\Heuristic\PrintfDetector;
 use SpellChecker\Heuristic\SimpleHtmlDetector;
 use SpellChecker\Heuristic\SqlTableShortcutDetector;
-use SpellChecker\Parser\DefaultParser;
-use SpellChecker\Parser\PhpParser;
-use SpellChecker\Parser\PoParser;
+use SpellChecker\Parser\DefaultParserProvider;
+use SpellChecker\Parser\LanguageResolver;
+use SpellChecker\Parser\PlainTextParser;
 use Tracy\Debugger;
-use function arsort;
 use function class_exists;
 use function count;
 use function implode;
@@ -32,7 +31,6 @@ use function memory_get_peak_usage;
 use function microtime;
 use function min;
 use function number_format;
-use function rd;
 use function sprintf;
 
 class SpellCheckerApplication
@@ -71,12 +69,9 @@ class SpellCheckerApplication
             );
 
             // parsers
-            $defaultParser = new DefaultParser($config->wordsParserExceptions ?? []);
-            $wordsParsers = [
-                'po' => new PoParser($defaultParser),
-                'php' => new PhpParser($defaultParser),
-                SpellChecker::DEFAULT_PARSER => $defaultParser,
-            ];
+            $languageResolver = new LanguageResolver($config->parsers ?? []);
+            $plainTextParser = new PlainTextParser($config->irregularWords ?? []);
+            $parserProvider = new DefaultParserProvider($plainTextParser, $languageResolver, $config);
 
             // heuristics
             $heuristics = [
@@ -96,7 +91,7 @@ class SpellCheckerApplication
 
             // run check
             $spellChecker = new SpellChecker(
-                $wordsParsers,
+                $parserProvider,
                 $heuristics,
                 $dictionaryResolver,
                 (int) $config->maxErrors,
@@ -123,7 +118,7 @@ class SpellCheckerApplication
             $this->console->ln(2);
             Console::switchTerminalToUtf8();
 
-            $formatter = new ResultFormatter($dictionaryResolver, $finder->getBaseDir());
+            $formatter = new ResultFormatter($dictionaryResolver, $parserProvider, $finder->getBaseDir());
             $this->console->writeLn($formatter->summarize($result));
             if ($result->errorsFound()) {
                 if ($config->topWords) {

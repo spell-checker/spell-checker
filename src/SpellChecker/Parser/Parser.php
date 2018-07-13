@@ -5,10 +5,7 @@ namespace SpellChecker\Parser;
 interface Parser
 {
 
-    public const KEYWORD = 1;
-    public const NAME = 2;
-    public const STRING = 3;
-    public const COMMENT = 4;
+    //public function __construct(PlainTextParser $plainTextParser);
 
     /**
      * Parse words from text

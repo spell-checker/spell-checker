@@ -5,14 +5,20 @@ namespace SpellChecker;
 use Dogma\Tools\Colors as C;
 use Dogma\Tools\Console;
 use SpellChecker\Dictionary\DictionaryResolver;
+use SpellChecker\Parser\ParserProvider;
+use const PATHINFO_EXTENSION;
 use function array_map;
 use function array_unique;
 use function arsort;
 use function asort;
 use function count;
+use function end;
+use function explode;
+use function get_class;
 use function implode;
 use function mb_strlen;
 use function mb_substr;
+use function pathinfo;
 use function sprintf;
 use function str_replace;
 use function strlen;
@@ -26,15 +32,20 @@ class ResultFormatter
     /** @var \SpellChecker\Dictionary\DictionaryResolver */
     private $dictionaryResolver;
 
+    /** @var \SpellChecker\Parser\ParserProvider */
+    private $parserProvider;
+
     /** @var string|null */
     private $baseDir;
 
     public function __construct(
         DictionaryResolver $dictionaryResolver,
+        ParserProvider $parserProvider,
         ?string $baseDir
     )
     {
         $this->dictionaryResolver = $dictionaryResolver;
+        $this->parserProvider = $parserProvider;
         $this->baseDir = $baseDir;
     }
 
@@ -173,8 +184,12 @@ class ResultFormatter
      */
     public function formatFileErrors(string $fileName, array $errors, int $maxWidth): string
     {
+        $parser = explode('\\', get_class($this->parserProvider->getParser(pathinfo($fileName, PATHINFO_EXTENSION))));
+        $parser = end($parser);
         $output = '' . C::lcyan($this->stripBaseDir($fileName)) . C::gray(' (')
-            . implode(', ', $this->dictionaryResolver->getDictionariesForFileName($fileName)) . C::gray("):\n");
+            . $parser . ', '
+            . implode(', ', $this->dictionaryResolver->getDictionariesForFileName($fileName))
+            . C::gray("):\n");
         foreach ($errors as $word) {
             $row = trim($word->row);
             $padding = $word->block === true ? 35 : 27;

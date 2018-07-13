@@ -40,6 +40,7 @@ final class Configurator extends \stdClass
     public const VALUES = 'values';
     public const ENUM = 'enum';
     public const SET = 'set';
+    public const MAP = 'map';
 
     /** @var string[]|string[][] */
     private $arguments;

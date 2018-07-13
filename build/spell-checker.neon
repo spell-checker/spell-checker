@@ -33,12 +33,9 @@ dictionariesByFileExtension:
 	phpt: php
 	neon: neon
 
-# paths to search for dictionary files. must have .dic extension
+# paths to search for dictionary files. files must have .dic extension
 dictionaryDirectories:
-    - vendor/spell-checker/dictionary-en
-    - dictionaries
     - build/spell-checker
+    - vendor/spell-checker
+    - dictionaries
 
-# words, that cannot be parsed by default conventions
-wordsParserExceptions:
-    - PHPUnit

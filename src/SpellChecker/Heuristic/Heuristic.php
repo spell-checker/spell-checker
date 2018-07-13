@@ -7,6 +7,8 @@ use SpellChecker\Word;
 interface Heuristic
 {
 
+    //public function __construct(DictionaryCollection $dictionaries);
+
     /**
      * Checks the given word.
      * Returns the name of rule or dictionary for which the word matches or null if it does not match.

@@ -10,7 +10,7 @@ use Tester\Assert;
 
 require __DIR__ . '/../../bootstrap.php';
 
-$parser = new DefaultParser(['PHPUnit']);
+$parser = new PlainTextParser(['PHPUnit']);
 
 Assert::equal([], $parser->parse(''));
 

@@ -10,7 +10,9 @@ use function array_push;
 use function array_unshift;
 use function array_values;
 use function count;
+use function explode;
 use function in_array;
+use function ltrim;
 use function preg_match;
 use function preg_match_all;
 use function preg_split;
@@ -18,7 +20,11 @@ use function strlen;
 use function strpos;
 use function trim;
 
-class DefaultParser implements \SpellChecker\Parser\Parser
+/**
+ * Basic words parser that does not recognize any contexts.
+ * Capable of parsing camelCase, pascal_case and their combinations.
+ */
+class PlainTextParser implements \SpellChecker\Parser\Parser
 {
 
     public const WORD_BLOCK_REGEXP = '/[\\p{L}0-9_-]+/u';
@@ -64,6 +70,34 @@ class DefaultParser implements \SpellChecker\Parser\Parser
         }
 
         return $result;
+    }
+
+    /**
+     * @param \SpellChecker\Word[] $result
+     * @param string $string
+     * @param int $filePosition
+     * @param int $rowNumber
+     * @param string $context
+     */
+    public function parseText(array &$result, string $string, int $filePosition, int $rowNumber, string $context): void
+    {
+        $rowOffset = 0;
+        foreach (explode("\n", $string) as $rowIndex => $row) {
+            if (!preg_match_all(self::WORD_BLOCK_REGEXP, $row, $blockMatches, PREG_OFFSET_CAPTURE)) {
+                $rowOffset += strlen($row) + 1;
+                continue;
+            }
+            foreach ($blockMatches[0] as [$block, $rowPosition]) {
+                $this->blocksToWords(
+                    $block,
+                    $filePosition + $rowOffset + $rowPosition,
+                    $rowNumber + $rowIndex,
+                    $result,
+                    $context
+                );
+            }
+            $rowOffset += strlen($row) + 1;
+        }
     }
 
     /**

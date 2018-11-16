@@ -39,7 +39,7 @@ class SpellCheckerApplication
     {
         try {
             // files
-            $finder = new FileFinder($config->baseDir);
+            $finder = new FileFinder($config->filesBaseDir ?? $config->baseDir);
             $files = $finder->findFilesByConfig($config);
 
             // dictionaries
@@ -55,7 +55,7 @@ class SpellCheckerApplication
                 $config->dictionaryDirectories ?? [],
                 $config->dictionariesWithDiacritics ?? [],
                 $checkFiles,
-                $config->baseDir,
+                $config->dictionariesBaseDir ?? $config->baseDir,
                 $this->console
             );
 

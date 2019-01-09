@@ -37,6 +37,7 @@ class Dictionary
                 $diaName = substr($fileName, 0, -1) . 'a';
                 $diaExists = array_search($diaName, $files, true) !== false;
                 foreach (explode("\n", file_get_contents($fileName)) as $word) {
+                    $word = trim($word);
                     if ($word === '' || $word[0] === '#') {
                         continue;
                     }
@@ -50,6 +51,7 @@ class Dictionary
                 }
             } elseif ($extension === 'dia' && $diacritics) {
                 foreach (explode("\n", file_get_contents($fileName)) as $word) {
+                    $word = trim($word);
                     if ($word === '' || $word[0] === '#') {
                         continue;
                     }

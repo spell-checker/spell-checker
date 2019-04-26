@@ -21,6 +21,11 @@
     "require-dev": {
         "dogma/dogma-dev": "~0.1"
     },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.3-dev"
+        }
+    },
     "config": {
         "bin-dir": "bin"
     },

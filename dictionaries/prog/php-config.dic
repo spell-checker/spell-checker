@@ -62,7 +62,6 @@ bug_compat_warn
 byteasvarchar
 cache
 cache_by_default
-cache_by_default
 cache_expire
 cache_limiter
 cache_list
@@ -98,7 +97,6 @@ comment
 compatability_mode
 composite
 composite_log
-config_file
 config_file
 config_path
 connect
@@ -145,7 +143,6 @@ default_enable
 default_flags
 default_handler
 default_host
-default_host
 default_charset
 default_latitude
 default_locale
@@ -173,7 +170,6 @@ delay_prom
 describe
 detach_default_queries
 detect_order
-detect_unicode
 detect_unicode
 device
 disable
@@ -293,7 +289,6 @@ ignore_repeated_errors
 ignore_repeated_source
 ignore_sql_comments
 ignore_user_abort
-imlib2
 imlib2
 impersonate
 implicit_flush
@@ -498,7 +493,6 @@ save_handler
 save_path
 scale
 script_encoding
-script_encoding
 scrollable
 secure_connection
 security_prefs
@@ -600,9 +594,7 @@ user_entries_hint
 user_ini
 user_ttl
 utf8
-utf8
 vacuum_interval
-valkyrie
 valkyrie
 var_display_max_data
 var_display_max_depth

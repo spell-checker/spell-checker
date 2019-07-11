@@ -2,6 +2,7 @@
 
 namespace SpellChecker;
 
+use Dogma\Str;
 use SpellChecker\Dictionary\DictionaryResolver;
 use SpellChecker\Parser\Parser;
 use function array_combine;
@@ -142,7 +143,7 @@ class SpellChecker
     private function checkFile(string $fileName, array $dictionaries, ?callable $fileCallback = null): array
     {
         $string = file_get_contents($fileName);
-        $string = \Nette\Utils\Strings::normalize($string);
+        $string = Str::normalize($string);
 
         $ignores = [];
         if ($this->localIgnores !== []) {

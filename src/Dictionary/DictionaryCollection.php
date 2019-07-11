@@ -5,7 +5,6 @@ namespace SpellChecker\Dictionary;
 use Dogma\Application\Colors as C;
 use Dogma\Application\Console;
 use Dogma\Str;
-use Nette\Utils\Strings;
 use SpellChecker\Heuristic\DictionarySearch;
 use Symfony\Component\Finder\Finder;
 use function array_filter;
@@ -111,7 +110,7 @@ class DictionaryCollection
                     }
                 }
                 if ($flags & DictionarySearch::TRY_CAPITALIZED) {
-                    $capitalized = Strings::firstUpper(mb_strtolower($word));
+                    $capitalized = Str::firstUpper(mb_strtolower($word));
                     if ($this->dictionaries[$dictionary]->containsWithoutDiacritics($capitalized)) {
                         return true;
                     }
@@ -127,7 +126,7 @@ class DictionaryCollection
                     }
                 }
                 if ($flags & DictionarySearch::TRY_CAPITALIZED) {
-                    $capitalized = Strings::firstUpper(mb_strtolower($word));
+                    $capitalized = Str::firstUpper(mb_strtolower($word));
                     if ($this->dictionaries[$dictionary]->contains($capitalized)) {
                         return true;
                     }
@@ -145,7 +144,7 @@ class DictionaryCollection
                     }
                 }
                 if ($flags & DictionarySearch::TRY_CAPITALIZED) {
-                    $capitalized = Strings::firstUpper(mb_strtolower($stripped));
+                    $capitalized = Str::firstUpper(mb_strtolower($stripped));
                     if ($this->dictionaries[$dictionary]->containsWithoutDiacritics($capitalized)) {
                         return true;
                     }

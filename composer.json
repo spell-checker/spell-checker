@@ -13,7 +13,6 @@
     "require": {
         "php": ">=7.1.0",
         "nette/neon": "~2.4|~3.0",
-        "nette/utils": "~2.4|~3.0",
         "nikic/php-parser": "~3.0|~4.0",
         "symfony/finder": "~3.4|~4.0",
         "tracy/tracy": "~2.4",

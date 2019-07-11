@@ -3,7 +3,7 @@
 
 namespace SpellChecker\Heuristic;
 
-use Nette\Utils\Strings;
+use Dogma\Str;
 use SpellChecker\Dictionary\DictionaryCollection;
 use SpellChecker\RowHelper;
 use SpellChecker\Word;
@@ -58,7 +58,7 @@ class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
         if (preg_match_all('/(?:const)\\s([^A-Z0-9_]+)\\s/', $word->row, $matches)) {
             foreach ($matches[1] as $match) {
                 if (strrpos($match, $word->word) !== false) {
-                    $lower = Strings::lower($word->word);
+                    $lower = Str::lower($word->word);
                     if ($this->dictionaries->contains($dictionaries, $lower, $word->context, DictionarySearch::TRY_LOWERCASE | DictionarySearch::TRY_CAPITALIZED | DictionarySearch::TRY_WITHOUT_DIACRITICS)) {
                         return self::CONSTANT;
                     }

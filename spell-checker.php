@@ -19,9 +19,9 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     Debugger::$maxDepth = 8;
     Debugger::$maxLength = 1000;
     Debugger::$showLocation = true;
-} elseif (file_exists(dirname(dirname(__DIR__)) . '/autoload.php')) {
+} elseif (file_exists(dirname(__DIR__, 2) . '/autoload.php')) {
     // run from other app
-    require_once dirname(dirname(__DIR__)) . '/autoload.php';
+    require_once dirname(__DIR__, 2) . '/autoload.php';
     if (Debugger::$logDirectory === null) {
         $logDir = getcwd() . '/log';
         if (!is_dir($logDir)) {

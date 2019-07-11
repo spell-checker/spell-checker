@@ -4,8 +4,8 @@ namespace SpellChecker\Dictionary;
 
 use Dogma\Application\Colors as C;
 use Dogma\Application\Console;
+use Dogma\Str;
 use Nette\Utils\Strings;
-use SpellChecker\DiacriticsHelper;
 use SpellChecker\Heuristic\DictionarySearch;
 use Symfony\Component\Finder\Finder;
 use function array_filter;
@@ -87,7 +87,7 @@ class DictionaryCollection
 
         $stripped = null;
         if ($flags & DictionarySearch::TRY_WITHOUT_DIACRITICS) {
-            $stripped = DiacriticsHelper::removeDiacritics($word);
+            $stripped = Str::removeDiacritics($word);
         }
         foreach ($dictionaries as $dictionary) {
             $forceWithoutDiacritics = false;

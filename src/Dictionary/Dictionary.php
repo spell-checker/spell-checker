@@ -2,7 +2,7 @@
 
 namespace SpellChecker\Dictionary;
 
-use SpellChecker\DiacriticsHelper;
+use Dogma\Str;
 use function array_search;
 use function explode;
 use function file_get_contents;
@@ -56,7 +56,7 @@ class Dictionary
                     }
                     $this->wordIndex[$word] = $checked ? 0 : '_';
                     if ($diacritics && !$diaExists) {
-                        $stripped = DiacriticsHelper::removeDiacritics($word);
+                        $stripped = Str::removeDiacritics($word);
                         if ($stripped !== $word) {
                             $this->strippedIndex[$stripped] = $word;
                         }

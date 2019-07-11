@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-use SpellChecker\DiacriticsHelper;
+use Dogma\Str;
 
-require_once('../src/SpellChecker/DiacriticsHelper.php');
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $path = $argv[1];
 
@@ -14,7 +14,7 @@ foreach (explode("\n", file_get_contents($path)) as $word) {
         continue;
     }
 
-    $stripped = DiacriticsHelper::removeDiacritics($word);
+    $stripped = Str::removeDiacritics($word);
     if ($stripped !== $word) {
         $words[$stripped] = true;
     }

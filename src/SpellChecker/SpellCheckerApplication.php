@@ -2,9 +2,9 @@
 
 namespace SpellChecker;
 
-use Dogma\Tools\Colors as C;
-use Dogma\Tools\Configurator;
-use Dogma\Tools\Console;
+use Dogma\Application\Colors as C;
+use Dogma\Application\Configurator;
+use Dogma\Application\Console;
 use SpellChecker\Dictionary\DictionaryCollection;
 use SpellChecker\Dictionary\DictionaryResolver;
 use SpellChecker\Heuristic\AddressDetector;
@@ -36,7 +36,7 @@ use function sprintf;
 class SpellCheckerApplication
 {
 
-    /** @var \Dogma\Tools\Console */
+    /** @var \Dogma\Application\Console */
     private $console;
 
     public function __construct(Console $console)

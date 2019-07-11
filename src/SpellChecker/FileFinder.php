@@ -2,7 +2,7 @@
 
 namespace SpellChecker;
 
-use Dogma\Tools\Configurator;
+use Dogma\Application\Configurator;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\Iterator\FilenameFilterIterator;
 use function array_intersect;
@@ -34,7 +34,7 @@ class FileFinder
     }
 
     /**
-     * @param \Dogma\Tools\Configurator $config
+     * @param \Dogma\Application\Configurator $config
      * @return string[]
      */
     public function findFilesByConfig(Configurator $config): array

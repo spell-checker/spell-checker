@@ -2,14 +2,10 @@
 
 namespace SpellChecker;
 
-use Dogma\Tools\Colors as C;
-use Dogma\Tools\Configurator;
-use Dogma\Tools\Console;
+use Dogma\Application\Colors as C;
+use Dogma\Application\Configurator;
+use Dogma\Application\Console;
 use Tracy\Debugger;
-
-require_once __DIR__ . '/src/Colors.php';
-require_once __DIR__ . '/src/Console.php';
-$console = new Console();
 
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     // run separately
@@ -34,9 +30,7 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
         Debugger::$logDirectory = $logDir;
     }
 } else {
-    $console->write(C::lcyan('Spell Checker'))->ln(2);
-    $console->write(C::white('Run `composer install` to install dependencies.', C::RED));
-    die();
+    die('SpellChecker: Run `composer install` to install dependencies.');
 }
 
 $arguments = [
@@ -86,6 +80,7 @@ $defaults = [
 $config = new Configurator($arguments, $defaults);
 $config->loadCliArguments();
 
+$console = new Console();
 $console->debug = $config->debug;
 
 if ($config->noColors) {

@@ -2,8 +2,8 @@
 
 namespace SpellChecker\Dictionary;
 
-use Dogma\Tools\Colors as C;
-use Dogma\Tools\Console;
+use Dogma\Application\Colors as C;
+use Dogma\Application\Console;
 use Nette\Utils\Strings;
 use SpellChecker\DiacriticsHelper;
 use SpellChecker\Heuristic\DictionarySearch;
@@ -48,7 +48,7 @@ class DictionaryCollection
     /** @var string[] */
     private $diacriticDictionaries;
 
-    /** @var \Dogma\Tools\Console|null */
+    /** @var \Dogma\Application\Console|null */
     private $console;
 
     /**
@@ -56,7 +56,7 @@ class DictionaryCollection
      * @param string[] $diacriticDictionaries
      * @param string[] $checkedFiles
      * @param string|null $baseDir
-     * @param \Dogma\Tools\Console|null $console
+     * @param \Dogma\Application\Console|null $console
      */
     public function __construct(
         array $directories,

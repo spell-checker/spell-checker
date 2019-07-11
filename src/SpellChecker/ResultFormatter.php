@@ -2,8 +2,8 @@
 
 namespace SpellChecker;
 
-use Dogma\Tools\Colors as C;
-use Dogma\Tools\Console;
+use Dogma\Application\Colors as C;
+use Dogma\Application\Console;
 use SpellChecker\Dictionary\DictionaryResolver;
 use function array_map;
 use function array_unique;

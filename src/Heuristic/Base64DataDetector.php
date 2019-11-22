@@ -7,7 +7,7 @@ use SpellChecker\Word;
 use function preg_match_all;
 use function strrpos;
 
-class Base64ImageDetector implements \SpellChecker\Heuristic\Heuristic
+class Base64DataDetector implements \SpellChecker\Heuristic\Heuristic
 {
 
     public const RESULT_IMAGE = 'image';
@@ -24,8 +24,8 @@ class Base64ImageDetector implements \SpellChecker\Heuristic\Heuristic
             $word->row = RowHelper::getRowAtPosition($string, $word->position);
         }
 
-        // data:image/jpeg;base64,
-        if (preg_match_all('~data:image/(?:jpeg|png|gif);base64,([A-Za-z0-9/+]+)~', $word->row, $matches)) {
+        // data:image/jpeg;base64,...
+        if (preg_match_all('~data:[a-z]+/[a-z]+;base64,([A-Za-z0-9/+]+)~', $word->row, $matches)) {
             foreach ($matches[1] as $match) {
                 if (strrpos($match, $word->word) !== false) {
                     return self::RESULT_IMAGE;

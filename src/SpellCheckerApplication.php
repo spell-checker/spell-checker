@@ -8,7 +8,7 @@ use Dogma\Application\Console;
 use SpellChecker\Dictionary\DictionaryCollection;
 use SpellChecker\Dictionary\DictionaryResolver;
 use SpellChecker\Heuristic\AddressDetector;
-use SpellChecker\Heuristic\Base64ImageDetector;
+use SpellChecker\Heuristic\Base64DataDetector;
 use SpellChecker\Heuristic\BulletsDetector;
 use SpellChecker\Heuristic\CssUnitsDetector;
 use SpellChecker\Heuristic\DictionarySearch;
@@ -89,7 +89,7 @@ class SpellCheckerApplication
                 new BulletsDetector(),
                 new SimpleHtmlDetector(),
                 new GarbageDetector(),
-                new Base64ImageDetector(),
+                new Base64DataDetector(),
             ];
 
             // run check

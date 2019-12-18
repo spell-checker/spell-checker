@@ -113,10 +113,8 @@
     <target name="tests">
         <exec executable="${path.tester.executable}" logoutput="true" passthru="true" checkreturn="true">
             <arg path="${path.tests}"/>
-            <arg path="-c"/>
-            <arg path="${path.tests}"/>
-            <arg path="--colors"/>
-            <arg path="1"/>
+            <arg line="-c ${path.tests}"/>
+            <arg line="--colors 1"/>
         </exec>
     </target>
 

@@ -19,7 +19,7 @@
         "dogma/dogma": "^0.1.15"
     },
     "require-dev": {
-        "dogma/dogma-dev": "0.1.9"
+        "dogma/dogma-dev": "0.1.11"
     },
     "extra": {
         "branch-alias": {
@@ -34,5 +34,6 @@
     },
     "bin": [
         "spell-checker"
-    ]
+    ],
+    "minimum-stability": "alpha"
 }

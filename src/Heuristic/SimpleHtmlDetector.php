@@ -8,7 +8,7 @@ use SpellChecker\Word;
 /**
  * Heuristic to filter some HTML tags sometimes used outside of HTML context. For example in translation strings.
  */
-class SimpleHtmlDetector implements \SpellChecker\Heuristic\Heuristic
+class SimpleHtmlDetector implements Heuristic
 {
 
     public const RESULT_HTML = 'html';

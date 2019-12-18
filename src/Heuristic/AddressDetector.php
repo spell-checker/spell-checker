@@ -12,7 +12,7 @@ use function strrpos;
 /**
  * Identifies identifiers (classes, ids, constants...) and tries to match them against dictionaries without diacritics
  */
-class AddressDetector implements \SpellChecker\Heuristic\Heuristic
+class AddressDetector implements Heuristic
 {
 
     // https://mathiasbynens.be/demo/url-regex

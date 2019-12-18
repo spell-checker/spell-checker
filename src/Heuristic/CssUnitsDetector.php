@@ -9,7 +9,7 @@ use function preg_match;
 /**
  * Heuristic to filter CSS color codes and values starting with a number
  */
-class CssUnitsDetector implements \SpellChecker\Heuristic\Heuristic
+class CssUnitsDetector implements Heuristic
 {
 
     public const RESULT_COLOR = 'color';

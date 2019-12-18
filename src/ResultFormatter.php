@@ -105,7 +105,7 @@ class ResultFormatter
                 }
             }
         }
-        uasort($contexts, function (array $words1, array $words2) {
+        uasort($contexts, static function (array $words1, array $words2) {
             return count($words1) <=> count($words2);
         });
         foreach ($contexts as &$words) {
@@ -138,7 +138,7 @@ class ResultFormatter
                 }
             }
         }
-        uasort($contexts, function (array $words1, array $words2) {
+        uasort($contexts, static function (array $words1, array $words2) {
             return count($words1) <=> count($words2);
         });
         foreach ($contexts as &$words) {
@@ -220,7 +220,7 @@ class ResultFormatter
     {
         $output = '' . C::lcyan($this->stripBaseDir($fileName)) . C::gray(' (')
             . implode(',', $this->dictionaryResolver->getDictionariesForFileName($fileName)) . C::gray("):\n");
-        $output .= implode(' ', array_unique(array_map(function (Word $word) {
+        $output .= implode(' ', array_unique(array_map(static function (Word $word) {
             return $word->word;
         }, $errors))) . "\n";
 

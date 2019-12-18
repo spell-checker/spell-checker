@@ -3,7 +3,7 @@
 namespace SpellChecker\Dictionary;
 
 use Dogma\Str;
-use function array_search;
+use SpellChecker\DictionaryFileNotReadableException;
 use function explode;
 use function file_get_contents;
 use function in_array;
@@ -39,16 +39,16 @@ class Dictionary
 
         foreach ($files as $fileName) {
             if (!is_file($fileName) || !is_readable($fileName)) {
-                throw new \SpellChecker\DictionaryFileNotReadableException($fileName);
+                throw new DictionaryFileNotReadableException($fileName);
             }
 
-            $checked = in_array($fileName, $checkedFiles);
+            $checked = in_array($fileName, $checkedFiles, true);
 
             $extension = substr($fileName, -3);
             if ($extension === 'dic') {
                 // .dic -> .dia
                 $diaName = substr($fileName, 0, -1) . 'a';
-                $diaExists = array_search($diaName, $files, true) !== false;
+                $diaExists = in_array($diaName, $files, true);
                 foreach (explode("\n", file_get_contents($fileName)) as $word) {
                     $word = trim($word);
                     if ($word === '' || $word[0] === '#') {

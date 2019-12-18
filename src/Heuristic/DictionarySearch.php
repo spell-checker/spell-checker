@@ -9,7 +9,7 @@ use function preg_match;
 use function strlen;
 use function substr;
 
-class DictionarySearch implements \SpellChecker\Heuristic\Heuristic
+class DictionarySearch implements Heuristic
 {
 
     public const TRY_LOWERCASE = 1;
@@ -51,9 +51,9 @@ class DictionarySearch implements \SpellChecker\Heuristic\Heuristic
     {
         if (preg_match('/[0-9]+$/', $word, $match)) {
             return substr($word, 0, -strlen($match[0]));
-        } else {
-            return null;
         }
+
+        return null;
     }
 
 }

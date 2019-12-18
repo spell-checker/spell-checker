@@ -13,7 +13,7 @@ use function strrpos;
 /**
  * Finds out if a word is probably part of file path and tries to match it against dictionaries without accents
  */
-class FileNameDetector implements \SpellChecker\Heuristic\Heuristic
+class FileNameDetector implements Heuristic
 {
 
     public const RESULT_FILE_NAME = 'file';

@@ -8,7 +8,7 @@ use function preg_match;
 use function preg_match_all;
 use function strlen;
 
-class PoParser implements \SpellChecker\Parser\Parser
+class PoParser implements Parser
 {
 
     public const CONTEXT_MESSAGE = 'msgid';
@@ -35,7 +35,7 @@ class PoParser implements \SpellChecker\Parser\Parser
         foreach ($rows as $rowIndex => $row) {
             $rowStart = $rowEnd;
             $rowEnd = $rowStart + strlen($row) + 1;
-            if (!preg_match('/^(msgid|msgid_plural|msgstr)(\\[\\d+\\])? "(.*)"$/', $row, $match)) {
+            if (!preg_match('/^(msgid|msgid_plural|msgstr)(\\[\\d+])? "(.*)"$/', $row, $match)) {
                 continue;
             }
             $context = $match[1] === 'msgstr' ? self::CONTEXT_TRANSLATION : self::CONTEXT_MESSAGE;

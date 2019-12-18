@@ -9,7 +9,7 @@ use function preg_match;
 /**
  * Filters characters, that are probably a formatting character in printf function
  */
-class PrintfDetector implements \SpellChecker\Heuristic\Heuristic
+class PrintfDetector implements Heuristic
 {
 
     public const RESULT_PRINTF = 'printf';

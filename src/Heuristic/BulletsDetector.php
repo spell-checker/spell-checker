@@ -12,7 +12,7 @@ use function range;
 /**
  * Heuristic to filter alphabetic and roman letter bullets
  */
-class BulletsDetector implements \SpellChecker\Heuristic\Heuristic
+class BulletsDetector implements Heuristic
 {
 
     public const RESULT_LATIN = 'latin';

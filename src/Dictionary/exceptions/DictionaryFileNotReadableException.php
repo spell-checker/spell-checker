@@ -2,15 +2,17 @@
 
 namespace SpellChecker;
 
+use Exception;
+use Throwable;
 use function sprintf;
 
-class DictionaryFileNotReadableException extends \Exception
+class DictionaryFileNotReadableException extends Exception
 {
 
     /** @var string */
     private $fileName;
 
-    public function __construct(string $fileName, ?\Throwable $previous = null)
+    public function __construct(string $fileName, ?Throwable $previous = null)
     {
         parent::__construct(sprintf('Dictionary file "%s" does not exist or is not readable.', $fileName), 0, $previous);
 

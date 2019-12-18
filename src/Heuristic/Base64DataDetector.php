@@ -7,7 +7,7 @@ use SpellChecker\Word;
 use function preg_match_all;
 use function strrpos;
 
-class Base64DataDetector implements \SpellChecker\Heuristic\Heuristic
+class Base64DataDetector implements Heuristic
 {
 
     public const RESULT_IMAGE = 'image';

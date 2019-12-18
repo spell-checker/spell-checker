@@ -6,6 +6,7 @@ use Dogma\Application\Colors as C;
 use Dogma\Application\Console;
 use Dogma\Str;
 use SpellChecker\Heuristic\DictionarySearch;
+use SpellChecker\NoDictionaryFileFoundException;
 use Symfony\Component\Finder\Finder;
 use function array_filter;
 use function array_keys;
@@ -181,20 +182,20 @@ class DictionaryCollection
             $this->findDictionaryFiles();
         }
 
-        $files = array_filter($this->files, function (string $filePath) use ($dictionary): bool {
+        $files = array_filter($this->files, static function (string $filePath) use ($dictionary): bool {
             $fileName = basename($filePath);
             $next = substr($fileName, strlen($dictionary), 1);
             return strpos($fileName, $dictionary) === 0 && ($next === '-' || $next === '.');
         });
         $checkedFiles = array_filter($this->files, function (string $filePath): bool {
             $fileName = basename($filePath);
-            return in_array($fileName, $this->checkedFiles);
+            return in_array($fileName, $this->checkedFiles, true);
         });
         if ($files === []) {
-            throw new \SpellChecker\NoDictionaryFileFoundException($dictionary);
+            throw new NoDictionaryFileFoundException($dictionary);
         }
 
-        $this->console->debugWrite(C::gray(': ' . implode(' ', array_map(function (string $filePath): string {
+        $this->console->debugWrite(C::gray(': ' . implode(' ', array_map(static function (string $filePath): string {
             return basename($filePath);
         }, $files))));
 
@@ -202,7 +203,7 @@ class DictionaryCollection
         $startMemory = memory_get_usage(true);
         $this->dictionaries[$dictionary] = new Dictionary(
             $files,
-            in_array($dictionary, $this->diacriticDictionaries),
+            in_array($dictionary, $this->diacriticDictionaries, true),
             $checkedFiles
         );
 

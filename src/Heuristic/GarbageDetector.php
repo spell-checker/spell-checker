@@ -11,7 +11,7 @@ use function strlen;
 /**
  * Guesses if a word may be a token or password or part of base64 encoded string
  */
-class GarbageDetector implements \SpellChecker\Heuristic\Heuristic
+class GarbageDetector implements Heuristic
 {
 
     public const RESULT_GARBAGE = 'garbage';
@@ -47,11 +47,8 @@ class GarbageDetector implements \SpellChecker\Heuristic\Heuristic
         if ($numbers >= $length / 4) {
             return true;
         }
-        if (count(preg_split('/[0-9]/', $string)) > 3) {
-            return true;
-        }
 
-        return false;
+        return count(preg_split('/[0-9]/', $string)) > 3;
     }
 
 }

@@ -13,7 +13,7 @@ use function strlen;
 use function substr;
 use function trim;
 
-class PhpParser implements \SpellChecker\Parser\Parser
+class PhpParser implements Parser
 {
 
     public const CONTEXT_CODE = 'code';

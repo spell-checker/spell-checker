@@ -44,7 +44,7 @@ class DictionaryResolver
      */
     private function sanitize(array $values): array
     {
-        return array_map(function (string $value) {
+        return array_map(static function (string $value) {
             return array_unique(array_filter(explode(' ', $value)));
         }, $values);
     }
@@ -96,9 +96,9 @@ class DictionaryResolver
             if (preg_match($pattern, $fileName)) {
                 if ($dictionaries === [self::SKIP_FILE_MARKER]) {
                     return null;
-                } else {
-                    return $dictionaries;
                 }
+
+                return $dictionaries;
             }
         }
 

@@ -8,7 +8,7 @@ use function preg_match;
 /**
  * Detects words, that are probably a string escape sequence or HTML entity
  */
-class EscapeSequenceDetector implements \SpellChecker\Heuristic\Heuristic
+class EscapeSequenceDetector implements Heuristic
 {
 
     public const RESULT_ESCAPE_CODE = 'escape';

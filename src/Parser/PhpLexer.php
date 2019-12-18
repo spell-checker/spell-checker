@@ -2,14 +2,15 @@
 
 namespace SpellChecker\Parser;
 
+use PhpParser\Lexer;
 use const T_ABSTRACT;
 use const T_AND_EQUAL;
 use const T_ARRAY;
 use const T_ARRAY_CAST;
 use const T_AS;
+use const T_BOOL_CAST;
 use const T_BOOLEAN_AND;
 use const T_BOOLEAN_OR;
-use const T_BOOL_CAST;
 use const T_BREAK;
 use const T_CALLABLE;
 use const T_CASE;
@@ -38,13 +39,13 @@ use const T_ELLIPSIS;
 use const T_ELSE;
 use const T_ELSEIF;
 use const T_EMPTY;
+use const T_END_HEREDOC;
 use const T_ENDDECLARE;
 use const T_ENDFOR;
 use const T_ENDFOREACH;
 use const T_ENDIF;
 use const T_ENDSWITCH;
 use const T_ENDWHILE;
-use const T_END_HEREDOC;
 use const T_EVAL;
 use const T_EXIT;
 use const T_EXTENDS;
@@ -53,8 +54,8 @@ use const T_FINAL;
 use const T_FINALLY;
 use const T_FOR;
 use const T_FOREACH;
-use const T_FUNCTION;
 use const T_FUNC_C;
+use const T_FUNCTION;
 use const T_GLOBAL;
 use const T_GOTO;
 use const T_IF;
@@ -64,15 +65,15 @@ use const T_INCLUDE;
 use const T_INCLUDE_ONCE;
 use const T_INSTANCEOF;
 use const T_INSTEADOF;
-use const T_INTERFACE;
 use const T_INT_CAST;
-use const T_ISSET;
+use const T_INTERFACE;
 use const T_IS_EQUAL;
 use const T_IS_GREATER_OR_EQUAL;
 use const T_IS_IDENTICAL;
 use const T_IS_NOT_EQUAL;
 use const T_IS_NOT_IDENTICAL;
 use const T_IS_SMALLER_OR_EQUAL;
+use const T_ISSET;
 use const T_LINE;
 use const T_LIST;
 use const T_LNUMBER;
@@ -125,7 +126,7 @@ use const T_XOR_EQUAL;
 use const T_YIELD;
 use const T_YIELD_FROM;
 
-class PhpLexer extends \PhpParser\Lexer
+class PhpLexer extends Lexer
 {
 
     /**

@@ -12,7 +12,7 @@ use function strpos;
 /**
  * Searches for signs, that the word is a table name abbreviation used in SQL code
  */
-class SqlTableShortcutDetector implements \SpellChecker\Heuristic\Heuristic
+class SqlTableShortcutDetector implements Heuristic
 {
 
     public const RESULT_SQL = 'sql';

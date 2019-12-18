@@ -10,8 +10,8 @@ use function array_keys;
 use function array_map;
 use function getcwd;
 use function iterator_to_array;
+use function str_replace;
 use function strlen;
-use function strtr;
 use function trim;
 
 class FileFinder
@@ -114,7 +114,7 @@ class FileFinder
                 return $foundFiles;
             }
         } else {
-            throw new \SpellChecker\FileSearchNotConfiguredException();
+            throw new FileSearchNotConfiguredException();
         }
     }
 
@@ -147,7 +147,7 @@ class FileFinder
 
     public function fixPath(string $path): string
     {
-        return strtr($path, '\\', '/');
+        return str_replace('\\', '/', $path);
     }
 
     /**

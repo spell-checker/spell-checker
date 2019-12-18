@@ -6,7 +6,6 @@ use SpellChecker\Word;
 use const PREG_OFFSET_CAPTURE;
 use function array_filter;
 use function array_map;
-use function array_push;
 use function array_unshift;
 use function array_values;
 use function count;
@@ -19,7 +18,7 @@ use function strlen;
 use function strpos;
 use function trim;
 
-class DefaultParser implements \SpellChecker\Parser\Parser
+class DefaultParser implements Parser
 {
 
     public const WORD_BLOCK_REGEXP = '/[\\p{L}0-9_-]+/u';
@@ -50,11 +49,11 @@ class DefaultParser implements \SpellChecker\Parser\Parser
 
         preg_match_all("/\n/", $string, $rowMatches, PREG_OFFSET_CAPTURE);
         /** @var int[] $rowStarts ($start => $row) */
-        $rowStarts = array_map(function (array $rowMatch): int {
+        $rowStarts = array_map(static function (array $rowMatch): int {
             return $rowMatch[1];
         }, $rowMatches[0]);
         array_unshift($rowStarts, 0);
-        array_push($rowStarts, strlen($string));
+        $rowStarts[] = strlen($string);
 
         $rowNumber = 1;
         foreach ($blockMatches[0] as [$block, $position]) {
@@ -114,7 +113,7 @@ class DefaultParser implements \SpellChecker\Parser\Parser
                 $prefixNext = null;
             }
 
-            if (in_array($part, $this->exceptions)) {
+            if (in_array($part, $this->exceptions, true)) {
                 // FOOBar
                 $result[] = new Word($part, $split ? $block : null, $position + $offset, $rowNumber, $context);
             } elseif (preg_match('/^[\\p{Lu}]+$/u', $part)) {

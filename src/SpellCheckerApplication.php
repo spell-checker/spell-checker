@@ -22,6 +22,7 @@ use SpellChecker\Heuristic\SqlTableShortcutDetector;
 use SpellChecker\Parser\DefaultParser;
 use SpellChecker\Parser\PhpParser;
 use SpellChecker\Parser\PoParser;
+use Throwable;
 use Tracy\Debugger;
 use function class_exists;
 use function count;
@@ -152,10 +153,10 @@ class SpellCheckerApplication
             if ($result->errorsFound()) {
                 exit(1);
             }
-        } catch (\SpellChecker\FileSearchNotConfiguredException $e) {
+        } catch (FileSearchNotConfiguredException $e) {
             $this->console->writeLn(C::red('Nothing to check. Configure directories or files.'));
             exit(1);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->console->ln()->writeLn(C::white(sprintf('Error occurred while spell-checking: %s', $e->getMessage()), C::RED));
             if (class_exists(Debugger::class)) {
                 Debugger::log($e);

@@ -2,10 +2,13 @@
 
 namespace SpellChecker;
 
-class FileSearchNotConfiguredException extends \Exception
+use Exception;
+use Throwable;
+
+class FileSearchNotConfiguredException extends Exception
 {
 
-    public function __construct(?\Throwable $previous = null)
+    public function __construct(?Throwable $previous = null)
     {
         parent::__construct("File search is not configured. Fill either 'directories' or 'files' parameters, or both of them.", 0, $previous);
     }

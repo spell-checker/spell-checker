@@ -13,7 +13,7 @@ use function strrpos;
 /**
  * Identifies identifiers (URLs, classes, ids, constants...) and tries to match them against dictionaries without diacritics
  */
-class IdentifiersDetector implements \SpellChecker\Heuristic\Heuristic
+class IdentifiersDetector implements Heuristic
 {
 
     public const ID = 'id';

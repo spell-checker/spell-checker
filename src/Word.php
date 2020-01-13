@@ -2,6 +2,9 @@
 
 namespace SpellChecker;
 
+/**
+ * In principio erant Verba, et Verba erant ty vole.
+ */
 class Word
 {
 

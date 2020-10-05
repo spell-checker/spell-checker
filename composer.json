@@ -18,7 +18,7 @@
         "dogma/dogma": "^0.1.15|^0.2.0"
     },
     "require-dev": {
-        "dogma/dogma-dev": "0.1.11"
+        "dogma/dogma-dev": "0.1.15"
     },
     "extra": {
         "branch-alias": {

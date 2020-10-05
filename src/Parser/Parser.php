@@ -2,6 +2,8 @@
 
 namespace SpellChecker\Parser;
 
+use SpellChecker\Word;
+
 interface Parser
 {
 
@@ -13,7 +15,7 @@ interface Parser
     /**
      * Parse words from text
      * @param string $string
-     * @return \SpellChecker\Word[]
+     * @return Word[]
      */
     public function parse(string $string): array;
 

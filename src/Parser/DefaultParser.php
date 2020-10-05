@@ -37,7 +37,7 @@ class DefaultParser implements Parser
     /**
      * Parse code with camelCase and under_scores
      * @param string $string
-     * @return \SpellChecker\Word[]
+     * @return Word[]
      */
     public function parse(string $string): array
     {
@@ -70,7 +70,7 @@ class DefaultParser implements Parser
      * @param string $block
      * @param int $position
      * @param int $rowNumber
-     * @param \SpellChecker\Word[] $result
+     * @param Word[] $result
      * @param string|null $context
      */
     public function blocksToWords(string $block, int $position, int $rowNumber, array &$result, ?string $context = null): void

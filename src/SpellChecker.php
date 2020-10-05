@@ -4,6 +4,7 @@ namespace SpellChecker;
 
 use Dogma\Str;
 use SpellChecker\Dictionary\DictionaryResolver;
+use SpellChecker\Heuristic\Heuristic;
 use SpellChecker\Parser\Parser;
 use function array_combine;
 use function array_fill;
@@ -36,31 +37,31 @@ class SpellChecker
 
     public const DEFAULT_PARSER = '*';
 
-    /** @var \SpellChecker\Parser\Parser[] */
+    /** @var Parser[] */
     private $wordsParsers;
 
-    /** @var \SpellChecker\Heuristic\Heuristic[] */
+    /** @var Heuristic[] */
     private $heuristics;
 
     /** @var int[][] (string $rule => (string $word => int $count)) */
     private $heuristicStats = [];
 
-    /** @var \SpellChecker\Dictionary\DictionaryResolver */
+    /** @var DictionaryResolver */
     private $resolver;
 
     /** @var int */
     private $maxErrors;
 
-    /** @var  string[][] */
+    /** @var string[][] */
     private $localIgnores = [];
 
     /** @var bool */
     private $checkLocalIgnores;
 
     /**
-     * @param \SpellChecker\Parser\Parser[] $wordsParsers
-     * @param \SpellChecker\Heuristic\Heuristic[] $heuristics
-     * @param \SpellChecker\Dictionary\DictionaryResolver $resolver
+     * @param Parser[] $wordsParsers
+     * @param Heuristic[] $heuristics
+     * @param DictionaryResolver $resolver
      * @param int $maxErrors
      * @param string[] $localIgnores
      * @param bool $checkLocalIgnores
@@ -104,7 +105,7 @@ class SpellChecker
     /**
      * @param string[] $files
      * @param callable|null $fileCallback (string fileName: bool)
-     * @return \SpellChecker\Result
+     * @return Result
      */
     public function checkFiles(array $files, ?callable $fileCallback = null): Result
     {
@@ -138,7 +139,7 @@ class SpellChecker
      * @param string $fileName
      * @param string[] $dictionaries
      * @param callable|null $fileCallback (string fileName: bool)
-     * @return \SpellChecker\Word[]
+     * @return Word[]
      */
     private function checkFile(string $fileName, array $dictionaries, ?callable $fileCallback = null): array
     {
@@ -180,8 +181,8 @@ class SpellChecker
      * @param string $string
      * @param string[] $dictionaries
      * @param string[] $ignores
-     * @param \SpellChecker\Parser\Parser|null $parser
-     * @return \SpellChecker\Word[]
+     * @param Parser|null $parser
+     * @return Word[]
      */
     public function checkString(string $string, array $dictionaries, array $ignores, ?Parser $parser = null): array
     {
@@ -253,7 +254,7 @@ class SpellChecker
     }
 
     /**
-     * @param \SpellChecker\Word $word
+     * @param Word $word
      * @param string $string
      * @param string[] $dictionaries
      * @return bool

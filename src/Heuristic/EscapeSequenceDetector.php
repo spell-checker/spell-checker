@@ -15,7 +15,7 @@ class EscapeSequenceDetector implements Heuristic
     public const RESULT_ENTITY = 'entity';
 
     /**
-     * @param \SpellChecker\Word $word
+     * @param Word $word
      * @param string $string
      * @param string[] $dictionaries
      * @return string|null

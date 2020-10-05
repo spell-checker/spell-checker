@@ -23,7 +23,7 @@ use function uasort;
 class ResultFormatter
 {
 
-    /** @var \SpellChecker\Dictionary\DictionaryResolver */
+    /** @var DictionaryResolver */
     private $dictionaryResolver;
 
     /** @var string|null */
@@ -167,7 +167,7 @@ class ResultFormatter
 
     /**
      * @param string $fileName
-     * @param \SpellChecker\Word[] $errors
+     * @param Word[] $errors
      * @param int $maxWidth
      * @return string
      */
@@ -213,7 +213,7 @@ class ResultFormatter
 
     /**
      * @param string $fileName
-     * @param \SpellChecker\Word[] $errors
+     * @param Word[] $errors
      * @return string
      */
     public function formatFileErrorsShort(string $fileName, array $errors): string

@@ -1,5 +1,7 @@
 <?php declare(strict_types = 1);
 
+// phpcs:disable SlevomatCodingStandard.Variables.DisallowSuperGlobalVariable
+
 namespace Test;
 
 use Tracy\Debugger;

@@ -2,6 +2,7 @@
 
 namespace SpellChecker\Parser;
 
+use SpellChecker\Word;
 use const PREG_OFFSET_CAPTURE;
 use function explode;
 use function preg_match;
@@ -14,7 +15,7 @@ class PoParser implements Parser
     public const CONTEXT_MESSAGE = 'msgid';
     public const CONTEXT_TRANSLATION = 'msgstr';
 
-    /** @var \SpellChecker\Parser\DefaultParser */
+    /** @var DefaultParser */
     private $defaultParser;
 
     public function __construct(DefaultParser $defaultParser)
@@ -24,7 +25,7 @@ class PoParser implements Parser
 
     /**
      * @param string $string
-     * @return \SpellChecker\Word[]
+     * @return Word[]
      */
     public function parse(string $string): array
     {

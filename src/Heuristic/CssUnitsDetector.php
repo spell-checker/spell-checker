@@ -16,7 +16,7 @@ class CssUnitsDetector implements Heuristic
     public const RESULT_UNIT = 'unit';
 
     /**
-     * @param \SpellChecker\Word $word
+     * @param Word $word
      * @param string $string
      * @param string[] $dictionaries
      * @return string|null

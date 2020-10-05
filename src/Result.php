@@ -8,14 +8,14 @@ use function count;
 class Result
 {
 
-    /** @var \SpellChecker\Word[][] */
+    /** @var Word[][] */
     private $errors;
 
     /** @var int */
     private $errorsCount;
 
     /**
-     * @param \SpellChecker\Word[][] $errors
+     * @param Word[][] $errors
      * @param int $errorsCount
      */
     public function __construct(array $errors, int $errorsCount)
@@ -30,7 +30,7 @@ class Result
     }
 
     /**
-     * @return \SpellChecker\Word[][]
+     * @return Word[][]
      */
     public function getErrors(): array
     {

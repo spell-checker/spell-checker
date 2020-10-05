@@ -15,7 +15,7 @@ class PrintfDetector implements Heuristic
     public const RESULT_PRINTF = 'printf';
 
     /**
-     * @param \SpellChecker\Word $word
+     * @param Word $word
      * @param string $string
      * @param string[] $dictionaries
      * @return string|string

@@ -16,7 +16,7 @@ class DictionarySearch implements Heuristic
     public const TRY_CAPITALIZED = 2;
     public const TRY_WITHOUT_DIACRITICS = 4;
 
-    /** @var \SpellChecker\Dictionary\DictionaryCollection */
+    /** @var DictionaryCollection */
     private $dictionaries;
 
     public function __construct(DictionaryCollection $dictionaries)
@@ -25,7 +25,7 @@ class DictionarySearch implements Heuristic
     }
 
     /**
-     * @param \SpellChecker\Word $word
+     * @param Word $word
      * @param string $string
      * @param string[] $dictionaries
      * @return string|null

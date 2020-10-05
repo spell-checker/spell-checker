@@ -18,7 +18,7 @@ class FileNameDetector implements Heuristic
 
     public const RESULT_FILE_NAME = 'file';
 
-    /** @var \SpellChecker\Dictionary\DictionaryCollection */
+    /** @var DictionaryCollection */
     private $dictionaries;
 
     /** @var string[] */
@@ -34,7 +34,7 @@ class FileNameDetector implements Heuristic
     }
 
     /**
-     * @param \SpellChecker\Word $word
+     * @param Word $word
      * @param string $string
      * @param string[] $dictionaries
      * @return string|string

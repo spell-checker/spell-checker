@@ -17,7 +17,7 @@ class GarbageDetector implements Heuristic
     public const RESULT_GARBAGE = 'garbage';
 
     /**
-     * @param \SpellChecker\Word $word
+     * @param Word $word
      * @param string $string
      * @param string[] $dictionaries
      * @return string|null

@@ -25,7 +25,7 @@ class AddressDetector implements Heuristic
     public const RESULT_URL = 'url';
     public const RESULT_URL_PART = 'url-part';
 
-    /** @var \SpellChecker\Dictionary\DictionaryCollection */
+    /** @var DictionaryCollection */
     private $dictionaries;
 
     /** @var bool */
@@ -46,7 +46,7 @@ class AddressDetector implements Heuristic
     }
 
     /**
-     * @param \SpellChecker\Word $word
+     * @param Word $word
      * @param string $string
      * @param string[] $dictionaries
      * @return string|null

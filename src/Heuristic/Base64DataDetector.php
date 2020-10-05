@@ -13,7 +13,7 @@ class Base64DataDetector implements Heuristic
     public const RESULT_IMAGE = 'image';
 
     /**
-     * @param \SpellChecker\Word $word
+     * @param Word $word
      * @param string $string
      * @param string[] $dictionaries
      * @return string|null

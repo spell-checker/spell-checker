@@ -27,7 +27,7 @@ class BulletsDetector implements Heuristic
     }
 
     /**
-     * @param \SpellChecker\Word $word
+     * @param Word $word
      * @param string $string
      * @param string[] $dictionaries
      * @return string|null

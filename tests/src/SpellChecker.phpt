@@ -37,7 +37,7 @@ $errors = $result->getErrors();
 Assert::count(1, $errors);
 Assert::same($file, key($errors));
 
-/** @var \SpellChecker\Word[] $words */
+/** @var Word[] $words */
 $words = $result->getErrors()[$file];
 Assert::count(1, $words);
 

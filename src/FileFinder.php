@@ -3,6 +3,7 @@
 namespace SpellChecker;
 
 use Dogma\Application\Configurator;
+use Dogma\ArrayIterator;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\Iterator\FilenameFilterIterator;
 use function array_intersect;
@@ -34,7 +35,7 @@ class FileFinder
     }
 
     /**
-     * @param \Dogma\Application\Configurator $config
+     * @param Configurator $config
      * @return string[]
      */
     public function findFilesByConfig(Configurator $config): array
@@ -109,7 +110,7 @@ class FileFinder
 
             // filter files by extensions and excludes
             if ($extensions || $excludes) {
-                return iterator_to_array(new FilenameFilterIterator(new \ArrayIterator($foundFiles), $extensions ?? [], $excludes ?? []));
+                return iterator_to_array(new FilenameFilterIterator(new ArrayIterator($foundFiles), $extensions ?? [], $excludes ?? []));
             } else {
                 return $foundFiles;
             }
@@ -121,7 +122,7 @@ class FileFinder
     /**
      * @param string[]|null $extensions
      * @param string[]|null $excludes
-     * @return \Symfony\Component\Finder\Finder
+     * @return Finder
      */
     private function createFinder(?array $extensions = null, ?array $excludes = null): Finder
     {

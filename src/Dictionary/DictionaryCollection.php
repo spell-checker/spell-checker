@@ -42,13 +42,13 @@ class DictionaryCollection
     /** @var string[] */
     private $checkedFiles;
 
-    /** @var \SpellChecker\Dictionary\Dictionary[] */
+    /** @var Dictionary[] */
     private $dictionaries;
 
     /** @var string[] */
     private $diacriticDictionaries;
 
-    /** @var \Dogma\Application\Console|null */
+    /** @var Console|null */
     private $console;
 
     /**
@@ -56,7 +56,7 @@ class DictionaryCollection
      * @param string[] $diacriticDictionaries
      * @param string[] $checkedFiles
      * @param string|null $baseDir
-     * @param \Dogma\Application\Console|null $console
+     * @param Console|null $console
      */
     public function __construct(
         array $directories,
@@ -231,7 +231,7 @@ class DictionaryCollection
     }
 
     /**
-     * @return \SpellChecker\Dictionary\Dictionary[]
+     * @return Dictionary[]
      */
     public function getDictionaries(): array
     {

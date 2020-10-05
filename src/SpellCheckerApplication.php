@@ -37,7 +37,7 @@ use function sprintf;
 class SpellCheckerApplication
 {
 
-    /** @var \Dogma\Application\Console */
+    /** @var Console */
     private $console;
 
     public function __construct(Console $console)

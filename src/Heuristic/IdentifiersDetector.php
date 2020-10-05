@@ -19,7 +19,7 @@ class IdentifiersDetector implements Heuristic
     public const ID = 'id';
     public const CONSTANT = 'constant';
 
-    /** @var \SpellChecker\Dictionary\DictionaryCollection */
+    /** @var DictionaryCollection */
     private $dictionaries;
 
     public function __construct(DictionaryCollection $dictionaries)
@@ -28,7 +28,7 @@ class IdentifiersDetector implements Heuristic
     }
 
     /**
-     * @param \SpellChecker\Word $word
+     * @param Word $word
      * @param string $string
      * @param string[] $dictionaries
      * @return string|string

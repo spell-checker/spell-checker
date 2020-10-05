@@ -2,8 +2,6 @@
 
 namespace SpellChecker\Parser;
 
-use PhpParser\Parser\Tokens;
-use const PREG_OFFSET_CAPTURE;
 use function explode;
 use function ltrim;
 use function preg_match_all;
@@ -11,7 +9,19 @@ use function rtrim;
 use function str_replace;
 use function strlen;
 use function substr;
+use function token_get_all;
 use function trim;
+use const PREG_OFFSET_CAPTURE;
+use const T_COMMENT;
+use const T_CONSTANT_ENCAPSED_STRING;
+use const T_DOC_COMMENT;
+use const T_ENCAPSED_AND_WHITESPACE;
+use const T_HALT_COMPILER;
+use const T_INLINE_HTML;
+use const T_START_HEREDOC;
+use const T_STRING;
+use const T_STRING_VARNAME;
+use const T_VARIABLE;
 
 class PhpParser implements Parser
 {
@@ -23,18 +33,12 @@ class PhpParser implements Parser
     public const CONTEXT_HTML = 'html';
     public const CONTEXT_DATA = 'data';
 
-    /** @var \SpellChecker\Parser\PhpLexer */
-    private $phpLexer;
-
     /** @var \SpellChecker\Parser\DefaultParser */
     private $defaultParser;
 
     public function __construct(DefaultParser $defaultParser)
     {
         $this->defaultParser = $defaultParser;
-        $this->phpLexer = new PhpLexer([
-            'usedAttributes' => ['startLine', 'startFilePos'],
-        ]);
     }
 
     /**
@@ -45,34 +49,39 @@ class PhpParser implements Parser
     {
         $results = [];
         $lastHeredoc = null;
-        $this->phpLexer->startLexing($string);
-        while ($token = $this->phpLexer->getNextToken($value, $startAttributes, $endAttributes)) {
-            if ($token < 256) {
-                continue;
+
+        $lastRowNumber = 0;
+        $nextPosition = 0;
+        foreach (token_get_all($string) as $token) {
+            $position = $nextPosition;
+            if (is_string($token)) {
+                $value = $token;
+                $rowNumber = $lastRowNumber;
+            } else {
+                [$token, $value, $rowNumber] = $token;
             }
-            $rowNumber = $startAttributes['startLine'];
-            $position = $startAttributes['startFilePos'];
+            $nextPosition += strlen((string) $value);
 
             switch ($token) {
-                case Tokens::T_COMMENT:
+                case T_COMMENT:
                     // // or #, and /* */
                     $this->parseString($results, $value, $position, $rowNumber, self::CONTEXT_COMMENT);
                     break;
-                case Tokens::T_DOC_COMMENT:
+                case T_DOC_COMMENT:
                     // /** */
                     $this->parseString($results, $value, $position, $rowNumber, self::CONTEXT_DOC);
                     break;
-                case Tokens::T_CONSTANT_ENCAPSED_STRING:
+                case T_CONSTANT_ENCAPSED_STRING:
                     // "foo" or 'bar'
                     $this->parseString($results, $value, $position, $rowNumber, self::CONTEXT_STRING);
                     break;
-                case Tokens::T_START_HEREDOC:
+                case T_START_HEREDOC:
                     // <<<FOO
                     $lastHeredoc = trim(substr($value, 3), "'\"\n");
                     $position += strlen(rtrim($value, "'\"\n")) - strlen($lastHeredoc);
                     $this->defaultParser->blocksToWords($lastHeredoc, $position, $rowNumber, $results, self::CONTEXT_CODE);
                     break;
-                case Tokens::T_ENCAPSED_AND_WHITESPACE:
+                case T_ENCAPSED_AND_WHITESPACE:
                     // parts of heredoc or string with variables
                     if ($lastHeredoc !== null && substr($value, -strlen($lastHeredoc) - 1) === $lastHeredoc . ';') {
                         $value = substr($value, 0, -strlen($lastHeredoc) - 1);
@@ -85,28 +94,28 @@ class PhpParser implements Parser
                         $this->parseString($results, $value, $position, $rowNumber, self::CONTEXT_STRING);
                     }
                     break;
-                case Tokens::T_STRING:
+                case T_STRING:
                     // identifiers, e.g. keywords like parent and self, function names, class names and more
                     $this->defaultParser->blocksToWords($value, $position, $rowNumber, $results, self::CONTEXT_CODE);
                     break;
-                case Tokens::T_VARIABLE:
+                case T_VARIABLE:
                     // $foo
                     $nameValue = ltrim($value, '$');
                     $position += strlen($value) - strlen($nameValue);
                     $this->defaultParser->blocksToWords($nameValue, $position, $rowNumber, $results, self::CONTEXT_CODE);
                     break;
-                case Tokens::T_STRING_VARNAME:
+                case T_STRING_VARNAME:
                     $this->defaultParser->blocksToWords($value, $position, $rowNumber, $results, self::CONTEXT_CODE);
                     break;
-                case Tokens::T_INLINE_HTML:
+                case T_INLINE_HTML:
                     // any text outside <?php
                     $this->parseString($results, $value, $position, $rowNumber, self::CONTEXT_HTML);
                     break;
-                case Tokens::T_HALT_COMPILER:
+                case T_HALT_COMPILER:
                     // anything after __halt_compiler(); instructions
-                    $after = $this->phpLexer->handleHaltCompiler();
+                    $after = substr($string, $position + 18);
                     $this->parseString($results, $after, $position + 18, $rowNumber, self::CONTEXT_DATA);
-                    break;
+                    break 2;
             }
         }
 

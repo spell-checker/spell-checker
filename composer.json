@@ -7,32 +7,56 @@
     "authors": [
         {
             "name": "Vlasta Neubauer",
-            "homepage": "http://www.paranoiq.cz"
+            "homepage": "https://www.paranoiq.cz"
         }
     ],
     "require": {
-        "php": "^7.2.0",
+        "php": "^7.2|^8.0",
         "nette/neon": "~2.4|~3.0",
         "symfony/finder": "~3.4|~4.0|~5.0",
         "tracy/tracy": "~2.4",
         "dogma/dogma": "^0.1.15|^0.2.0"
     },
     "require-dev": {
-        "dogma/dogma-dev": "0.1.15"
+        "dogma/dogma-dev": "0.1.17"
     },
     "extra": {
         "branch-alias": {
             "dev-master": "0.3-dev"
         }
     },
-    "config": {
-        "bin-dir": "bin"
-    },
     "autoload": {
-        "classmap": ["src", "tests"]
+        "classmap": ["source", "tests"]
     },
     "bin": [
         "spell-checker"
     ],
-    "minimum-stability": "alpha"
+    "scripts": {
+        "da": "composer dump-autoload",
+        "build": [
+            "composer install",
+            "php -r \"@mkdir('log', 0777, true);\"",
+            "php -r \"@mkdir('temp/cache', 0777, true);\"",
+            "rm -rf temp/cache/*"
+        ],
+        "check": [
+            "@tests",
+            "@phpstan",
+            "@phpcs-setup",
+            "@phpcs-src",
+            "@spell-check",
+            "@phplint"
+        ],
+        "cs": [
+            "@phpcs-src",
+            "@phpcs-tests"
+        ],
+        "phpcs-src": "sh vendor/bin/phpcs --standard=vendor/dogma/dogma-dev/src/CodeSniffer/ruleset.xml --extensions=php --encoding=utf-8 --tab-width=4 -sp source",
+        "phpcs-tests": "sh vendor/bin/phpcs --standard=vendor/dogma/dogma-dev/src/CodeSniffer/ruleset-tests.xml --extensions=php --encoding=utf-8 --tab-width=4 -sp tests",
+        "phpcs-fix": "sh vendor/bin/phpcbf --standard=vendor/dogma/dogma-dev/src/CodeSniffer/ruleset-tests.xml --extensions=php --encoding=utf-8 --tab-width=4 source tests",
+        "phplint": "sh vendor/bin/parallel-lint source tests",
+        "phpstan": "sh vendor/bin/phpstan analyse -c build/phpstan.neon -l 5 source",
+        "spell-check": "php spell-checker.php -c build/spell-checker.neon --checkDictionaryFiles --memoryLimit 1024M --noLogo",
+        "tests": "sh vendor/bin/tester tests -c tests --colors 1"
+    }
 }

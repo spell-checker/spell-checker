@@ -64,6 +64,7 @@ ln
 logoutput
 merchantability
 metadata
+mkdir
 msgid
 msgstr
 multi
@@ -74,9 +75,11 @@ ORM
 param
 parsers
 passthru
+phpcbf
 printf
 redistributions
 regex
+rf
 ruleset
 SAPI
 src

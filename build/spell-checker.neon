@@ -2,7 +2,7 @@
 # directories to search for files
 directories:
     - build
-    - src
+    - source
     - tests
     - util
     - //
@@ -19,6 +19,7 @@ extensions:
 
 # file name pattern -> list of dictionaries (first matched is used)
 dictionariesByFileName:
+    *spell-checker.neon: skip
     *.php: en
     *.phpt: en
     *.neon: en
@@ -42,3 +43,6 @@ dictionaryDirectories:
 # words, that cannot be parsed by default conventions
 wordsParserExceptions:
     - PHPUnit
+
+localIgnores:
+	*composer.json: da sp

@@ -33,6 +33,7 @@
     ],
     "scripts": {
         "da": "composer dump-autoload",
+
         "build": [
             "composer install",
             "php -r \"@mkdir('log', 0777, true);\"",
@@ -40,23 +41,54 @@
             "rm -rf temp/cache/*"
         ],
         "check": [
-            "@tests",
-            "@phpstan",
-            "@phpcs-setup",
-            "@phpcs-src",
-            "@spell-check",
-            "@phplint"
+            "@test",
+            "@stan",
+            "@cs-src",
+            "@cs-tests",
+            "@spell",
+            "@lint"
         ],
+        "check-all": [
+            "@test-all",
+            "@stan-all",
+            "@lint-all",
+            "@spell",
+            "@cs-src",
+            "@cs-tests"
+        ],
+
+        "test": "sh vendor/bin/tester tests -c tests --colors 1",
+        "test-all": [
+            "@test",
+            "php74 vendor/nette/tester/src/tester tests -c tests --colors 1",
+            "php73 vendor/nette/tester/src/tester tests -c tests --colors 1",
+            "php72 vendor/nette/tester/src/tester tests -c tests --colors 1"
+        ],
+        "tests-coverage": "sh vendor/bin/tester tests -c tests --colors 1 -p phpdbg --coverage tests/coverage.html --coverage-src source",
+
+        "stan": "sh vendor/bin/phpstan analyse -c build/phpstan.neon -l 5 source",
+        "stan-74": "php74 vendor/phpstan/phpstan/phpstan analyse -c build/phpstan.neon -l 5 source",
+        "stan-all": [
+            "@stan",
+            "@stan-74"
+        ],
+
         "cs": [
-            "@phpcs-src",
-            "@phpcs-tests"
+            "@cs-src",
+            "@cs-tests"
         ],
-        "phpcs-src": "sh vendor/bin/phpcs --standard=vendor/dogma/dogma-dev/src/CodeSniffer/ruleset.xml --extensions=php --encoding=utf-8 --tab-width=4 -sp source",
-        "phpcs-tests": "sh vendor/bin/phpcs --standard=vendor/dogma/dogma-dev/src/CodeSniffer/ruleset-tests.xml --extensions=php --encoding=utf-8 --tab-width=4 -sp tests",
-        "phpcs-fix": "sh vendor/bin/phpcbf --standard=vendor/dogma/dogma-dev/src/CodeSniffer/ruleset-tests.xml --extensions=php --encoding=utf-8 --tab-width=4 source tests",
-        "phplint": "sh vendor/bin/parallel-lint source tests",
-        "phpstan": "sh vendor/bin/phpstan analyse -c build/phpstan.neon -l 5 source",
-        "spell-check": "php spell-checker.php -c build/spell-checker.neon --checkDictionaryFiles --memoryLimit 1024M --noLogo",
-        "tests": "sh vendor/bin/tester tests -c tests --colors 1"
+        "cs-src": "sh vendor/bin/phpcs --standard=vendor/dogma/dogma-dev/src/CodeSniffer/ruleset.xml --extensions=php --encoding=utf-8 --tab-width=4 -sp source",
+        "cs-tests": "sh vendor/bin/phpcs --standard=vendor/dogma/dogma-dev/src/CodeSniffer/ruleset-tests.xml --extensions=php,phpt --encoding=utf-8 --tab-width=4 -sp tests",
+        "cs-fix": "sh vendor/bin/phpcbf --standard=vendor/dogma/dogma-dev/src/CodeSniffer/ruleset-tests.xml --extensions=php,phpt --encoding=utf-8 --tab-width=4 source tests",
+
+        "spell": "php spell-checker.php -c build/spell-checker.neon --checkDictionaryFiles --memoryLimit 1024M --noLogo",
+
+        "lint": "sh vendor/bin/parallel-lint source tests",
+        "lint-all": [
+            "@lint",
+            "php74 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests",
+            "php73 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests",
+            "php72 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests"
+        ]
     }
 }

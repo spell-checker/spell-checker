@@ -76,6 +76,7 @@ param
 parsers
 passthru
 phpcbf
+phpdbg
 printf
 redistributions
 regex
@@ -83,6 +84,7 @@ rf
 ruleset
 SAPI
 src
+stan
 subquery
 templating
 throwable

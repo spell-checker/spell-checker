@@ -7,6 +7,7 @@ namespace SpellChecker\Parser;
 
 use SpellChecker\Word;
 use Tester\Assert;
+use const PHP_VERSION_ID;
 
 require __DIR__ . '/../../bootstrap.php';
 
@@ -77,6 +78,9 @@ $expected = [
     new Word('bbb', null, 20, 3, PhpParser::CONTEXT_STRING),
     new Word('ccc', null, 24, 4, PhpParser::CONTEXT_STRING),
 ];
+if (PHP_VERSION_ID < 70300) {
+    $expected[] = new Word('EOT', null, 28, 5, PhpParser::CONTEXT_CODE);
+}
 $actual = $phpParser->parse($string);
 Assert::equal($expected, $actual);
 
@@ -92,6 +96,9 @@ $expected = [
     new Word('bbb', null, 22, 3, PhpParser::CONTEXT_STRING),
     new Word('ccc', null, 26, 4, PhpParser::CONTEXT_STRING),
 ];
+if (PHP_VERSION_ID < 70300) {
+    $expected[] = new Word('EOT', null, 30, 5, PhpParser::CONTEXT_CODE);
+}
 $actual = $phpParser->parse($string);
 Assert::equal($expected, $actual);
 

@@ -66,8 +66,8 @@
         ],
         "tests-coverage": "sh vendor/bin/tester tests -c tests --colors 1 -p phpdbg --coverage tests/coverage.html --coverage-src source",
 
-        "stan": "sh vendor/bin/phpstan analyse -c build/phpstan.neon -l 5 source",
-        "stan-74": "php74 vendor/phpstan/phpstan/phpstan analyse -c build/phpstan.neon -l 5 source",
+        "stan": "sh vendor/bin/phpstan analyse -c build/phpstan.neon -l 5 source tests",
+        "stan-74": "php74 vendor/phpstan/phpstan/phpstan analyse -c build/phpstan.neon -l 5 source tests",
         "stan-all": [
             "@stan",
             "@stan-74"

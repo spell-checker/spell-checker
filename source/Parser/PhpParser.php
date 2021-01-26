@@ -3,6 +3,7 @@
 namespace SpellChecker\Parser;
 
 use SpellChecker\Word;
+use const PHP_INT_MAX;
 use const PREG_OFFSET_CAPTURE;
 use const T_COMMENT;
 use const T_CONSTANT_ENCAPSED_STRING;
@@ -10,10 +11,15 @@ use const T_DOC_COMMENT;
 use const T_ENCAPSED_AND_WHITESPACE;
 use const T_HALT_COMPILER;
 use const T_INLINE_HTML;
+use const T_NAME_FULLY_QUALIFIED;
+use const T_NAME_QUALIFIED;
+use const T_NAME_RELATIVE;
 use const T_START_HEREDOC;
 use const T_STRING;
 use const T_STRING_VARNAME;
 use const T_VARIABLE;
+use function define;
+use function defined;
 use function explode;
 use function is_string;
 use function ltrim;
@@ -41,6 +47,17 @@ class PhpParser implements Parser
     public function __construct(DefaultParser $defaultParser)
     {
         $this->defaultParser = $defaultParser;
+
+        // PHP 8 compatibility
+        if (!defined('T_NAME_FULLY_QUALIFIED')) {
+            define('T_NAME_FULLY_QUALIFIED', PHP_INT_MAX);
+        }
+        if (!defined('T_NAME_QUALIFIED')) {
+            define('T_NAME_QUALIFIED', PHP_INT_MAX);
+        }
+        if (!defined('T_NAME_RELATIVE')) {
+            define('T_NAME_RELATIVE', PHP_INT_MAX);
+        }
     }
 
     /**
@@ -99,6 +116,12 @@ class PhpParser implements Parser
                 case T_STRING:
                     // identifiers, e.g. keywords like parent and self, function names, class names and more
                     $this->defaultParser->blocksToWords($value, $position, $rowNumber, $results, self::CONTEXT_CODE);
+                    break;
+                case T_NAME_FULLY_QUALIFIED:
+                case T_NAME_QUALIFIED:
+                case T_NAME_RELATIVE:
+                    // PHP 8 name tokens
+                    $this->parseString($results, $value, $position, $rowNumber, self::CONTEXT_CODE);
                     break;
                 case T_VARIABLE:
                     // $foo

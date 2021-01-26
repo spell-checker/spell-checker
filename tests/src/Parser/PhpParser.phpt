@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 // phpcs:disable Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma
-// spell-check-ignore: aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll EOT
+// spell-check-ignore: aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll nnn EOT nowdoc bracketted
 
 namespace SpellChecker\Parser;
 
@@ -14,9 +14,9 @@ require __DIR__ . '/../../bootstrap.php';
 $defaultParser = new DefaultParser();
 $phpParser = new PhpParser($defaultParser);
 
-
+classesFunctionsEtc:
 $names = '<?php declare(aaa = 1)
-namespace bbb
+namespace nnn\bbb;
 class ccc {
     const ddd = 0;
     private \$eee;
@@ -28,21 +28,23 @@ class ccc {
 $actual = $phpParser->parse($names);
 $expected = [
     new Word('aaa', null,  14, 1, PhpParser::CONTEXT_CODE),
-    new Word('bbb', null,  33, 2, PhpParser::CONTEXT_CODE),
-    new Word('ccc', null,  43, 3, PhpParser::CONTEXT_CODE),
-    new Word('ddd', null,  59, 4, PhpParser::CONTEXT_CODE),
-    new Word('eee', null,  82, 5, PhpParser::CONTEXT_CODE),
-    new Word('fff', null, 100, 6, PhpParser::CONTEXT_CODE),
-    new Word('ggg', null, 104, 6, PhpParser::CONTEXT_CODE),
-    new Word('hhh', null, 110, 6, PhpParser::CONTEXT_CODE),
-    new Word('iii', null, 116, 6, PhpParser::CONTEXT_CODE),
-    new Word('jjj', null, 130, 7, PhpParser::CONTEXT_CODE),
-    new Word('kkk', null, 147, 8, PhpParser::CONTEXT_CODE),
-    new Word('lll', null, 157, 8, PhpParser::CONTEXT_CODE),
+    new Word('nnn', null,  33, 2, PhpParser::CONTEXT_CODE),
+    new Word('bbb', null,  37, 2, PhpParser::CONTEXT_CODE),
+    new Word('ccc', null,  48, 3, PhpParser::CONTEXT_CODE),
+    new Word('ddd', null,  64, 4, PhpParser::CONTEXT_CODE),
+    new Word('eee', null,  87, 5, PhpParser::CONTEXT_CODE),
+    new Word('fff', null, 105, 6, PhpParser::CONTEXT_CODE),
+    new Word('ggg', null, 109, 6, PhpParser::CONTEXT_CODE),
+    new Word('hhh', null, 115, 6, PhpParser::CONTEXT_CODE),
+    new Word('iii', null, 121, 6, PhpParser::CONTEXT_CODE),
+    new Word('jjj', null, 135, 7, PhpParser::CONTEXT_CODE),
+    new Word('kkk', null, 152, 8, PhpParser::CONTEXT_CODE),
+    new Word('lll', null, 162, 8, PhpParser::CONTEXT_CODE),
 ];
 Assert::equal($expected, $actual);
 
 
+doubleQuotedString:
 $string = '<?php
 $aaa = "bbb
 ccc";';
@@ -55,6 +57,7 @@ $actual = $phpParser->parse($string);
 Assert::equal($expected, $actual);
 
 
+singleQuotedString:
 $string = '<?php
 $aaa = \'bbb
 ccc\'';
@@ -67,6 +70,7 @@ $actual = $phpParser->parse($string);
 Assert::equal($expected, $actual);
 
 
+heredocString:
 $string = '<?php
 $aaa = <<<EOT
 bbb
@@ -85,6 +89,7 @@ $actual = $phpParser->parse($string);
 Assert::equal($expected, $actual);
 
 
+nowdocString:
 $string = '<?php
 $aaa = <<<\'EOT\'
 bbb
@@ -103,6 +108,7 @@ $actual = $phpParser->parse($string);
 Assert::equal($expected, $actual);
 
 
+variablesInStrings:
 $string = '<?php
 $aaa = "bbb $ccc ddd";';
 $expected = [
@@ -115,6 +121,7 @@ $actual = $phpParser->parse($string);
 Assert::equal($expected, $actual);
 
 
+brackettedVariablesInStrings:
 $string = '<?php
 $aaa = "bbb {$ccc} ddd";';
 $expected = [
@@ -127,6 +134,7 @@ $actual = $phpParser->parse($string);
 Assert::equal($expected, $actual);
 
 
+brackettedExpressionsInStrings:
 $string = '<?php
 $aaa = "bbb {$ccc->ddd} eee";';
 $expected = [
@@ -140,6 +148,7 @@ $actual = $phpParser->parse($string);
 Assert::equal($expected, $actual);
 
 
+arrayExpressionsInStrings:
 $string = '<?php
 $aaa = "bbb {$ccc[\'ddd\']} eee"';
 $expected = [
@@ -153,6 +162,7 @@ $actual = $phpParser->parse($string);
 Assert::equal($expected, $actual);
 
 
+htmlWithPhp:
 $html = '
 aaa
 bbb
@@ -172,6 +182,7 @@ $actual = $phpParser->parse($html);
 Assert::equal($expected, $actual);
 
 
+haltCompiler:
 $halt = '<?php
 __halt_compiler();
 aaa

@@ -66,10 +66,10 @@
         ],
         "tests-coverage": "sh vendor/bin/tester tests -c tests --colors 1 -p phpdbg --coverage tests/coverage.html --coverage-src source",
 
-        "stan": "sh vendor/bin/phpstan analyse -c build/phpstan.neon -l 5 source tests",
+        "stan": "sh vendor/bin/phpstan analyse -c build/phpstan.neon -l 6 source tests",
         "stan-all": [
-            "php80 vendor/phpstan/phpstan/phpstan analyse -c build/phpstan.neon -l 5 source tests",
-            "php74 vendor/phpstan/phpstan/phpstan analyse -c build/phpstan.neon -l 5 source tests"
+            "php80 vendor/phpstan/phpstan/phpstan analyse -c build/phpstan.neon -l 6 source tests",
+            "php74 vendor/phpstan/phpstan/phpstan analyse -c build/phpstan.neon -l 6 source tests"
         ],
 
         "cs": [

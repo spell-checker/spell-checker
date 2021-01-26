@@ -18,7 +18,7 @@ class BulletsDetector implements Heuristic
     public const RESULT_LATIN = 'latin';
     public const RESULT_ROMAN = 'roman';
 
-    /** @var string[] */
+    /** @var array<string, int> */
     private $bullets;
 
     public function __construct()

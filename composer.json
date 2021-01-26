@@ -59,7 +59,7 @@
 
         "test": "sh vendor/bin/tester tests -c tests --colors 1",
         "test-all": [
-            "@test",
+            "php80 vendor/nette/tester/src/tester tests -c tests --colors 1",
             "php74 vendor/nette/tester/src/tester tests -c tests --colors 1",
             "php73 vendor/nette/tester/src/tester tests -c tests --colors 1",
             "php72 vendor/nette/tester/src/tester tests -c tests --colors 1"
@@ -67,10 +67,9 @@
         "tests-coverage": "sh vendor/bin/tester tests -c tests --colors 1 -p phpdbg --coverage tests/coverage.html --coverage-src source",
 
         "stan": "sh vendor/bin/phpstan analyse -c build/phpstan.neon -l 5 source tests",
-        "stan-74": "php74 vendor/phpstan/phpstan/phpstan analyse -c build/phpstan.neon -l 5 source tests",
         "stan-all": [
-            "@stan",
-            "@stan-74"
+            "php80 vendor/phpstan/phpstan/phpstan analyse -c build/phpstan.neon -l 5 source tests",
+            "php74 vendor/phpstan/phpstan/phpstan analyse -c build/phpstan.neon -l 5 source tests"
         ],
 
         "cs": [
@@ -85,7 +84,7 @@
 
         "lint": "sh vendor/bin/parallel-lint source tests",
         "lint-all": [
-            "@lint",
+            "php80 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests",
             "php74 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests",
             "php73 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests",
             "php72 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests"

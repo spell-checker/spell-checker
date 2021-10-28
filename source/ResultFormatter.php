@@ -166,9 +166,7 @@ class ResultFormatter
     }
 
     /**
-     * @param string $fileName
      * @param Word[] $errors
-     * @param int $maxWidth
      * @return string
      */
     public function formatFileErrors(string $fileName, array $errors, int $maxWidth): string
@@ -212,7 +210,6 @@ class ResultFormatter
     }
 
     /**
-     * @param string $fileName
      * @param Word[] $errors
      * @return string
      */

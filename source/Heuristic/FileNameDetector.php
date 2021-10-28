@@ -34,8 +34,6 @@ class FileNameDetector implements Heuristic
     }
 
     /**
-     * @param Word $word
-     * @param string $string
      * @param string[] $dictionaries
      * @return string|string
      */

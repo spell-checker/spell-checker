@@ -29,7 +29,6 @@ class Dictionary
 
     /**
      * @param string[] $files
-     * @param bool $diacritics
      * @param string[] $checkedFiles
      */
     public function __construct(array $files, bool $diacritics = false, array $checkedFiles = [])

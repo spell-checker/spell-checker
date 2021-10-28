@@ -178,50 +178,50 @@ $coreExtensions = [
 
 $core = fopen(dirname(__DIR__) . '/dictionaries/php.dic', 'wb');
 $ext = fopen(dirname(__DIR__) . '/dictionaries/php-ext.dic', 'wb');
-fputs($core, $syntax);
-fputs($core, file_get_contents(dirname(__DIR__) . '/dictionaries/php-config.dic'));
+fwrite($core, $syntax);
+fwrite($core, file_get_contents(dirname(__DIR__) . '/dictionaries/php-config.dic'));
 
 foreach (get_loaded_extensions() as $extName) {
-    $file = in_array($extName, $coreExtensions) ? $core : $ext;
+    $file = in_array($extName, $coreExtensions, true) ? $core : $ext;
 
-    $extension = new \ReflectionExtension($extName);
-    fputs($file, "\n# extension: $extName");
+    $extension = new ReflectionExtension($extName);
+    fwrite($file, "\n# extension: $extName");
 
     $constants = $extension->getConstants();
     if ($constants) {
-        fputs($file, "\n# constants\n");
+        fwrite($file, "\n# constants\n");
         foreach ($constants as $name => $value) {
-            fputs($file, $name . "\n");
+            fwrite($file, $name . "\n");
         }
     }
 
     $functions = $extension->getFunctions();
     if ($functions) {
-        fputs($file, "\n# functions\n");
+        fwrite($file, "\n# functions\n");
         foreach ($functions as $function) {
-            fputs($file, $function->name . "\n");
+            fwrite($file, $function->name . "\n");
         }
     }
 
     $classes = $extension->getClasses();
     if ($classes) {
-        fputs($file, "\n# classes");
+        fwrite($file, "\n# classes");
         foreach ($classes as $class) {
-            fputs($file, "\n" . $class->name . "\n");
+            fwrite($file, "\n" . $class->name . "\n");
             foreach ($class->getConstants() as $name => $value) {
-                fputs($file, $name . "\n");
+                fwrite($file, $name . "\n");
             }
             foreach ($class->getMethods() as $method) {
                 if ($method->isPrivate()) {
                     continue;
                 }
-                fputs($file, $method->name . "\n");
+                fwrite($file, $method->name . "\n");
             }
             foreach ($class->getProperties() as $property) {
                 if ($property->isPrivate()) {
                     continue;
                 }
-                fputs($file, $property->name . "\n");
+                fwrite($file, $property->name . "\n");
             }
         }
     }

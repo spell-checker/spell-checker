@@ -17,8 +17,6 @@ class GarbageDetector implements Heuristic
     public const RESULT_GARBAGE = 'garbage';
 
     /**
-     * @param Word $word
-     * @param string $string
      * @param string[] $dictionaries
      * @return string|null
      */

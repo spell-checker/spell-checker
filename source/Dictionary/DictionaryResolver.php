@@ -61,7 +61,6 @@ class DictionaryResolver
     }
 
     /**
-     * @param string $fileName
      * @return string[]
      */
     public function getDictionariesForFileName(string $fileName): array
@@ -87,7 +86,6 @@ class DictionaryResolver
     }
 
     /**
-     * @param string $fileName
      * @return string[]|null
      */
     private function getDictionariesByFileNamePattern(string $fileName): ?array

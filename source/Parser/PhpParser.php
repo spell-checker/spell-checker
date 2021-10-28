@@ -61,7 +61,6 @@ class PhpParser implements Parser
     }
 
     /**
-     * @param string $string
      * @return Word[]
      */
     public function parse(string $string): array
@@ -149,10 +148,6 @@ class PhpParser implements Parser
 
     /**
      * @param Word[] $result
-     * @param string $string
-     * @param int $filePosition
-     * @param int $rowNumber
-     * @param string $context
      */
     private function parseString(array &$result, string $string, int $filePosition, int $rowNumber, string $context): void
     {

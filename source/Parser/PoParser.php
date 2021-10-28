@@ -24,7 +24,6 @@ class PoParser implements Parser
     }
 
     /**
-     * @param string $string
      * @return Word[]
      */
     public function parse(string $string): array

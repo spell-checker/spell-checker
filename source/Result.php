@@ -16,7 +16,6 @@ class Result
 
     /**
      * @param Word[][] $errors
-     * @param int $errorsCount
      */
     public function __construct(array $errors, int $errorsCount)
     {

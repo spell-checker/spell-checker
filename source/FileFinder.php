@@ -35,7 +35,6 @@ class FileFinder
     }
 
     /**
-     * @param Configurator $config
      * @return string[]
      */
     public function findFilesByConfig(Configurator $config): array
@@ -153,7 +152,6 @@ class FileFinder
 
     /**
      * @param string[] $paths
-     * @param string $baseDir
      * @return string[]
      */
     public function fixPaths(array $paths, string $baseDir = ''): array

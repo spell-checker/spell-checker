@@ -32,8 +32,6 @@ class RegularExpressionDetector implements Heuristic
     private $pattern;
 
     /**
-     * @param Word $word
-     * @param string $string
      * @param string[] $dictionaries
      * @return string|null
      */

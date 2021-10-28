@@ -14,7 +14,6 @@ interface Parser
 
     /**
      * Parse words from text
-     * @param string $string
      * @return Word[]
      */
     public function parse(string $string): array;

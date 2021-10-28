@@ -36,7 +36,6 @@ class DefaultParser implements Parser
 
     /**
      * Parse code with camelCase and under_scores
-     * @param string $string
      * @return Word[]
      */
     public function parse(string $string): array
@@ -67,11 +66,7 @@ class DefaultParser implements Parser
     }
 
     /**
-     * @param string $block
-     * @param int $position
-     * @param int $rowNumber
      * @param Word[] $result
-     * @param string|null $context
      */
     public function blocksToWords(string $block, int $position, int $rowNumber, array &$result, ?string $context = null): void
     {
@@ -142,7 +137,6 @@ class DefaultParser implements Parser
 
     /**
      * Parse native language
-     * @param string $string
      * @return string[]
      */
     public function parseSimple(string $string): array

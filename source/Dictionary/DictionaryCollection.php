@@ -55,8 +55,6 @@ class DictionaryCollection
      * @param string[] $directories
      * @param string[] $diacriticDictionaries
      * @param string[] $checkedFiles
-     * @param string|null $baseDir
-     * @param Console|null $console
      */
     public function __construct(
         array $directories,
@@ -76,9 +74,6 @@ class DictionaryCollection
 
     /**
      * @param string[] $dictionaries
-     * @param string $word
-     * @param string|null $context
-     * @param int $flags
      * @return bool
      */
     public function contains(array $dictionaries, string $word, ?string $context = null, int $flags = 0): bool
@@ -158,7 +153,6 @@ class DictionaryCollection
 
     /**
      * @param string[] $dictionaries
-     * @param string $context
      * @return string[]
      */
     private function filterDictionaries(array $dictionaries, ?string $context): array

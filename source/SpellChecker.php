@@ -61,10 +61,7 @@ class SpellChecker
     /**
      * @param Parser[] $wordsParsers
      * @param Heuristic[] $heuristics
-     * @param DictionaryResolver $resolver
-     * @param int $maxErrors
      * @param string[] $localIgnores
-     * @param bool $checkLocalIgnores
      */
     public function __construct(
         array $wordsParsers,
@@ -136,7 +133,6 @@ class SpellChecker
     }
 
     /**
-     * @param string $fileName
      * @param string[] $dictionaries
      * @param callable|null $fileCallback (string fileName: bool)
      * @return Word[]
@@ -178,10 +174,8 @@ class SpellChecker
     }
 
     /**
-     * @param string $string
      * @param string[] $dictionaries
      * @param string[] $ignores
-     * @param Parser|null $parser
      * @return Word[]
      */
     public function checkString(string $string, array $dictionaries, array $ignores, ?Parser $parser = null): array
@@ -254,8 +248,6 @@ class SpellChecker
     }
 
     /**
-     * @param Word $word
-     * @param string $string
      * @param string[] $dictionaries
      * @return bool
      */

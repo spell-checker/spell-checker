@@ -17,6 +17,7 @@ use SpellChecker\Heuristic\FileNameDetector;
 use SpellChecker\Heuristic\GarbageDetector;
 use SpellChecker\Heuristic\IdentifiersDetector;
 use SpellChecker\Heuristic\PrintfDetector;
+use SpellChecker\Heuristic\RegularExpressionDetector;
 use SpellChecker\Heuristic\SimpleHtmlDetector;
 use SpellChecker\Heuristic\SqlTableShortcutDetector;
 use SpellChecker\Parser\DefaultParser;
@@ -85,6 +86,7 @@ class SpellCheckerApplication
                 new PrintfDetector(),
                 new EscapeSequenceDetector(),
                 new SqlTableShortcutDetector(),
+                new RegularExpressionDetector(),
                 new IdentifiersDetector($dictionaries),
                 new FileNameDetector($dictionaries),
                 new BulletsDetector(),

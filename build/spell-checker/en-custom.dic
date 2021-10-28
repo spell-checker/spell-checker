@@ -106,6 +106,8 @@ vcs
 wb
 whitelisted
 whitespace
+preg
+ereg
 
 # web
 cz

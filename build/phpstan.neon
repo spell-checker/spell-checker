@@ -1,4 +1,10 @@
 
 parameters:
+    level: 6
+
+    paths:
+        - ../source
+        - ../tests
+        - ../util
+
     ignoreErrors:
-    universalObjectCratesClasses: []

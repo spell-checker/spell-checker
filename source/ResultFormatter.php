@@ -13,6 +13,7 @@ use function count;
 use function implode;
 use function mb_strlen;
 use function mb_substr;
+use function sort;
 use function sprintf;
 use function str_replace;
 use function strlen;
@@ -171,9 +172,15 @@ class ResultFormatter
      */
     public function formatFileErrors(string $fileName, array $errors, int $maxWidth): string
     {
-        $output = '' . C::lcyan($this->stripBaseDir($fileName)) . C::gray(' (')
+        $head = '' . C::lcyan($this->stripBaseDir($fileName)) . C::gray(' (')
             . implode(', ', $this->dictionaryResolver->getDictionariesForFileName($fileName)) . C::gray("):\n");
+
+        $foot = '';
+        $words = [];
         foreach ($errors as $word) {
+            if ($word->block !== true) {
+                $words[] = $word->word;
+            }
             $row = trim($word->row);
             $padding = $word->block === true ? 35 : 27;
             if ($word->context !== null) {
@@ -185,18 +192,23 @@ class ResultFormatter
             }
             $row = str_replace(
                 [$word->word, "\n", "\t"],
-                [C::yellow($word->word), C::cyan('\\n'), C::cyan('\\t')],
+                [C::lred($word->word), C::cyan('\\n'), C::cyan('\\t')],
                 $row
             );
 
-            $intro = $word->block === true ? ' - unused ignore "' : ' - found "';
-            $output .= C::gray($intro) . $word->word . C::gray('"')
-                . ($word->context !== null ? C::gray(' (') . $word->context . C::gray(')') : '')
-                . C::gray(' in "') . $row
-                . C::gray('" at row ') . $word->rowNumber . "\n";
+            if ($word->block === true) {
+                $foot .= ' ' . $word->rowNumber . ':' . C::gray(' unused ignore: ') . C::lred($word->word) . "\n";
+            } else {
+                $foot .= ' ' . $word->rowNumber . ':'
+                    . ($word->context !== null ? C::gray(' (') . $word->context . C::gray(')') : '')
+                    . C::gray(' "') . $row . C::gray('"') . "\n";
+            }
         }
+        $words = array_unique($words);
+        sort($words);
+        $words = ' ' . C::lred(implode(' ', $words));
 
-        return $output;
+        return $head . $words . "\n" . $foot;
     }
 
     public function formatErrorsShort(Result $result): string

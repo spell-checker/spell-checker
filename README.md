@@ -34,7 +34,7 @@ If word is not found in dictionaries nor matched by any of these heuristics, it 
 
 ## Prerequisites
 
-Runs on PHP >= 7.1
+Runs on PHP >= 7.2
 
 
 

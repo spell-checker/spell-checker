@@ -2,7 +2,7 @@
     "name": "spell-checker/spell-checker",
     "type": "library",
     "description": "Multi-language code and text spell checker in PHP",
-    "homepage": "http://github.com/spell-checker/spell-checker",
+    "homepage": "https://github.com/spell-checker/spell-checker",
     "license": ["BSD-3-Clause"],
     "authors": [
         {
@@ -11,14 +11,15 @@
         }
     ],
     "require": {
-        "php": "^7.1|^8.0",
+        "php": "^7.2|^8.0",
         "nette/neon": "~2.4|~3.0",
-        "symfony/finder": "~3.4|~4.0|~5.0|~6.0",
+        "symfony/finder": "~4.0|~5.0|~6.0",
         "tracy/tracy": "~2.4",
-        "dogma/dogma": "^0.1.15|^0.2.0"
+        "dogma/dogma": "^0.2.0"
     },
     "require-dev": {
-        "dogma/dogma-dev": "0.1.21"
+        "dogma/dogma-dev": "0.1.29",
+        "phpstan/phpstan": "1.8.2"
     },
     "extra": {
         "branch-alias": {
@@ -59,33 +60,33 @@
 
         "tests:run": "php vendor/bin/tester tests -c tests --colors 1",
         "tests:all": [
+            "php82 vendor/nette/tester/src/tester tests -c tests --colors 1",
             "php81 vendor/nette/tester/src/tester tests -c tests --colors 1",
             "php80 vendor/nette/tester/src/tester tests -c tests --colors 1",
             "php74 vendor/nette/tester/src/tester tests -c tests --colors 1",
             "php73 vendor/nette/tester/src/tester tests -c tests --colors 1",
-            "php72 vendor/nette/tester/src/tester tests -c tests --colors 1",
-            "php71 vendor/nette/tester/src/tester tests -c tests --colors 1"
+            "php72 vendor/nette/tester/src/tester tests -c tests --colors 1"
         ],
         "tests:coverage": "php vendor/bin/tester tests -c tests --colors 1 -p phpdbg --coverage tests/coverage.html --coverage-src source",
 
-        "phpstan:run": "php vendor/bin/phpstan analyze -c build/phpstan.neon",
+        "phpstan:run": "php vendor/bin/phpstan analyze --memory-limit 256M -c build/phpstan.neon",
         "phpstan:all": [
-            "php81 vendor/phpstan/phpstan/phpstan analyze -c build/phpstan.neon",
-            "php80 vendor/phpstan/phpstan/phpstan analyze -c build/phpstan.neon",
-            "php74 vendor/phpstan/phpstan/phpstan analyze -c build/phpstan.neon",
-            "php73 vendor/phpstan/phpstan/phpstan analyze -c build/phpstan.neon",
-            "php72 vendor/phpstan/phpstan/phpstan analyze -c build/phpstan.neon",
-            "php71 vendor/phpstan/phpstan/phpstan analyze -c build/phpstan.neon"
+            "php82 vendor/phpstan/phpstan/phpstan analyze --memory-limit 256M -c build/phpstan.neon",
+            "php81 vendor/phpstan/phpstan/phpstan analyze --memory-limit 256M -c build/phpstan.neon",
+            "php80 vendor/phpstan/phpstan/phpstan analyze --memory-limit 256M -c build/phpstan.neon",
+            "php74 vendor/phpstan/phpstan/phpstan analyze --memory-limit 256M -c build/phpstan.neon",
+            "php73 vendor/phpstan/phpstan/phpstan analyze --memory-limit 256M -c build/phpstan.neon",
+            "php72 vendor/phpstan/phpstan/phpstan analyze --memory-limit 256M -c build/phpstan.neon"
         ],
 
         "lint:run": "php vendor/bin/parallel-lint source tests",
         "lint:all": [
+            "php82 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests",
             "php81 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests",
             "php80 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests",
             "php74 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests",
             "php73 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests",
-            "php72 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests",
-            "php71 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests"
+            "php72 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests"
         ],
 
         "phpcs:all": [
@@ -97,5 +98,11 @@
         "phpcs:fix": "php vendor/bin/phpcbf --standard=vendor/dogma/dogma-dev/src/CodeSniffer/ruleset-tests.xml --extensions=php,phpt --encoding=utf-8 --tab-width=4 source util tests",
 
         "spell:check": "php spell-checker.php -c build/spell-checker.neon --checkDictionaryFiles --memoryLimit 1024M --noLogo"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": false,
+            "sllh/composer-versions-check": true
+        }
     }
 }

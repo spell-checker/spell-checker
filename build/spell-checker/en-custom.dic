@@ -1,6 +1,7 @@
 
 # names
 codesniffer
+dealerdirect
 gettext
 github
 jakub
@@ -10,10 +11,12 @@ nikic
 onderka
 paranoiq
 phing
+phpcodesniffer
 phpcs
 phplint
 phpstan
 slevomat
+sllh
 Squiz
 squizlabs
 symfony

@@ -3,6 +3,18 @@
 namespace SpellChecker\Parser;
 
 use SpellChecker\Word;
+use function define;
+use function defined;
+use function explode;
+use function is_string;
+use function ltrim;
+use function preg_match_all;
+use function rtrim;
+use function str_replace;
+use function strlen;
+use function substr;
+use function token_get_all;
+use function trim;
 use const PHP_INT_MAX;
 use const PREG_OFFSET_CAPTURE;
 use const T_COMMENT;
@@ -18,18 +30,6 @@ use const T_START_HEREDOC;
 use const T_STRING;
 use const T_STRING_VARNAME;
 use const T_VARIABLE;
-use function define;
-use function defined;
-use function explode;
-use function is_string;
-use function ltrim;
-use function preg_match_all;
-use function rtrim;
-use function str_replace;
-use function strlen;
-use function substr;
-use function token_get_all;
-use function trim;
 
 class PhpParser implements Parser
 {

@@ -5,9 +5,9 @@
 namespace Test;
 
 use Tracy\Debugger;
-use const PHP_SAPI;
 use function dirname;
 use function header;
+use const PHP_SAPI;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../vendor/nette/tester/src/bootstrap.php';

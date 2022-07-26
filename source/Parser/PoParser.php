@@ -3,11 +3,11 @@
 namespace SpellChecker\Parser;
 
 use SpellChecker\Word;
-use const PREG_OFFSET_CAPTURE;
 use function explode;
 use function preg_match;
 use function preg_match_all;
 use function strlen;
+use const PREG_OFFSET_CAPTURE;
 
 class PoParser implements Parser
 {

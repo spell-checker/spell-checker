@@ -3,7 +3,6 @@
 namespace SpellChecker\Parser;
 
 use SpellChecker\Word;
-use const PREG_OFFSET_CAPTURE;
 use function array_filter;
 use function array_map;
 use function array_unshift;
@@ -17,6 +16,7 @@ use function preg_split;
 use function strlen;
 use function strpos;
 use function trim;
+use const PREG_OFFSET_CAPTURE;
 
 class DefaultParser implements Parser
 {

@@ -109,7 +109,7 @@ class FileFinder
 
             // filter files by extensions and excludes
             if ($extensions || $excludes) {
-                return iterator_to_array(new FilenameFilterIterator(new ArrayIterator($foundFiles), $extensions ?? [], $excludes ?? []));
+                return array_keys(iterator_to_array(new FilenameFilterIterator(new ArrayIterator($foundFiles), $extensions ?? [], $excludes ?? [])));
             } else {
                 return $foundFiles;
             }

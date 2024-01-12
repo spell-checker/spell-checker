@@ -13,13 +13,13 @@
     "require": {
         "php": "^7.2|^8.0",
         "nette/neon": "~2.4|~3.0",
-        "symfony/finder": "~4.0|~5.0|~6.0",
+        "symfony/finder": "~4.0|~5.0|~6.0|~7.0",
         "tracy/tracy": "~2.4",
         "dogma/dogma": "^0.2.0"
     },
     "require-dev": {
-        "dogma/dogma-dev": "0.1.29",
-        "phpstan/phpstan": "1.8.2"
+        "dogma/dogma-dev": "0.1.30",
+        "phpstan/phpstan": "1.10.55"
     },
     "extra": {
         "branch-alias": {
@@ -60,6 +60,7 @@
 
         "tests:run": "php vendor/bin/tester tests -c tests --colors 1",
         "tests:all": [
+            "php83 vendor/nette/tester/src/tester tests -c tests --colors 1",
             "php82 vendor/nette/tester/src/tester tests -c tests --colors 1",
             "php81 vendor/nette/tester/src/tester tests -c tests --colors 1",
             "php80 vendor/nette/tester/src/tester tests -c tests --colors 1",
@@ -71,6 +72,7 @@
 
         "phpstan:run": "php vendor/bin/phpstan analyze --memory-limit 256M -c build/phpstan.neon",
         "phpstan:all": [
+            "php83 vendor/phpstan/phpstan/phpstan analyze --memory-limit 256M -c build/phpstan.neon",
             "php82 vendor/phpstan/phpstan/phpstan analyze --memory-limit 256M -c build/phpstan.neon",
             "php81 vendor/phpstan/phpstan/phpstan analyze --memory-limit 256M -c build/phpstan.neon",
             "php80 vendor/phpstan/phpstan/phpstan analyze --memory-limit 256M -c build/phpstan.neon",
@@ -81,6 +83,7 @@
 
         "lint:run": "php vendor/bin/parallel-lint source tests",
         "lint:all": [
+            "php83 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests",
             "php82 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests",
             "php81 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests",
             "php80 vendor/php-parallel-lint/php-parallel-lint/parallel-lint source tests",

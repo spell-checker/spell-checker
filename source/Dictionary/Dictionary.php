@@ -8,6 +8,7 @@ use function explode;
 use function file_get_contents;
 use function in_array;
 use function is_file;
+use function is_int;
 use function is_readable;
 use function substr;
 use function trim;
@@ -84,7 +85,7 @@ class Dictionary
     public function contains(string $word): bool
     {
         $found = isset($this->wordIndex[$word]);
-        if ($found) {
+        if ($found && is_int($this->wordIndex[$word])) {
             $this->wordIndex[$word]++;
         }
 
@@ -94,7 +95,7 @@ class Dictionary
     public function containsWithoutDiacritics(string $word): bool
     {
         $found = isset($this->strippedIndex[$word]);
-        if ($found) {
+        if ($found && is_int($this->strippedIndex[$word])) {
             $this->strippedIndex[$word]++;
         }
 

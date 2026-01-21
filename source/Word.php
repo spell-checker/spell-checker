@@ -8,30 +8,26 @@ namespace SpellChecker;
 class Word
 {
 
-    /** @var string */
-    public $word;
+    public string $word;
 
     /** @var string|true|null (true for unused ignores) */
-    public $block;
+    public string|bool|null $block;
 
     /** @var int (in bytes, not characters!) */
-    public $position;
+    public int $position;
 
-    /** @var int */
-    public $rowNumber;
+    public int $rowNumber;
 
-    /** @var string|null */
-    public $context;
+    public ?string $context;
 
-    /** @var string */
-    public $row;
+    public string $row;
 
     public function __construct(
         string $word,
         ?string $block,
         int $position,
         int $rowNumber,
-        ?string $context = null
+        ?string $context = null,
     )
     {
         $this->word = $word;

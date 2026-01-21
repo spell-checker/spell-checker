@@ -24,15 +24,13 @@ use function uasort;
 class ResultFormatter
 {
 
-    /** @var DictionaryResolver */
-    private $dictionaryResolver;
+    private DictionaryResolver $dictionaryResolver;
 
-    /** @var string|null */
-    private $baseDir;
+    private ?string $baseDir;
 
     public function __construct(
         DictionaryResolver $dictionaryResolver,
-        ?string $baseDir
+        ?string $baseDir = null,
     )
     {
         $this->dictionaryResolver = $dictionaryResolver;

@@ -15,11 +15,11 @@ use function range;
 class BulletsDetector implements Heuristic
 {
 
-    public const RESULT_LATIN = 'latin';
-    public const RESULT_ROMAN = 'roman';
+    public const string RESULT_LATIN = 'latin';
+    public const string RESULT_ROMAN = 'roman';
 
     /** @var array<string, int> */
-    private $bullets;
+    private array $bullets;
 
     public function __construct()
     {

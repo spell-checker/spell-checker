@@ -34,15 +34,14 @@ use const T_VARIABLE;
 class PhpParser implements Parser
 {
 
-    public const CONTEXT_CODE = 'code';
-    public const CONTEXT_STRING = 'string';
-    public const CONTEXT_COMMENT = 'comment';
-    public const CONTEXT_DOC = 'doc';
-    public const CONTEXT_HTML = 'html';
-    public const CONTEXT_DATA = 'data';
+    public const string CONTEXT_CODE = 'code';
+    public const string CONTEXT_STRING = 'string';
+    public const string CONTEXT_COMMENT = 'comment';
+    public const string CONTEXT_DOC = 'doc';
+    public const string CONTEXT_HTML = 'html';
+    public const string CONTEXT_DATA = 'data';
 
-    /** @var DefaultParser */
-    private $defaultParser;
+    private DefaultParser $defaultParser;
 
     public function __construct(DefaultParser $defaultParser)
     {

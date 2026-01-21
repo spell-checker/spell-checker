@@ -21,10 +21,10 @@ use const PREG_OFFSET_CAPTURE;
 class DefaultParser implements Parser
 {
 
-    public const WORD_BLOCK_REGEXP = '/[\\p{L}0-9_-]+/u';
+    public const string WORD_BLOCK_REGEXP = '/[\\p{L}0-9_-]+/u';
 
     /** @var string[] */
-    private $exceptions;
+    private array $exceptions;
 
     /**
      * @param string[] $exceptions

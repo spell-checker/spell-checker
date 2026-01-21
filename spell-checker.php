@@ -63,6 +63,7 @@ $arguments = [
     'wordsParserExceptions' => ['', Configurator::VALUES, 'irregular words', 'words'],
     'ignoreUrls' =>     ['', Configurator::FLAG, 'ignore all words from URL addresses'],
     'ignoreEmails' =>   ['', Configurator::FLAG, 'ignore all words from email addresses'],
+    'heuristics' =>     ['', Configurator::VALUES, 'class name pattern -> list of custom heuristics', 'paths'],
         'Help:',
     'help' =>           ['h', Configurator::FLAG_VALUE, 'show help', 'command'],
     'license' =>        ['', Configurator::FLAG, 'show license'],

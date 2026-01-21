@@ -16,16 +16,14 @@ use function strrpos;
 class FileNameDetector implements Heuristic
 {
 
-    public const RESULT_FILE_NAME = 'file';
+    public const string RESULT_FILE_NAME = 'file';
 
-    /** @var DictionaryCollection */
-    private $dictionaries;
+    private DictionaryCollection $dictionaries;
 
     /** @var string[] */
-    private $fileExtensions = ['html', 'xml', 'js', 'styl', 'css', 'php', 'latte', 'csv', 'pdf', 'jpg', 'png', 'docx', 'svg'];
+    private array $fileExtensions = ['html', 'xml', 'js', 'styl', 'css', 'php', 'latte', 'csv', 'pdf', 'jpg', 'png', 'docx', 'svg'];
 
-    /** @var string */
-    private $pattern;
+    private string $pattern;
 
     public function __construct(DictionaryCollection $dictionaries)
     {
@@ -39,9 +37,7 @@ class FileNameDetector implements Heuristic
      */
     public function check(Word $word, string &$string, array $dictionaries): ?string
     {
-        if ($word->row === null) {
-            $word->row = RowHelper::getRowAtPosition($string, $word->position);
-        }
+        $word->row ??= RowHelper::getRowAtPosition($string, $word->position);
 
         if (preg_match_all($this->pattern, $word->row, $matches)) {
             foreach ($matches[0] as $match) {

@@ -4,7 +4,11 @@ use Dogma\Str;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-$path = $argv[1];
+$path = $argv[1] ?? null;
+if ($path === null) {
+    fwrite(STDERR, "Usage: php strip-diacritics.php <dictionary-file>\n");
+    exit(1);
+}
 
 // .dic -> .dia
 $output = fopen(substr($path, 0, -1) . 'a', 'w');

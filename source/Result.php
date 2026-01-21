@@ -9,10 +9,9 @@ class Result
 {
 
     /** @var Word[][] */
-    private $errors;
+    private array $errors;
 
-    /** @var int */
-    private $errorsCount;
+    private int $errorsCount;
 
     /**
      * @param Word[][] $errors

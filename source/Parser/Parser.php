@@ -7,10 +7,10 @@ use SpellChecker\Word;
 interface Parser
 {
 
-    public const KEYWORD = 1;
-    public const NAME = 2;
-    public const STRING = 3;
-    public const COMMENT = 4;
+    public const int KEYWORD = 1;
+    public const int NAME = 2;
+    public const int STRING = 3;
+    public const int COMMENT = 4;
 
     /**
      * Parse words from text

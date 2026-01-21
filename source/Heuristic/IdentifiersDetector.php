@@ -16,11 +16,10 @@ use function strrpos;
 class IdentifiersDetector implements Heuristic
 {
 
-    public const ID = 'id';
-    public const CONSTANT = 'constant';
+    public const string ID = 'id';
+    public const string CONSTANT = 'constant';
 
-    /** @var DictionaryCollection */
-    private $dictionaries;
+    private DictionaryCollection $dictionaries;
 
     public function __construct(DictionaryCollection $dictionaries)
     {
@@ -33,9 +32,7 @@ class IdentifiersDetector implements Heuristic
      */
     public function check(Word $word, string &$string, array $dictionaries): ?string
     {
-        if ($word->row === null) {
-            $word->row = RowHelper::getRowAtPosition($string, $word->position);
-        }
+        $word->row ??= RowHelper::getRowAtPosition($string, $word->position);
 
         // href="#stavy-objednavky"
         // id="zmena-dorucovaci-adresy"

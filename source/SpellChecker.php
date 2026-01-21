@@ -33,30 +33,27 @@ use function trim;
 class SpellChecker
 {
 
-    public const DEFAULT_MAX_ERRORS = 1000;
+    public const int DEFAULT_MAX_ERRORS = 1000;
 
-    public const DEFAULT_PARSER = '*';
+    public const string DEFAULT_PARSER = '*';
 
     /** @var Parser[] */
-    private $wordsParsers;
+    private array $wordsParsers;
 
     /** @var Heuristic[] */
-    private $heuristics;
+    private array $heuristics;
 
     /** @var int[][] (string $rule => (string $word => int $count)) */
-    private $heuristicStats = [];
+    private array $heuristicStats = [];
 
-    /** @var DictionaryResolver */
-    private $resolver;
+    private DictionaryResolver $resolver;
 
-    /** @var int */
-    private $maxErrors;
+    private int $maxErrors;
 
     /** @var string[][] */
-    private $localIgnores = [];
+    private array $localIgnores = [];
 
-    /** @var bool */
-    private $checkLocalIgnores;
+    private bool $checkLocalIgnores;
 
     /**
      * @param Parser[] $wordsParsers
@@ -69,7 +66,7 @@ class SpellChecker
         DictionaryResolver $resolver,
         int $maxErrors = self::DEFAULT_MAX_ERRORS,
         array $localIgnores = [],
-        bool $checkLocalIgnores = false
+        bool $checkLocalIgnores = false,
     )
     {
         $this->wordsParsers = $wordsParsers;
@@ -200,9 +197,7 @@ class SpellChecker
                     $ignores[$word->word]++;
                     continue;
                 }
-                if ($word->row === null) {
-                    $word->row = RowHelper::getRowAtPosition($string, $word->position);
-                }
+                $word->row ??= RowHelper::getRowAtPosition($string, $word->position);
                 $errors[] = $word;
             }
 
@@ -218,15 +213,15 @@ class SpellChecker
                             $rowNumber = strlen($preceding) - strlen(str_replace("\n", '', $preceding)) + 1;
                             $rowStart = strrpos(substr($string, 0, $position), "\n") + 1;
                             $rowEnd = $position + strpos(substr($string, $position), "\n");
-                            $word = new Word($word, null, $position, $rowNumber);
-                            $word->block = true;
-                            $word->row = trim(substr($string, $rowStart, $rowEnd - $rowStart));
-                            $errors[] = $word;
+                            $ignoreWord = new Word($word, null, $position, $rowNumber);
+                            $ignoreWord->block = true;
+                            $ignoreWord->row = trim(substr($string, $rowStart, $rowEnd - $rowStart));
+                            $errors[] = $ignoreWord;
                         } elseif ($count === 0) {
-                            $word = new Word($word, null, -1, -1);
-                            $word->block = true;
-                            $word->row = 'configuration';
-                            $errors[] = $word;
+                            $ignoreWord = new Word($word, null, -1, -1);
+                            $ignoreWord->block = true;
+                            $ignoreWord->row = 'configuration';
+                            $errors[] = $ignoreWord;
                         }
                     }
                 }
@@ -237,9 +232,7 @@ class SpellChecker
                 if ($this->checkWord($word, $string, $dictionaries)) {
                     continue;
                 }
-                if ($word->row === null) {
-                    $word->row = RowHelper::getRowAtPosition($string, $word->position);
-                }
+                $word->row ??= RowHelper::getRowAtPosition($string, $word->position);
                 $errors[] = $word;
             }
         }

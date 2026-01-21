@@ -30,26 +30,24 @@ use function trim;
 class DictionaryCollection
 {
 
-    /** @var string|null */
-    private $baseDir;
+    private ?string $baseDir;
 
     /** @var string[] */
-    private $directories;
+    private array $directories;
 
     /** @var string[] */
-    private $files;
+    private array $files;
 
     /** @var string[] */
-    private $checkedFiles;
+    private array $checkedFiles;
 
     /** @var Dictionary[] */
-    private $dictionaries;
+    private array $dictionaries;
 
     /** @var string[] */
-    private $diacriticDictionaries;
+    private array $diacriticDictionaries;
 
-    /** @var Console|null */
-    private $console;
+    private Console $console;
 
     /**
      * @param string[] $directories
@@ -61,7 +59,7 @@ class DictionaryCollection
         array $diacriticDictionaries,
         array $checkedFiles,
         ?string $baseDir = null,
-        ?Console $console = null
+        ?Console $console = null,
     )
     {
         $this->directories = $directories;
@@ -172,7 +170,8 @@ class DictionaryCollection
     {
         $this->console->debugWrite(C::gray('['), C::yellow($dictionary));
 
-        if ($this->files === null) {
+        $this->files ??= [];
+        if ($this->files === []) {
             $this->findDictionaryFiles();
         }
 

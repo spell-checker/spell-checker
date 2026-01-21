@@ -11,10 +11,10 @@ use SpellChecker\Word;
 class SimpleHtmlDetector implements Heuristic
 {
 
-    public const RESULT_HTML = 'html';
+    public const string RESULT_HTML = 'html';
 
     /** @var bool[] */
-    private $tags = [
+    private array $tags = [
         'a' => true,
         'i' => true,
         'b' => true,

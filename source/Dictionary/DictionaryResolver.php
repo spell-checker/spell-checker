@@ -15,16 +15,16 @@ use function strpos;
 class DictionaryResolver
 {
 
-    private const SKIP_FILE_MARKER = 'skip';
+    private const string SKIP_FILE_MARKER = 'skip';
 
     /** @var string[] */
-    private $dictionaries;
+    private array $dictionaries;
 
     /** @var string[][] */
-    private $byFileName = [];
+    private array $byFileName = [];
 
     /** @var string[][] */
-    private $byExtensions;
+    private array $byExtensions;
 
     /**
      * @param string[] $dictionaries

@@ -14,7 +14,7 @@ use function strlen;
 class GarbageDetector implements Heuristic
 {
 
-    public const RESULT_GARBAGE = 'garbage';
+    public const string RESULT_GARBAGE = 'garbage';
 
     /**
      * @param string[] $dictionaries

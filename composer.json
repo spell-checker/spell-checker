@@ -11,15 +11,15 @@
         }
     ],
     "require": {
-        "php": "^7.2|^8.0",
+        "php": "^8.0",
         "nette/neon": "~2.4|~3.0",
-        "symfony/finder": "~4.0|~5.0|~6.0|~7.0",
+        "symfony/finder": "~4.0|~5.0|~6.0|~7.0|~8.0",
         "tracy/tracy": "~2.4",
-        "dogma/dogma": "^0.2.0"
+        "dogma/dogma": "dev-slevomat-master#866f343 as 0.2.99"
     },
     "require-dev": {
-        "dogma/dogma-dev": "0.1.30",
-        "phpstan/phpstan": "1.10.55"
+        "dogma/dogma-dev": "dev-master",
+        "phpstan/phpstan": "^2.1.33"
     },
     "extra": {
         "branch-alias": {
@@ -107,5 +107,15 @@
             "dealerdirect/phpcodesniffer-composer-installer": false,
             "sllh/composer-versions-check": true
         }
-    }
+    },
+		"repositories": {
+			"dogma/dogma-dev": {
+				"type": "vcs",
+				"url": "github.com:slevomat/dogma-dev.git"
+			},
+			"dogma/dogma": {
+				"type": "vcs",
+				"url": "github.com:slevomat/dogma.git"
+			}
+		}
 }

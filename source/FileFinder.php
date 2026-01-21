@@ -18,8 +18,7 @@ use function trim;
 class FileFinder
 {
 
-    /** @var string */
-    private $baseDir;
+    private string $baseDir;
 
     public function __construct(?string $baseDir = null)
     {

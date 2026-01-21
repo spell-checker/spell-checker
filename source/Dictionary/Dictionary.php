@@ -17,16 +17,16 @@ class Dictionary
 {
 
     /** @var string[] */
-    private $files;
+    private array $files;
 
     /** @var string[] */
-    private $checkedFiles;
+    private array $checkedFiles;
 
     /** @var int[]|string[] */
-    private $wordIndex;
+    private array $wordIndex;
 
     /** @var int[]|string[] */
-    private $strippedIndex;
+    private array $strippedIndex;
 
     /**
      * @param string[] $files

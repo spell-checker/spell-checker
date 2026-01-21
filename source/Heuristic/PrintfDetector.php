@@ -12,7 +12,7 @@ use function preg_match;
 class PrintfDetector implements Heuristic
 {
 
-    public const RESULT_PRINTF = 'printf';
+    public const string RESULT_PRINTF = 'printf';
 
     /**
      * @param string[] $dictionaries

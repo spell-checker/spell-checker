@@ -28,8 +28,9 @@ When not found, other heuristics are used to rule out obvious false positives:
 - skipping random lumps of characters that look like passwords or tokens
 - skipping base64 encoded images
 
-If word is not found in dictionaries nor matched by any of these heuristics, it is reported as a typo.
+You can add custom heuristics, more below.
 
+If word is not found in dictionaries nor matched by any of these heuristics, it is reported as a typo.
 
 
 ## Prerequisites
@@ -193,7 +194,18 @@ Examples:
 - `build/spell-checker/cs-custom.dic` - for exceptions your texts in czech
 - `build/spell-checker/code-custom.dic` - for technical terms and other exceptions across many file types and languages
 
-#### b) Add it to local ignore list in the same file as the word was found
+#### b) Implement custom heuristics
+As already mentioned, heuristics help to filter out false positive cases. To add a custom heuristic, you need to create a class that implements `SpellChecker\Heuristic\Heuristic`. 
+The class may require a `SpellChecker\Dictionary\DictionaryCollection` object in the constructor.
+For more clarity see build in heuristics in `SpellChecker\Heuristic` namespace.
+
+Heuristics need to be added to the config:
+```
+heuristics:
+  - MyCustomHeuristicDetector
+```
+
+#### c) Add it to local ignore list in the same file as the word was found
 Just use comment in given language and a directive `spell-check-ignore:` followed by the list of ignored words. This comment can be anywhere in the file, but only once, and can not be divided to more rows.
 
 Examples:
@@ -204,7 +216,7 @@ Examples:
 - `{* spell-check-ignore: foo bar *}` for Latte
 
 
-For some languages where comments are not supported (like `json` or `md`) you are obviously stuck only with the first possibility.
+For some languages where comments are not supported (like `json` or `md`) you are obviously stuck only with the previous possibilities.
 
 
 

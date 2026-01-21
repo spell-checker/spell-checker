@@ -16,20 +16,18 @@ use function trim;
 class RegularExpressionDetector implements Heuristic
 {
 
-    public const RESULT_RE = 're';
+    public const string RESULT_RE = 're';
 
-    /** @var string */
-    private $modifiers = 'imsxADSUXJu';
+    private string $modifiers = 'imsxADSUXJu';
 
     /** @var string[] */
-    private $prefixes = [
+    private array $prefixes = [
         '[^\\w]preg[^\\w]',
         '[^\\w]ereg[^\\w]',
         '[^\\w]match[^\\w]',
     ];
 
-    /** @var string */
-    private $pattern;
+    private string $pattern;
 
     /**
      * @param string[] $dictionaries
@@ -37,9 +35,7 @@ class RegularExpressionDetector implements Heuristic
      */
     public function check(Word $word, string &$string, array $dictionaries): ?string
     {
-        if ($this->pattern === null) {
-            $this->pattern = sprintf('/(?:%s)(.*)$/', implode('|', $this->prefixes));
-        }
+        $this->pattern ??= sprintf('/(?:%s)(.*)$/', implode('|', $this->prefixes));
         if ($word->block !== null) {
             return null;
         }
@@ -47,9 +43,7 @@ class RegularExpressionDetector implements Heuristic
             return null;
         }
 
-        if ($word->row === null) {
-            $word->row = RowHelper::getRowAtPosition($string, $word->position);
-        }
+        $word->row ??= RowHelper::getRowAtPosition($string, $word->position);
 
         if (preg_match($this->pattern, $word->row, $match)) {
             if (strpos($match[1], $word->word) !== false) {

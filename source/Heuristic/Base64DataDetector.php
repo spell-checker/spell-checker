@@ -10,7 +10,7 @@ use function strrpos;
 class Base64DataDetector implements Heuristic
 {
 
-    public const RESULT_IMAGE = 'image';
+    public const string RESULT_IMAGE = 'image';
 
     /**
      * @param string[] $dictionaries
@@ -18,9 +18,7 @@ class Base64DataDetector implements Heuristic
      */
     public function check(Word $word, string &$string, array $dictionaries): ?string
     {
-        if ($word->row === null) {
-            $word->row = RowHelper::getRowAtPosition($string, $word->position);
-        }
+        $word->row ??= RowHelper::getRowAtPosition($string, $word->position);
 
         // data:image/jpeg;base64,...
         if (preg_match_all('~data:[a-z]+/[a-z]+;base64,([A-Za-z0-9/+]+)~', $word->row, $matches)) {

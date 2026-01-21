@@ -12,12 +12,11 @@ use function substr;
 class DictionarySearch implements Heuristic
 {
 
-    public const TRY_LOWERCASE = 1;
-    public const TRY_CAPITALIZED = 2;
-    public const TRY_WITHOUT_DIACRITICS = 4;
+    public const int TRY_LOWERCASE = 1;
+    public const int TRY_CAPITALIZED = 2;
+    public const int TRY_WITHOUT_DIACRITICS = 4;
 
-    /** @var DictionaryCollection */
-    private $dictionaries;
+    private DictionaryCollection $dictionaries;
 
     public function __construct(DictionaryCollection $dictionaries)
     {

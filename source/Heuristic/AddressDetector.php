@@ -17,27 +17,24 @@ class AddressDetector implements Heuristic
 
     // https://mathiasbynens.be/demo/url-regex
     // selected one with false positive behavior, because we need to match even urls formatted with sprintf etc.
-    private const URL_REGEX = '~((https?|ftp)://|www\.)(-\.)?([^\s/?\.#]+\.?)+(/[^\s]*)?~i';
+    private const string URL_REGEX = '~((https?|ftp)://|www\\.)(-\\.)?([^\\s/?\\.#+]+\\.?)+(/[^\\s]*)?~i';
 
-    private const EMAIL_REGEX = '~[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+~';
+    private const string EMAIL_REGEX = '~[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+~';
 
-    public const RESULT_EMAIL = 'email';
-    public const RESULT_URL = 'url';
-    public const RESULT_URL_PART = 'url-part';
+    public const string RESULT_EMAIL = 'email';
+    public const string RESULT_URL = 'url';
+    public const string RESULT_URL_PART = 'url-part';
 
-    /** @var DictionaryCollection */
-    private $dictionaries;
+    private DictionaryCollection $dictionaries;
 
-    /** @var bool */
-    private $ignoreUrls;
+    private bool $ignoreUrls;
 
-    /** @var bool */
-    private $ignoreEmails;
+    private bool $ignoreEmails;
 
     public function __construct(
         DictionaryCollection $dictionaries,
         bool $ignoreUrls = false,
-        bool $ignoreEmails = false
+        bool $ignoreEmails = false,
     )
     {
         $this->dictionaries = $dictionaries;
@@ -51,9 +48,7 @@ class AddressDetector implements Heuristic
      */
     public function check(Word $word, string &$string, array $dictionaries): ?string
     {
-        if ($word->row === null) {
-            $word->row = RowHelper::getRowAtPosition($string, $word->position);
-        }
+        $word->row ??= RowHelper::getRowAtPosition($string, $word->position);
 
         // words used in an URL may not use diacritics
         if (preg_match_all(self::URL_REGEX, $word->row, $matches)) {

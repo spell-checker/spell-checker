@@ -9,8 +9,7 @@ use function sprintf;
 class DictionaryFileNotReadableException extends Exception
 {
 
-    /** @var string */
-    private $fileName;
+    private string $fileName;
 
     public function __construct(string $fileName, ?Throwable $previous = null)
     {

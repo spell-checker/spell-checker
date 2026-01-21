@@ -11,8 +11,8 @@ use function preg_match;
 class EscapeSequenceDetector implements Heuristic
 {
 
-    public const RESULT_ESCAPE_CODE = 'escape';
-    public const RESULT_ENTITY = 'entity';
+    public const string RESULT_ESCAPE_CODE = 'escape';
+    public const string RESULT_ENTITY = 'entity';
 
     /**
      * @param string[] $dictionaries

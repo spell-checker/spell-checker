@@ -15,10 +15,10 @@ use function strpos;
 class SqlTableShortcutDetector implements Heuristic
 {
 
-    public const RESULT_SQL = 'sql';
+    public const string RESULT_SQL = 'sql';
 
     /** @var string[] */
-    private $prefixes = [
+    private array $prefixes = [
         // SQL
         '[^\\w]SELECT\\s',
         '[^\\w]FROM\\s',
@@ -63,8 +63,7 @@ class SqlTableShortcutDetector implements Heuristic
         '->addRootEntityFromClassMetadata\\(',
     ];
 
-    /** @var string */
-    private $pattern;
+    private string $pattern;
 
     /**
      * @param string[] $dictionaries
@@ -72,9 +71,7 @@ class SqlTableShortcutDetector implements Heuristic
      */
     public function check(Word $word, string &$string, array $dictionaries): ?string
     {
-        if ($this->pattern === null) {
-            $this->pattern = sprintf('/(?:%s)(.*)$/', implode('|', $this->prefixes));
-        }
+        $this->pattern ??= sprintf('/(?:%s)(.*)$/', implode('|', $this->prefixes));
         if ($word->block !== null) {
             return null;
         }
@@ -82,9 +79,7 @@ class SqlTableShortcutDetector implements Heuristic
             return null;
         }
 
-        if ($word->row === null) {
-            $word->row = RowHelper::getRowAtPosition($string, $word->position);
-        }
+        $word->row ??= RowHelper::getRowAtPosition($string, $word->position);
 
         if (preg_match($this->pattern, $word->row, $match)) {
             if (strpos($match[1], $word->word) !== false) {

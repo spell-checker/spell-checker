@@ -9,8 +9,7 @@ use function sprintf;
 class ContextNotDefinedException extends Exception
 {
 
-    /** @var string */
-    private $context;
+    private string $context;
 
     public function __construct(string $context, ?Throwable $previous = null)
     {

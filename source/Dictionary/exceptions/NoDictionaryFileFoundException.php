@@ -9,8 +9,7 @@ use function sprintf;
 class NoDictionaryFileFoundException extends Exception
 {
 
-    /** @var string */
-    private $dictionary;
+    private string $dictionary;
 
     public function __construct(string $dictionary, ?Throwable $previous = null)
     {

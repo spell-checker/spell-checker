@@ -12,8 +12,8 @@ use function preg_match;
 class CssUnitsDetector implements Heuristic
 {
 
-    public const RESULT_COLOR = 'color';
-    public const RESULT_UNIT = 'unit';
+    public const string RESULT_COLOR = 'color';
+    public const string RESULT_UNIT = 'unit';
 
     /**
      * @param string[] $dictionaries

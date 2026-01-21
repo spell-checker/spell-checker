@@ -12,11 +12,10 @@ use const PREG_OFFSET_CAPTURE;
 class PoParser implements Parser
 {
 
-    public const CONTEXT_MESSAGE = 'msgid';
-    public const CONTEXT_TRANSLATION = 'msgstr';
+    public const string CONTEXT_MESSAGE = 'msgid';
+    public const string CONTEXT_TRANSLATION = 'msgstr';
 
-    /** @var DefaultParser */
-    private $defaultParser;
+    private DefaultParser $defaultParser;
 
     public function __construct(DefaultParser $defaultParser)
     {
